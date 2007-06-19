@@ -1,12 +1,12 @@
-use Test::More tests => 3;
+use Test::More tests => 4;
 use strict;
 $^W = 1;
 
 use lib 't/lib';
 
-use File::Temp;
+use File::Temp qw(tempfile);
 
-use_ok('Email::Sender::IO');
+use_ok('Email::Sender::IOAll');
 
 my $message = <<"END_MESSAGE";
 To: put-up
@@ -18,10 +18,7 @@ END_MESSAGE
 
 my (undef, $filename) = tempfile(DIR => 't', UNLINK => 1);
 
-{ my @no_warning_please = @Email::Send::IO::IO; }
-@Email::Send::IO::IO = ($filename);
-
-my $sender = Email::Send->new({ mailer => 'IO' });
+my $sender = Email::Sender::IOAll->new({ dest => $filename });
 
 ok($sender->send($message), 'send the first message');
 ok($sender->send($message), 'and send it again');

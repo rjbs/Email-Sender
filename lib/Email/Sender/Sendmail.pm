@@ -4,13 +4,14 @@ package Email::Sender::Sendmail;
 use base qw(Email::Sender);
 
 use File::Spec ();
-use Return::Value;
 use Symbol qw(gensym);
 
 use vars qw($SENDMAIL);
 
 sub _find_sendmail {
   my $self = shift;
+
+  $self = {} unless ref $self;
 
   return $self->{sendmail}
     if $self->{sendmail} and $self->{sendmail} =~ m{[\\/]};

@@ -1,0 +1,6 @@
+#!/usr/bin/perl
+
+my $input = join '', <STDIN>;
+
+exit 0;
+

@@ -1,0 +1,17 @@
+#!/usr/bin/perl
+
+my $input = join '', <STDIN>;
+
+unlink 'sendmail.log'
+  if -f 'sendmail.log';
+
+open my $fh, '>sendmail.log'
+  or die 'Cannot write to sendmail.log';
+
+print $fh "CLI args: @ARGV\n";
+if ( defined $input && length $input ) {
+  print $fh "Executed with input on STDIN\n$input";
+}
+else {
+  print $fh "Executed with no input on STDIN\n";
+}

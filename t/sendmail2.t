@@ -1,4 +1,4 @@
-use Test::More tests => 11;
+use Test::More tests => 6;
 use strict;
 $^W = 1;
 
@@ -26,11 +26,12 @@ SKIP:
 }
 
 {
-  local $Email::Sender::Sendmail::SENDMAIL = './util/not-executable';
-  my $sender = Email::Sender::Sendmail->new;
-  my $return = $sender->send($email);
-  ok( ! $return, "send() failed because $return" );
-  like( $return, qr/cannot execute/, 'error message says what we expect' );
+  my $sender = Email::Sender::Sendmail->new({
+    sendmail => './util/not-executable'
+  });
+
+  eval { $sender->send($email); };
+  like($@, qr/couldn't open pipe/, 'error message says what we expect' );
 }
 
 my $has_FileTemp = eval { require File::Temp; };
@@ -48,18 +49,17 @@ SKIP:
   my $error = "can't prepare executable test script";
 
   my $filename = File::Spec->catfile($tempdir, "executable");
-  open my $fh, ">", $filename or skip $error, 1;
+  open my $fh, ">", $filename or skip "$error: opening $filename", 1;
 
   open my $exec, "<", './util/executable' or skip $error, 1;
 
-  print {$fh} "#!$^X\n" or skip $error, 1;
-  print {$fh} <$exec>   or skip $error, 1;
-  close $fh             or skip $error, 1;
+  print {$fh} "#!$^X\n" or skip "$error: outputting shebang", 1;
+  print {$fh} <$exec>   or skip "$error: outputting body", 1;
+  close $fh             or skip "$error: closing", 1;
 
   chmod 0755, $filename;
 
-  local $Email::Send::Sendmail::SENDMAIL = $filename;
-  my $sender = Email::Send->new({mailer => 'Sendmail'});
+  my $sender = Email::Sender::Sendmail->new({ sendmail => $filename });
   my $return = $sender->send($email);
   ok( $return, 'send() succeeded with executable $SENDMAIL' );
 }
@@ -87,8 +87,8 @@ SKIP:
   chmod 0755, $filename;
 
   local $ENV{PATH} = $tempdir;
-  my $sender = Email::Send->new({mailer => 'Sendmail'});
-  my $return = $sender->send($email);
+  my $sender = Email::Sender::Sendmail->new;
+  my $return = eval { $sender->send($email) };
   ok( $return, 'send() succeeded with executable sendmail in path' );
 
   if ( -f 'sendmail.log' ) {

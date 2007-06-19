@@ -1,0 +1,18 @@
+
+Tests for:
+  Core:
+    objectify message
+    setup_envelope
+    interface to success
+    interface to failure (allrcpts, transport)
+  Senders:
+    io
+    sqlite, a little; pid checks?
+    sendmail
+    nntp
+    qmail
+
+Senders:
+  SMTP
+  NNTP
+  QMTP

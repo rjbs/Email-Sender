@@ -4,6 +4,7 @@ use base qw(Email::Sender);
 use warnings;
 use strict;
 
+use Carp qw(confess);
 use Class::Trigger;
 
 =head1 NAME
@@ -39,7 +40,7 @@ sub new {
   $arg ||= {};
 
   eval "require $arg->{mailer};" if not ref $arg->{mailer};
-  die "mailer isn't a Mailer"
+  confess "mailer isn't a Mailer"
     unless eval { $arg->{mailer}->isa('Email::Sender') };
 
   my $new_arg = {%$arg};
@@ -50,7 +51,7 @@ sub new {
   return $self;
 }
 
-sub AUTOLOAD {
+sub AUTOLOAD { ## no critic Autoload
   our $AUTOLOAD;
   my $self = shift;
   my ($class, $method) = $AUTOLOAD =~ /(.+)::([^:]+)$/;
@@ -64,7 +65,9 @@ sub send_email {
 
   my $return = eval { $self->call_trigger(before_send_email => (@_)); };
 
-  die $@         if $@;
+  # This is not a problem.  We're just re-throwing an exception.
+  die $@         if $@; ## no critic Carp
+
   return $return if $return;
 
   $self->{mailer}->send_email(@_);

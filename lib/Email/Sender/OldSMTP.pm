@@ -1,15 +1,15 @@
 use strict;
 use warnings;
 
-package Email::Send::Mailer::OldSMTP;
+package Email::Sender::OldSMTP;
 
 use Email::Sender;
 use Class::Accessor;
 
-@Email::Send::Mailer::OldSMTP::ISA = qw/
+@Email::Sender::OldSMTP::ISA = qw/
   Email::Sender
   Class::Accessor
-  /;
+/;
 
 use Params::Util ();
 use Params::Validate qw(:all);
@@ -92,11 +92,11 @@ sub _quoteaddr {
   my $addr       = shift;
   my @localparts = split /\@/, $addr;
   my $domain     = pop @localparts;
-  my $localpart  = join '@', @localparts;
+  my $localpart  = join q{@}, @localparts;
 
   # this is probably a little too paranoid
   return $addr unless $localpart =~ /[^\w.+-]/ or $localpart =~ /^\./;
-  return join '@', qq("$localpart"), $domain;
+  return join q{@}, qq("$localpart"), $domain;
 }
 
 sub _smtp {
@@ -161,7 +161,7 @@ sub _smtp {
       = $smtp->to((map { _quoteaddr($_) } @{ $o{to} }), { SkipBad => 1 },);
 
     # In case NOTHING was OK.
-    if ((!@ok_recip) or (@ok_recip == 1 and $ok_recip[0] eq '0')) {
+    if (not(@ok_recip) or (@ok_recip == 1 and $ok_recip[0] eq '0')) {
       $smtp->to(map { _quoteaddr($_) } @{ $o{to} })
         or return $ERROR->("$o{from} failed after RCPT TO:");
     }
@@ -183,11 +183,13 @@ sub _smtp {
   # usage
   my $message_class = Scalar::Util::blessed($arg{message});
 
+  ## no critic Private
   if (Params::Util::_HANDLE($arg{message})) {
     $chunker = \&_smtp_chunk_handle;
   } elsif (Params::Util::_CODELIKE($arg{message})) {
     $chunker = \&_smtp_chunk_code;
   }
+  ## use critic
 
   # Email::Simple::FromHandle
   elsif ($message_class && $message_class->can('stream_to')) {
@@ -221,7 +223,7 @@ sub smtpsend {
   my $message = shift;
   _smtp(
     opt     => {@_},
-    fail    => sub { die shift },
+    fail    => sub { die shift }, ## no critic Carp
     message => $message,
   );
 }

@@ -32,9 +32,7 @@ sub send_email {
   eval { $self->{_smtp}->reset; };
 
   if ($@) {
-
-    # XXX should this be something else?
-    warn $@;
+    Carp::carp $@; # XXX should this be something else?
     $self->{_smtp} = $self->_new_smtp($self->{arg});
   }
 

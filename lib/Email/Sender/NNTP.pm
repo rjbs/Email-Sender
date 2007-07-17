@@ -1,4 +1,5 @@
 use strict;
+use warnings;
 
 package Email::Sender::NNTP;
 use base qw(Email::Sender);
@@ -17,7 +18,8 @@ sub nntp {
 sub send_email {
   my ($self, $email, $arg) = @_;
 
-  die "failed to post" unless $self->nntp->post($email->as_string);
+  return $self->failure("failed to post")
+    unless $self->nntp->post($email->as_string);
 
   return $self->success;
 }

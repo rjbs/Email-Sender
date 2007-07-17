@@ -3,6 +3,7 @@ package Email::Sender;
 use warnings;
 use strict;
 
+use Carp;
 use Email::Abstract;
 use Scalar::Util ();
 use Sub::Install;
@@ -59,7 +60,7 @@ sub new {
 
 =cut
 
-sub send {
+sub send { ## no critic Homo
   my ($self, $message, $arg) = @_;
 
   Carp::croak "invalid argument to send; first argument must be an email"
@@ -106,7 +107,7 @@ for my $method (qw(send_email)) {
   Sub::Install::install_sub({
     code => sub {
       my $class = ref $_[0] ? ref $_[0] : $_[0];
-      die "virtual method $method not implemented on $class";
+      Carp::croak "virtual method $method not implemented on $class";
     },
     as => $method
   });
@@ -136,7 +137,7 @@ sub success {
 
 sub failure {
   my ($self, $arg) = @_;
-  die bless $arg => 'Email::Sender::Failure';
+  die bless $arg => 'Email::Sender::Failure'; ## no critic Carp
 }
 
 {

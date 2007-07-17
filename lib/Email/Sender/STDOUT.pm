@@ -11,11 +11,11 @@ sub send_email {
 
   print "ENVELOPE TO  : @to\n";
   print "ENVELOPE FROM: $arg->{from}\n";
-  print '-' x 10, " begin message\n";
+  print q{-} x 10, " begin message\n";
 
   print $email->as_string;
 
-  print '-' x 10, " end message\n";
+  print q{-} x 10, " end message\n";
 
   return $self->success;
 }

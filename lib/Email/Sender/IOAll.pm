@@ -1,4 +1,5 @@
 use strict;
+use warnings;
 
 package Email::Sender::IOAll;
 use base qw(Email::Sender);
@@ -11,7 +12,7 @@ sub io {
 
 sub _dest {
   my ($self) = @_;
-  $self->{dest} || '=';
+  $self->{dest} || q{=};
 }
 
 sub send_email {

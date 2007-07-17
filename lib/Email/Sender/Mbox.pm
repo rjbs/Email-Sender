@@ -3,6 +3,7 @@ use strict;
 package Email::Sender::Mbox;
 use base qw(Email::Sender);
 
+use Carp qw(croak);
 use File::Path;
 use File::Basename;
 use Email::Simple 1.998;  # needed for ->header_obj
@@ -26,17 +27,17 @@ sub send_email {
       my $fh = $self->_open_fh($file);
 
       if (tell($fh) > 0) {
-        print $fh "\n" or die "couldn't write to $file: $!";
+        print $fh "\n" or carp "couldn't write to $file: $!";
       }
 
       print $fh $self->_from_line($email)
-        or die "couldn't write to $file: $!";
+        or carp "couldn't write to $file: $!";
       print $fh $self->_escape_from_body($email)
-        or die "couldn't write to $file: $!";
+        or carp "couldn't write to $file: $!";
 
       # This will make streaming a bit more annoying. -- rjbs, 2007-05-25
       print $fh "\n"
-        or die "couldn't write to $file: $!"
+        or carp "couldn't write to $file: $!"
         unless $email->as_string =~ /\n$/;
 
       $self->_close_fh($fh, $file);

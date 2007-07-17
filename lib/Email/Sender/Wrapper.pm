@@ -42,7 +42,7 @@ sub new {
   die "mailer isn't a Mailer"
     unless eval { $arg->{mailer}->isa('Email::Sender') };
 
-  my $new_arg = { %$arg };
+  my $new_arg = {%$arg};
   delete $new_arg->{mailer};
   $arg->{mailer} = $arg->{mailer}->new($new_arg) unless ref $arg->{mailer};
   my $self = bless $arg => $class;
@@ -64,7 +64,7 @@ sub send_email {
 
   my $return = eval { $self->call_trigger(before_send_email => (@_)); };
 
-  die $@ if $@;
+  die $@         if $@;
   return $return if $return;
 
   $self->{mailer}->send_email(@_);

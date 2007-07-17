@@ -13,7 +13,7 @@ sub recipient_ok {
 
   return 1 unless my $all_exprs = $self->bad_recipients;
 
-  for my $re (@{ $all_exprs }) {
+  for my $re (@{$all_exprs}) {
     return if $recipient =~ $re;
   }
 
@@ -29,7 +29,7 @@ sub _deliver {
 
 sub deliveries {
   my ($self) = @_;
-  return @{ $self->{deliveries} ||= [] };  
+  return @{ $self->{deliveries} ||= [] };
 }
 
 sub delivered_emails {
@@ -39,24 +39,25 @@ sub delivered_emails {
 
 sub send_email {
   my ($self, $email, $arg) = @_;
-  
+
   # should use List::MoreUtils::part -- when released
   my @undeliverables = grep { not $self->recipient_ok($_) } @{ $arg->{to} };
-  my @deliverables   = grep {     $self->recipient_ok($_) } @{ $arg->{to} };
+  my @deliverables   = grep { $self->recipient_ok($_) } @{ $arg->{to} };
 
   # Do we want to raise an exception if there ZERO possible deliveries?
   # -- rjbs, 2007-02-20
 
-  $self->_deliver({
-    email     => $email,
-    arg       => $arg,
-    successes => \@deliverables,
-    failures  => { map { $_ => 'bad recipient' } @undeliverables },
-  });
+  $self->_deliver(
+    {
+      email     => $email,
+      arg       => $arg,
+      successes => \@deliverables,
+      failures  => { map { $_ => 'bad recipient' } @undeliverables },
+    }
+  );
 
-  return $self->success({
-    failures => { map { $_ => 'bad recipient' } @undeliverables },
-  });
+  return $self->success(
+    { failures => { map { $_ => 'bad recipient' } @undeliverables }, });
 }
 
 1;

@@ -15,7 +15,7 @@ $VERSION = "0.001";
 sub send_email {
   my ($self, $email) = @_;
 
-  my @files = ref $self->{file} ? @{$self->{file}} : $self->{file};
+  my @files = ref $self->{file} ? @{ $self->{file} } : $self->{file};
 
   return $self->failure("no mbox files specified") unless @files;
 
@@ -32,15 +32,16 @@ sub send_email {
       print $fh $self->_from_line($email)
         or die "couldn't write to $file: $!";
       print $fh $self->_escape_from_body($email)
-        or die "couldn't write to $file: $!" ;
+        or die "couldn't write to $file: $!";
 
       # This will make streaming a bit more annoying. -- rjbs, 2007-05-25
-      print $fh "\n" or die "couldn't write to $file: $!"
+      print $fh "\n"
+        or die "couldn't write to $file: $!"
         unless $email->as_string =~ /\n$/;
 
       $self->_close_fh($fh, $file);
     };
-    $failure{ $file } = $@ if $@;
+    $failure{$file} = $@ if $@;
   }
 
   if (keys %failure == @files) {
@@ -53,7 +54,7 @@ sub send_email {
 sub _open_fh {
   my ($class, $file) = @_;
   my $dir = dirname($file);
-  die "couldn't make path $dir: $!"  if !-d $dir and not mkpath($dir);
+  die "couldn't make path $dir: $!" if !-d $dir and not mkpath($dir);
 
   my $fh = gensym;
   open $fh, ">> $file" or die "couldn't open $file for appending: $!";

@@ -9,7 +9,7 @@ use Class::Accessor;
 @Email::Send::Mailer::OldSMTP::ISA = qw/
   Email::Sender
   Class::Accessor
-/;
+  /;
 
 use Params::Util ();
 use Params::Validate qw(:all);
@@ -25,7 +25,7 @@ sub new {
 
 # This routine sends mail via SMTP.  C<$message> is the text of the message to
 # be sent.  Valid arguments are:
-# 
+#
 #  from - envelope sender
 #  to   - envelope recipient
 #  host - smtp mx to use
@@ -36,7 +36,7 @@ sub new {
 #  localport - connect from this port
 #  sasl_user     - use SASL, with this user
 #  sasl_password - use SASL, with this password
-# 
+#
 #  bad_to_hook - a callback; if given, if the mail server rejects any of the
 #                message recipients, this callback is called
 
@@ -78,10 +78,7 @@ sub __smtp_write_datasend {
 
 sub _smtp_loop_stream_to {
   my ($smtp, $email) = @_;
-  $email->stream_to(
-    $smtp,
-    { write => \&__smtp_write_datasend },
-  );
+  $email->stream_to($smtp, { write => \&__smtp_write_datasend },);
 }
 
 sub _smtp_loop_chunk {
@@ -89,13 +86,14 @@ sub _smtp_loop_chunk {
   while (defined(my $chunk = $chunker->($email))) {
     __smtp_write_datasend($smtp, $chunk);
   }
-} 
+}
 
 sub _quoteaddr {
-  my $addr = shift;
+  my $addr       = shift;
   my @localparts = split /\@/, $addr;
-  my $domain = pop @localparts;
-  my $localpart = join '@', @localparts;
+  my $domain     = pop @localparts;
+  my $localpart  = join '@', @localparts;
+
   # this is probably a little too paranoid
   return $addr unless $localpart =~ /[^\w.+-]/ or $localpart =~ /^\./;
   return join '@', qq("$localpart"), $domain;
@@ -104,17 +102,17 @@ sub _quoteaddr {
 sub _smtp {
   my %arg = validate(
     @_ => {
-      opt  => { type => HASHREF },
-      fail => { type => CODEREF },
+      opt     => { type => HASHREF },
+      fail    => { type => CODEREF },
       message => 0,
     },
   );
   my %o;
   if ($arg{opt}{smtp}) {
-    %o = %{$arg{opt}};
+    %o = %{ $arg{opt} };
   } else {
     %o = validate_with(
-      params => [ %{$arg{opt}} ],
+      params => [ %{ $arg{opt} } ],
       spec   => \%valid_smtp,
     );
   }
@@ -132,15 +130,15 @@ sub _smtp {
   }
 
   $o{to} = [ $o{to} ] unless ref $o{to} eq 'ARRAY';
-  
-  $o{to} = [ grep { defined and length} @{ $o{to} } ];
+
+  $o{to} = [ grep { defined and length } @{ $o{to} } ];
 
   Carp::croak "no valid emails in recipient list" unless @{ $o{to} };
 
   my $smtp = $o{smtp} || $class->new(
     $o{host},
     Port => $o{port},
-    $o{helo}      ? (Hello => $o{helo}) : (),
+    $o{helo}      ? (Hello     => $o{helo})      : (),
     $o{localaddr} ? (LocalAddr => $o{localaddr}) : (),
     $o{localport} ? (LocalPort => $o{localport}) : (),
   ) or return $fail->("unable to establish smtp connection");
@@ -159,23 +157,21 @@ sub _smtp {
     or return $ERROR->("$o{from} failed after MAIL FROM:");
 
   if (my $hook = $o{bad_to_hook}) {
-    my @ok_recip = $smtp->to(
-      (map { _quoteaddr($_) } @{$o{to}}),
-      { SkipBad => 1 },
-    );
+    my @ok_recip
+      = $smtp->to((map { _quoteaddr($_) } @{ $o{to} }), { SkipBad => 1 },);
 
     # In case NOTHING was OK.
     if ((!@ok_recip) or (@ok_recip == 1 and $ok_recip[0] eq '0')) {
-      $smtp->to(map { _quoteaddr($_) } @{$o{to}})
+      $smtp->to(map { _quoteaddr($_) } @{ $o{to} })
         or return $ERROR->("$o{from} failed after RCPT TO:");
     }
 
     my %ok = map { $_ => 1 } @ok_recip;
-    my @fail = grep { ! $ok{$_} } @{ $o{to} };
+    my @fail = grep { !$ok{$_} } @{ $o{to} };
 
     $hook->(\@fail);
   } else {
-    $smtp->to(map { _quoteaddr($_) } @{$o{to}})
+    $smtp->to(map { _quoteaddr($_) } @{ $o{to} })
       or return $ERROR->("$o{from} failed after RCPT TO:");
   }
 
@@ -224,12 +220,11 @@ sub _smtp {
 sub smtpsend {
   my $message = shift;
   _smtp(
-    opt     => { @_ },
+    opt     => {@_},
     fail    => sub { die shift },
     message => $message,
   );
 }
-
 
 sub send_email {
   my ($self, $email, $arg) = @_;
@@ -249,7 +244,9 @@ sub send_email {
 
   return $self->success(
     @undeliverable
-    ? { failures => { map { $_ => 'rejected by smtp server' } @undeliverable } }
+    ? {
+      failures => { map { $_ => 'rejected by smtp server' } @undeliverable }
+      }
     : ()
   );
 }

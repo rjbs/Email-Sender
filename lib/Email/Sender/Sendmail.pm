@@ -29,7 +29,7 @@ sub _find_sendmail {
 sub send_email {
   my ($self, $email) = @_;
 
-  my $pipe  = gensym;
+  my $pipe     = gensym;
   my $sendmail = $self->_find_sendmail;
 
   no warnings 'exec';

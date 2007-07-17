@@ -6,7 +6,7 @@ use warnings;
 
 sub send_email {
   my ($self, $email, $arg) = @_;
-  
+
   my @to = @{ $arg->{to} };
 
   print "ENVELOPE TO  : @to\n";

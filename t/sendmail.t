@@ -30,7 +30,7 @@ SKIP:
     sendmail => './util/not-executable'
   });
 
-  eval { $sender->send($email); };
+  eval { no warnings; $sender->send($email); };
   like($@, qr/couldn't open pipe/, 'error message says what we expect' );
 }
 

@@ -32,6 +32,7 @@ sub send_email {
   my $pipe  = gensym;
   my $sendmail = $self->_find_sendmail;
 
+  no warnings 'exec';
   open $pipe, '|-', $sendmail or die "couldn't open pipe to sendmail: $!";
 
   print $pipe $email->as_string

@@ -34,7 +34,7 @@ sub send_email {
   my ($self, $email, $arg) = @_;
   
   my $ok = $self->_deliver({
-    message   => $message,
+    message   => $email,
     to        => $arg->{to},
     from      => $arg->{from},
   });

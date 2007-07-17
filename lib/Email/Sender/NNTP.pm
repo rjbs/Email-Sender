@@ -8,7 +8,7 @@ use Net::NNTP;
 sub nntp {
   my ($self) = @_;
 
-  $self->{Email::Sender::NNTP}{nntp} ||= Net::NNTP->new(
+  $self->{'Email::Sender::NNTP'}{nntp} ||= Net::NNTP->new(
     # get args from person
   );
 }
@@ -22,6 +22,7 @@ sub send_email {
 }
 
 sub DESTROY {
+  my ($self) = @_;
   $self->nntp->quit;
 }
 

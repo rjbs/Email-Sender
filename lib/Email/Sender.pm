@@ -63,7 +63,7 @@ sub send {
   my ($self, $message, $arg) = @_;
 
   Carp::croak "invalid argument to send; first argument must be an email"
-    unless my $email = $self->_objectify_email($message);
+    unless my $email = $self->_make_email_abstract($message);
 
   $self->setup_envelope($email, $arg);
   $self->validate_send_args($email, $arg);
@@ -112,7 +112,7 @@ for my $method (qw(send_email)) {
   });
 }
 
-sub _objectify_email {
+sub _make_email_abstract {
   my ($self, $email) = @_;
 
   return unless defined $email;

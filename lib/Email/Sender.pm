@@ -3,7 +3,7 @@ package Email::Sender;
 use warnings;
 use strict;
 
-use Email::Simple;
+use Email::Abstract;
 use Scalar::Util ();
 use Sub::Install;
 
@@ -60,10 +60,10 @@ sub new {
 =cut
 
 sub send {
-  my ($self, $email, $arg) = @_;
+  my ($self, $message, $arg) = @_;
 
   Carp::croak "invalid argument to send; first argument must be an email"
-    unless my $email = $self->_objectify_email($email);
+    unless my $email = $self->_objectify_email($message);
 
   $self->setup_envelope($email, $arg);
   $self->validate_send_args($email, $arg);

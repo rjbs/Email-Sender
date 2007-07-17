@@ -8,7 +8,6 @@ BEGIN {
   use_ok('Email::Sender::Maildir');
   use_ok('Email::Sender::NNTP');
   use_ok('Email::Sender::OldSMTP');
-  use_ok('Email::Sender::Qmail');
   use_ok('Email::Sender::SMTP');
   use_ok('Email::Sender::SQLite');
   use_ok('Email::Sender::STDOUT');

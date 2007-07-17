@@ -77,16 +77,16 @@ sub __smtp_write_datasend {
 }
 
 sub _smtp_loop_stream_to {
-  my ($smtp, $message) = @_;
-  $message->stream_to(
+  my ($smtp, $email) = @_;
+  $email->stream_to(
     $smtp,
     { write => \&__smtp_write_datasend },
   );
 }
 
 sub _smtp_loop_chunk {
-  my ($smtp, $message, $chunker) = @_;
-  while (defined(my $chunk = $chunker->($message))) {
+  my ($smtp, $email, $chunker) = @_;
+  while (defined(my $chunk = $chunker->($email))) {
     __smtp_write_datasend($smtp, $chunk);
   }
 } 

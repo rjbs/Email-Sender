@@ -18,8 +18,8 @@ sub _deliver {
 
   my $message = Email::Simple->new($arg->{message}->as_string);
 
-  $message->header_set('X-ICG-Env-To'   => join(', ', @{ $arg->{to} }));
-  $message->header_set('X-ICG-Env-From' => $arg->{from});
+  $message->set_header('X-ICG-Env-To'   => join(', ', @{ $arg->{to} }));
+  $message->set_header('X-ICG-Env-From' => $arg->{from});
 
   for my $dir (qw(cur tmp new)) { 
     my $subdir = File::Spec->catdir($self->dir, $dir);

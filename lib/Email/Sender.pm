@@ -23,23 +23,27 @@ our $VERSION = '0.001';
 
 =head1 SYNOPSIS
 
-  package Email::Sender::Mailer::DevNull;
-  use base qw(Email::Sender::Mailer);
+  package Email::Sender::STDOUT;
+  use base qw(Email::Sender);
 
   sub send {
-    my ($self, $message, $arg) = @_;
+    my ($self, $email, $arg) = @_;
+    print $email->as_string;
     return $self->success;
   }
 
   ...
 
-  my $mailer = Email::Sender::Mailer::DevNull->new;
-  my $sender = Email::Sender->new({ mailer => $mailer });
-  $sender->send($message, { to => [ $recipient, ... ], from => $from });
+  my $sender = Email::Sender::STDOUT->new;
+  $sender->send($email, { to => [ $recipient, ... ], from => $from });
 
 =head1 DESCRIPTION
 
 This module provides an extended API for maielrs used by Email::Sender.
+
+=head1 METHODS
+
+=head1 new
 
 =cut
 
@@ -51,6 +55,53 @@ sub new {
   return bless $arg => $class;
 }
 
+=head2 send
+
+=cut
+
+sub send {
+  my ($self, $email, $arg) = @_;
+
+  Carp::croak "invalid argument to send; first argument must be an email"
+    unless my $email = $self->_objectify_email($email);
+
+  $self->setup_envelope($email, $arg);
+  $self->validate_send_args($email, $arg);
+
+  # $self->preprocess_email($email);
+
+  return $self->send_email($email, $arg);
+}
+
+=head2 setup_envelope
+
+=cut
+
+sub setup_envelope {
+  my ($self, $email, $arg) = @_;
+  $arg ||= {};
+
+  $arg->{to} = $arg->{to} ? [ $arg->{to} ] : [ ] if not ref $arg->{to};
+
+  $arg->{to} = [ map { $email->get_header($_) } qw(to cc) ]
+    if not @{ $arg->{to} };
+
+  # XXX: This needs to get the address out, instead of just whole field.
+  $arg->{from} ||= $email->get_header('from');
+}
+
+=head2 validate_send_args
+
+=cut
+
+sub validate_send_args {
+  return $_[2];
+}
+
+=head2 send_email
+
+=cut
+
 for my $method (qw(send_email)) {
   Sub::Install::install_sub({
     code => sub {
@@ -61,52 +112,18 @@ for my $method (qw(send_email)) {
   });
 }
 
-sub send {
-  my ($self, $message, $arg) = @_;
+sub _objectify_email {
+  my ($self, $email) = @_;
 
-  Carp::croak "invalid argument to send; first argument must be an email"
-    unless my $email = $self->_objectify_message($message);
+  return unless defined $email;
 
-  $self->setup_envelope($email, $arg);
-  $self->validate_send_args($email, $arg);
+  return $email if ref $email and eval { $email->isa('Email::Abstract') };
 
-  # $self->preprocess_message($message);
-
-  return $self->send_email($email, $arg);
-}
-
-sub validate_send_args {
-  return $_[2];
-}
-
-sub setup_envelope {
-  my ($self, $email, $arg) = @_;
-  $arg ||= {};
-
-  $arg->{to} = $arg->{to} ? [ $arg->{to} ] : [ ] if not ref $arg->{to};
-  $arg->{to} = [ map { $email->header($_) } qw(to cc) ] if not @{ $arg->{to} };
-
-  $arg->{from} ||= $email->header('from');
-}
-
-sub _objectify_message {
-  my ($self, $message) = @_;
-
-  return unless defined $message;
-
-  if (Scalar::Util::blessed $message) {
-    return $message if $message->isa('Email::Simple');
-    return eval { Email::Abstract->cast($message => 'Email::Simple') }
-      if eval { require Email::Abstract; 1; };
-  } else {
-    return Email::Simple->new($message);
-  }
-
-  return;
+  return Email::Abstract->new($email);
 }
 
 # send args:
-#   message
+#   email
 #   to
 #   from
 
@@ -119,7 +136,7 @@ sub success {
 
 sub failure {
   my ($self, $arg) = @_;
-  die;
+  die bless $arg => 'Email::Sender::Failure';
 }
 
 {
@@ -127,20 +144,23 @@ sub failure {
   sub failures { $_[0]->{failures} }
 }
 
+{
+  package Email::Sender::Failure;
+}
+
 =head1 AUTHOR
 
-Ricardo Signes, C<< <rjbs@cpan.org> >>
+Ricardo SIGNES, C<< <rjbs@cpan.org> >>
 
 =head1 BUGS
 
-Please report any bugs or feature requests to
-C<bug-email-send-mailer@rt.cpan.org>, or through the web interface at
+Please report any bugs or feature requests through the web interface at
 L<http://rt.cpan.org>.  I will be notified, and then you'll automatically be
 notified of progress on your bug as I make changes.
 
 =head1 COPYRIGHT
 
-Copyright 2006-2007 Ricardo Signes, All Rights Reserved.
+Copyright 2006-2007, Ricardo SIGNES.
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.

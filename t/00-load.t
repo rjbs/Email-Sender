@@ -6,6 +6,7 @@ BEGIN {
   use_ok('Email::Sender::Failable');
   use_ok('Email::Sender::IOAll');
   use_ok('Email::Sender::Maildir');
+  use_ok('Email::Sender::Mbox');
   use_ok('Email::Sender::NNTP');
   use_ok('Email::Sender::OldSMTP');
   use_ok('Email::Sender::SMTP');

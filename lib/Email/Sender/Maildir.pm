@@ -16,10 +16,10 @@ sub dir {
 sub _deliver {
   my ($self, $arg) = @_;
 
-  my $message = Email::Simple->new($arg->{message}->as_string);
+  my $message = Email::Abstract->new($arg->{message}->as_string);
 
-  $message->set_header('X-ICG-Env-To'   => join(', ', @{ $arg->{to} }));
-  $message->set_header('X-ICG-Env-From' => $arg->{from});
+  $message->set_header('X-EmailSender-To'   => join(', ', @{ $arg->{to} }));
+  $message->set_header('X-EmailSender-From' => $arg->{from});
 
   for my $dir (qw(cur tmp new)) { 
     my $subdir = File::Spec->catdir($self->dir, $dir);

@@ -5,9 +5,9 @@ use warnings;
 use File::Spec ();
 use File::Temp ();
 
-use Test::More tests => 9;
+use Test::More tests => 5;
 
-BEGIN { use_ok('Mail::LocalDelivery'); }
+BEGIN { use_ok('Email::Sender::Maildir'); }
 
 sub readfile {
   my ($name) = @_;
@@ -25,44 +25,30 @@ my $maildir   = File::Temp::tempdir(CLEANUP => 1);
 my (undef, $failfile) = File::Temp::tempfile(UNLINK => 1);
 my $faildir = File::Spec->catdir($failfile, 'Maildir');
 
-my $sender = Email::Sender::Maildir->new(
+my $sender = Email::Sender::Maildir->new({
   dir => $maildir,
+});
+
+my $result = $sender->send(
+  join('', @$message),
+  {
+    to   => 'rjbs@example.com',
+    from => 'rjbs@example.biz',
+  },
 );
 
-my $result = $sender->send($message);
+ok($result, "successful delivery to maildir reported");
 
-ok(
-  (! -d File::Spec->catdir($maildir, 'new')),
-  "and neither is the other temporary dir"
-);
+my $new = File::Spec->catdir($maildir, 'new');
 
-$deliver->deliver($maildir);
+ok(-d $new, "maildir/new directory exists now");
 
-ok(
-  (! -d File::Spec->catdir($emergency, 'new')),
-  "emergency dir isn't a maildir after first accept"
-);
+my @files = grep { $_ !~ /^\./ } <$new/*>;
 
-ok(
-  (  -d File::Spec->catdir($maildir, 'new')),
-  "but the other maildir, which we accepted, is"
-);
+is(@files, 1, "there is one delivered message in the Maildir");
 
-$deliver->deliver;
+my $lines = readfile($files[0]);
 
-ok(
-  (  -d File::Spec->catdir($emergency, 'new')),
-  "after accept without dest, emergency is maildir"
-);
+my $simple = Email::Simple->new(join '', @$lines);
 
-ok(
-  (! -e $mbox),
-  "mbox doesn't exist before we deliver to it",
-);
-
-$deliver->deliver($mbox);
-
-ok(
-  (-e $mbox),
-  "and once we deliver to it, mbox exists",
-);
+is($simple->header('X-EmailSender-To'), 'rjbs@example.com');

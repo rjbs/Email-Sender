@@ -18,7 +18,7 @@ sub nntp {
 sub send_email {
   my ($self, $email, $arg) = @_;
 
-  return $self->failure("failed to post")
+  $self->total_failure("failed to post")
     unless $self->nntp->post($email->as_string);
 
   return $self->success;

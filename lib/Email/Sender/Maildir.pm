@@ -44,7 +44,7 @@ sub send_email {
   if ($ok) {
     return $self->success;
   } else {
-    Carp::croak "couldn't deliver message to Maildir";
+    $self->total_failure("couldn't deliver message to Maildir");
   }
 }
 

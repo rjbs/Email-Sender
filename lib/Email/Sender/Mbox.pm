@@ -18,7 +18,7 @@ sub send_email {
 
   my @files = ref $self->{file} ? @{ $self->{file} } : $self->{file};
 
-  return $self->failure("no mbox files specified") unless @files;
+  return $self->total_failure("no mbox files specified") unless @files;
 
   my %failure;
 
@@ -46,9 +46,9 @@ sub send_email {
   }
 
   if (keys %failure == @files) {
-    return $self->failure;
+    $self->total_failure;
   } else {
-    return $self->success({ failures => \%failure });
+    $self->partial_failure({ failures => \%failure });
   }
 }
 

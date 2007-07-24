@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 21;
+use Test::More tests => 22;
 
 use Email::Sender;
 BEGIN { use_ok('Email::Sender::Test'); }
@@ -32,7 +32,7 @@ END_MESSAGE
     { to => [ qw(recipient@nowhere.example.net) ] }
   );
 
-  isa_ok($result, 'Email::Sender::Success');
+  ok($result, 'success');
 }
 
 is($mailer->deliveries, 1, "we've done one delivery so far");
@@ -43,7 +43,7 @@ is($mailer->deliveries, 1, "we've done one delivery so far");
     { to => [ qw(secret-bcc@nowhere.example.net) ] }
   );
 
-  isa_ok($result, 'Email::Sender::Success');
+  ok($result, 'success');
 }
 
 is($mailer->deliveries, 2, "we've done two deliveries so far");
@@ -65,15 +65,20 @@ is_deeply(
 $mailer->bad_recipients([ qr/bad-example/ ]);
 
 {
-  my $result = $mailer->send(
-    $message,
-    { to => [ qw(mr.bad-example@nowhere.example.net)] }
-  );
+  my $result = eval {
+    $mailer->send(
+      $message,
+      { to => [ qw(mr.bad-example@nowhere.example.net)] }
+    );
+  };
 
-  isa_ok($result, 'Email::Sender::Success');
+  my $error = $@;
+
+  ok(! $result, "mailing failed");
+  isa_ok($error, 'Email::Exception::Sender::PartialFailure');
 
   is_deeply(
-    $result->failures,
+    $error->failures,
     { 'mr.bad-example@nowhere.example.net' => 'bad recipient' },
     "delivery indicates failure to 'mr.bad-example'",
   );
@@ -111,8 +116,8 @@ is(
 );
 
 {
-  my $result = $failer->send($message, { to => [ qw(ok@ok.ok) ] });
-  isa_ok($result, 'Email::Sender::Success');
+  my $result = eval { $failer->send($message, { to => [ qw(ok@ok.ok) ] }) };
+  ok($result, 'success');
 }
 
 is($failer->deliveries, 4, "first post-fail_if delivery is OK");

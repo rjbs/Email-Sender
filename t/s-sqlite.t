@@ -35,7 +35,7 @@ END_MESSAGE
     }
   );
 
-  isa_ok($result, 'Email::Sender::Success');
+  ok($result, 'success');
 }
 
 {
@@ -49,7 +49,7 @@ END_MESSAGE
     }
   );
 
-  isa_ok($result, 'Email::Sender::Success');
+  ok($result, 'success');
 }
 
 my $dbh = DBI->connect("dbi:SQLite:dbname=t/email.db", undef, undef);

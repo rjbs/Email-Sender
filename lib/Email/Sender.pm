@@ -1,7 +1,22 @@
-package Email::Sender;
-
 use warnings;
 use strict;
+
+package Email::Sender;
+
+use Email::Base;
+@Email::Sender::ISA = qw(Email::Base);
+
+use Exception::Class (
+  'Email::Exception::Sender::PartialFailure' => {
+    isa         => 'Email::Exception',
+    fields      => [ qw(failures) ],
+    description => "could not send to all destinations",
+  },
+  'Email::Exception::Sender::TotalFailure' => {
+    isa         => 'Email::Exception',
+    description => "could not send to any destinations",
+  },
+);
 
 use Carp;
 use Email::Abstract;
@@ -129,24 +144,19 @@ sub _make_email_abstract {
 #   from
 
 sub success {
+  1;
+}
+
+sub partial_failure {
+  my ($self, $failures) = @_;
+
+  $self->throw('::Sender::PartialFailure' => { failures => $failures });
+}
+
+sub total_failure {
   my ($self, $arg) = @_;
-  $arg ||= {};
-
-  return bless $arg => 'Email::Sender::Success';
-}
-
-sub failure {
-  my ($self, $arg) = @_;
-  die bless $arg => 'Email::Sender::Failure'; ## no critic Carp
-}
-
-{
-  package Email::Sender::Success;
-  sub failures { $_[0]->{failures} }
-}
-
-{
-  package Email::Sender::Failure;
+  
+  $self->throw('::Sender::TotalFailure' => $arg);
 }
 
 =head1 AUTHOR

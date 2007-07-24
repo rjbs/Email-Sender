@@ -25,4 +25,4 @@ sender
 END_MESSAGE
 
 my $result = $mailer->send($message);
-isa_ok($result, 'Email::Sender::Success');
+ok($result, 'success');

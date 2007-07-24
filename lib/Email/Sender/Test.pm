@@ -46,18 +46,22 @@ sub send_email {
 
   # Do we want to raise an exception if there ZERO possible deliveries?
   # -- rjbs, 2007-02-20
+  my $failure = { map { $_ => 'bad recipient' } @undeliverables };
 
   $self->_deliver(
     {
       email     => $email,
       arg       => $arg,
       successes => \@deliverables,
-      failures  => { map { $_ => 'bad recipient' } @undeliverables },
+      failures  => $failure,
     }
   );
 
-  return $self->success(
-    { failures => { map { $_ => 'bad recipient' } @undeliverables }, });
+  if (@undeliverables) {
+    $self->partial_failure($failure);
+  } else {
+    return $self->success;
+  }
 }
 
 1;

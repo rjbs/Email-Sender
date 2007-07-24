@@ -244,13 +244,13 @@ sub send_email {
     bad_to_hook => $hook,
   );
 
-  return $self->success(
-    @undeliverable
-    ? {
-      failures => { map { $_ => 'rejected by smtp server' } @undeliverable }
-      }
-    : ()
-  );
+  if (@undeliverable) {
+    $self->partial_failure(
+      { map { $_ => 'rejected by smtp server' } @undeliverable }
+    );
+  } else {
+    return $self->success;
+  }
 }
 
 1;

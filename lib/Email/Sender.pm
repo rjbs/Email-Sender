@@ -7,19 +7,24 @@ use Email::Base;
 @Email::Sender::ISA = qw(Email::Base);
 
 use Exception::Class (
-  'Email::Exception::Sender::PartialFailure' => {
+  'Email::Exception::Sender::Failure' => {
     isa         => 'Email::Exception',
     fields      => [ qw(failures) ],
+    description => "error while sending email",
+  },
+  'Email::Exception::Sender::PartialFailure' => {
+    isa         => 'Email::Exception::Sender::Failure',
     description => "could not send to all destinations",
   },
   'Email::Exception::Sender::TotalFailure' => {
-    isa         => 'Email::Exception',
+    isa         => 'Email::Exception::Sender::Failure',
     description => "could not send to any destinations",
   },
 );
 
 use Carp;
 use Email::Abstract;
+use Email::Address;
 use Scalar::Util ();
 use Sub::Install;
 
@@ -97,13 +102,23 @@ sub setup_envelope {
   my ($self, $email, $arg) = @_;
   $arg ||= {};
 
-  $arg->{to} = $arg->{to} ? [ $arg->{to} ] : [ ] if not ref $arg->{to};
+  if (defined $arg->{to} and not ref $arg->{to}) {
+    $arg->{to} = [ $arg->{to} ];
+  } elsif (not defined $arg->{to}) {
+    $arg->{to} = [
+      map { $_->address }
+      map { Email::Address->parse($_) }
+      map { $email->get_header($_) }
+      qw(to cc)
+    ];
+  }
 
-  $arg->{to} = [ map { $email->get_header($_) } qw(to cc) ]
-    if not @{ $arg->{to} };
-
-  # XXX: This needs to get the address out, instead of just whole field.
-  $arg->{from} ||= $email->get_header('from');
+  unless ($arg->{from}) {
+    ($arg->{from}) =
+      map { $_->address }
+      map { Email::Address->parse($_) }
+      scalar $email->get_header('from');
+  }
 }
 
 =head2 validate_send_args
@@ -150,13 +165,13 @@ sub success {
 sub partial_failure {
   my ($self, $failures) = @_;
 
-  $self->throw('::Sender::PartialFailure' => { failures => $failures });
+  $self->throw(-Sender::PartialFailure => { failures => $failures });
 }
 
 sub total_failure {
-  my ($self, $arg) = @_;
+  my ($self, $failures) = @_;
   
-  $self->throw('::Sender::TotalFailure' => $arg);
+  $self->throw(-Sender::TotalFailure => { failures => $failures });
 }
 
 =head1 AUTHOR

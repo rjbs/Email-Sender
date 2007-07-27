@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 22;
+use Test::More tests => 20;
 
 use Email::Sender;
 BEGIN { use_ok('Email::Sender::Test'); }
@@ -74,31 +74,21 @@ $mailer->bad_recipients([ qr/bad-example/ ]);
 
   my $error = $@;
 
-  ok(! $result, "mailing failed");
-  isa_ok($error, 'Email::Exception::Sender::PartialFailure');
+  ok(! $result, "mailing failed completely");
+  isa_ok($error, 'Email::Exception::Sender::TotalFailure');
 
   is_deeply(
     $error->failures,
-    { 'mr.bad-example@nowhere.example.net' => 'bad recipient' },
+    [ {
+      to    => 'mr.bad-example@nowhere.example.net',
+      type  => 'permanent',
+      error => 'bad recipient',
+    } ],
     "delivery indicates failure to 'mr.bad-example'",
   );
 }
 
-is($mailer->deliveries, 3, "we've done three deliveries so far");
-
-@deliveries = $mailer->deliveries;
-
-is_deeply(
-  $deliveries[2]{successes},
-  [ ],
-  "third message delivered to no one",
-);
-
-is_deeply(
-  $deliveries[2]{failures},
-  { 'mr.bad-example@nowhere.example.net' => 'bad recipient' },
-  "third message failed to 'mr.bad-example'",
-);
+is($mailer->deliveries, 2, "we've done three deliveries so far");
 
 ####
 
@@ -120,11 +110,11 @@ is(
   ok($result, 'success');
 }
 
-is($failer->deliveries, 4, "first post-fail_if delivery is OK");
+is($failer->deliveries, 3, "first post-fail_if delivery is OK");
 
 {
   eval { my $result = $failer->send($message, { to => [ qw(ok@ok.ok) ] }) };
   ok($@, "we died"); # XXX lame -- rjbs, 2007-02-16
 }
 
-is($failer->deliveries, 4, "second post-fail_if delivery fails");
+is($failer->deliveries, 3, "second post-fail_if delivery fails");

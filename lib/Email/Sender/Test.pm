@@ -37,28 +37,42 @@ sub delivered_emails {
   map { $_->{email} } $self->deliveries;
 }
 
+sub clear_deliveries {
+  delete $_[0]->{deliveries};
+  return;
+}
+
 sub send_email {
   my ($self, $email, $arg) = @_;
 
-  # should use List::MoreUtils::part -- when released
-  my @undeliverables = grep { not $self->recipient_ok($_) } @{ $arg->{to} };
-  my @deliverables   = grep { $self->recipient_ok($_) } @{ $arg->{to} };
+  my @failures;
+  my @deliverables;
 
-  # Do we want to raise an exception if there ZERO possible deliveries?
-  # -- rjbs, 2007-02-20
-  my $failure = { map { $_ => 'bad recipient' } @undeliverables };
+  for my $to (@{ $arg->{to} }) {
+    if ($self->recipient_ok($to)) {
+      push @deliverables, $to;
+    } else {
+      push @failures, {
+        to    => $to,
+        type  => 'permanent',
+        error => 'bad recipient',
+      };
+    }
+  }
+
+  $self->total_failure(\@failures) if @deliverables == 0;
 
   $self->_deliver(
     {
       email     => $email,
       arg       => $arg,
       successes => \@deliverables,
-      failures  => $failure,
+      failures  => \@failures,
     }
   );
 
-  if (@undeliverables) {
-    $self->partial_failure($failure);
+  if (@failures) {
+    $self->partial_failure(\@failures);
   } else {
     return $self->success;
   }

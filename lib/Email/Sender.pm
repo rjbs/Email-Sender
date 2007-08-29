@@ -60,7 +60,7 @@ our $VERSION = '0.001';
 
 =head1 DESCRIPTION
 
-This module provides an extended API for maielrs used by Email::Sender.
+This module provides an extended API for mailers used by Email::Sender.
 
 =head1 METHODS
 

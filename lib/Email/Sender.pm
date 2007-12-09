@@ -125,22 +125,22 @@ sub setup_envelope {
 
 =cut
 
-sub validate_send_args {
-  return $_[2];
-}
+sub validate_send_args { }
 
 =head2 send_email
 
 =cut
 
-for my $method (qw(send_email)) {
-  Sub::Install::install_sub({
-    code => sub {
-      my $class = ref $_[0] ? ref $_[0] : $_[0];
-      Carp::croak "virtual method $method not implemented on $class";
-    },
-    as => $method
-  });
+BEGIN {
+  for my $method (qw(send_email)) {
+    Sub::Install::install_sub({
+      code => sub {
+        my $class = ref $_[0] ? ref $_[0] : $_[0];
+        Carp::croak "virtual method $method not implemented on $class";
+      },
+      as => $method
+    });
+  }
 }
 
 sub _make_email_abstract {

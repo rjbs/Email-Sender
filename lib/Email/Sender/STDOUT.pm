@@ -5,12 +5,12 @@ use strict;
 use warnings;
 
 sub send_email {
-  my ($self, $email, $arg) = @_;
+  my ($self, $email, $envelope, $arg) = @_;
 
-  my @to = @{ $arg->{to} };
+  my @to = @{ $envelope->{to} };
 
   print "ENVELOPE TO  : @to\n";
-  print "ENVELOPE FROM: $arg->{from}\n";
+  print "ENVELOPE FROM: $envelope->{from}\n";
   print q{-} x 10, " begin message\n";
 
   print $email->as_string;

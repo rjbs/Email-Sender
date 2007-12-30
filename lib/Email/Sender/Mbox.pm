@@ -14,7 +14,7 @@ use vars qw($VERSION);
 $VERSION = "0.001";
 
 sub send_email {
-  my ($self, $email) = @_;
+  my ($self, $email, $envelope, $arg) = @_;
 
   my @files = ref $self->{file} ? @{ $self->{file} } : $self->{file};
 
@@ -30,7 +30,7 @@ sub send_email {
         print $fh "\n" or Carp::confess "couldn't write to $file: $!";
       }
 
-      print $fh $self->_from_line($email)
+      print $fh $self->_from_line($email, $envelope)
         or Carp::confess "couldn't write to $file: $!";
       print $fh $self->_escape_from_body($email)
         or Carp::confess "couldn't write to $file: $!";
@@ -81,31 +81,11 @@ sub _escape_from_body {
 }
 
 sub _from_line {
-  my ($class, $email) = @_;
-
-  # The qmail way.
-  return $ENV{UFLINE} . $ENV{RPLINE} . $ENV{DTLINE} if exists $ENV{UFLINE};
-
-  # The boring way.
-  return $class->_from_line_boring($email);
-}
-
-sub _from_line_boring {
-  my $self = shift;
-  my $mail = shift;
-  my $from = $mail->header("Return-path")
-    || $mail->header("Sender")
-    || $mail->header("Reply-To")
-    || $mail->header("From")
-    || 'root@localhost';
-
-  my ($address) = Email::Address->parse($from);
-
-  my $from_address = $address->address;
+  my ($class, $envelope) = @_;
 
   my $fromtime = localtime;
   $fromtime =~ s/(:\d\d) \S+ (\d{4})$/$1 $2/;  # strip timezone.
-  return "From $from_address  $fromtime\n";
+  return "From $envelope->{from}  $fromtime\n";
 }
 
 sub _getlock {

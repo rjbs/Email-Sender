@@ -43,12 +43,12 @@ sub clear_deliveries {
 }
 
 sub send_email {
-  my ($self, $email, $arg) = @_;
+  my ($self, $email, $envelope, $arg) = @_;
 
   my @failures;
   my @deliverables;
 
-  for my $to (@{ $arg->{to} }) {
+  for my $to (@{ $envelope->{to} }) {
     if ($self->recipient_ok($to)) {
       push @deliverables, $to;
     } else {
@@ -65,6 +65,7 @@ sub send_email {
   $self->_deliver(
     {
       email     => $email,
+      envelope  => $envelope,
       arg       => $arg,
       successes => \@deliverables,
       failures  => \@failures,

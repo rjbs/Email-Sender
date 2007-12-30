@@ -80,13 +80,13 @@ sub _deliver {
 }
 
 sub send_email {
-  my ($self, $email, $arg) = @_;
+  my ($self, $email, $envelope, $arg) = @_;
 
   $self->_deliver(
     {
       message => $email,
-      to      => $arg->{to},
-      from    => $arg->{from},
+      to      => $envelope->{to},
+      from    => $envelope->{from},
     }
   );
 

@@ -2,8 +2,8 @@ use strict;
 use warnings;
 
 package Email::Sender::SMTP;
-use Email::Sender;
-@Email::Sender::SMTP::ISA = qw(Email::Sender);
+use Email::Sender::OldSMTP;
+@Email::Sender::SMTP::ISA = qw(Email::Sender::OldSMTP);
 
 use Net::SMTP;
 use Sys::Hostname::Long ();
@@ -27,7 +27,7 @@ sub new {
 }
 
 sub send_email {
-  my ($self, $email, $arg) = @_;
+  my ($self, $email, $envelope, $arg) = @_;
 
   eval { $self->{_smtp}->reset; };
 
@@ -38,7 +38,7 @@ sub send_email {
 
   $arg->{smtp} = $self->{_smtp};
 
-  $self->SUPER::send($email, $arg);
+  $self->SUPER::send($email, $envelope, $arg);
 }
 
 1;

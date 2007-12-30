@@ -86,35 +86,37 @@ sub send { ## no critic Homo
   Carp::croak "invalid argument to send; first argument must be an email"
     unless my $email = $self->_make_email_abstract($message);
 
-  $self->setup_envelope($email, $arg);
-  $self->validate_send_args($email, $arg);
+  my ($envelope, $send_arg) = $self->_setup_envelope($email, $arg);
+  $self->validate_send_args($email, $send_arg);
 
-  # $self->preprocess_email($email);
-
-  return $self->send_email($email, $arg);
+  return $self->send_email($email, $envelope, $send_arg);
 }
 
-=head2 setup_envelope
-
-=cut
-
-sub setup_envelope {
+sub _setup_envelope {
   my ($self, $email, $arg) = @_;
   $arg ||= {};
 
+  my $envelope = {};
+  my %send_arg = %$arg;
+  delete $send_arg{$_} for qw(from to);
+
   if (defined $arg->{to} and not ref $arg->{to}) {
-    $arg->{to} = [ $arg->{to} ];
+    $envelope->{to} = [ $arg->{to} ];
   } elsif (not defined $arg->{to}) {
-    $arg->{to} = [
+    $envelope->{to} = [
       map { $_->address }
       map { Email::Address->parse($_) }
       map { $email->get_header($_) }
       qw(to cc)
     ];
+  } else {
+    $envelope->{to} = $arg->{to};
   }
 
-  unless ($arg->{from}) {
-    ($arg->{from}) =
+  if ($arg->{from}) {
+    $envelope->{from} = $arg->{from};
+  } else {
+    ($envelope->{from}) =
       map { $_->address }
       map { Email::Address->parse($_) }
       scalar $email->get_header('from');
@@ -155,8 +157,8 @@ sub _make_email_abstract {
 
 # send args:
 #   email
-#   to
-#   from
+#   envelope
+#   other
 
 sub success {
   1;
@@ -186,7 +188,7 @@ notified of progress on your bug as I make changes.
 
 =head1 COPYRIGHT
 
-Copyright 2006-2007, Ricardo SIGNES.
+Copyright 2006-2008, Ricardo SIGNES.
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.

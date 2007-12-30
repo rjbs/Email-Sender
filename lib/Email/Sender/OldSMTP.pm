@@ -229,15 +229,15 @@ sub smtpsend {
 }
 
 sub send_email {
-  my ($self, $email, $arg) = @_;
+  my ($self, $email, $envelope, $arg) = @_;
 
   my @undeliverable;
   my $hook = sub { @undeliverable = @{ $_[0] } };
 
   _smtpsend(
     $email->as_string,
-    to   => $arg->{to},
-    from => $arg->{from},
+    to   => $envelope->{to},
+    from => $envelope->{from},
     ($self->{arg}{host} ? (host => $self->{arg}{host}) : ()),
     ($self->{arg}{port} ? (port => $self->{arg}{port}) : ()),
     ($arg->{smtp}       ? (smtp => $arg->{smtp})       : ()),

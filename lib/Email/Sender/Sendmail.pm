@@ -24,24 +24,24 @@ sub _find_sendmail {
     return $sendmail if -x $sendmail;
   }
 
-  confess "couldn't find a sendmail executable";
+  $self->throw("couldn't find a sendmail executable");
 }
 
 sub send_email {
-  my ($self, $email) = @_;
+  my ($self, $email, $envelope, $arg) = @_;
 
   my $sendmail = $self->_find_sendmail;
 
   # This isn't a problem; we die if it fails, anyway. -- rjbs, 2007-07-17
   no warnings 'exec'; ## no critic
-  open my $pipe, q{|-}, $sendmail
-    or confess "couldn't open pipe to sendmail: $!";
+  open my $pipe, q{|-}, ($sendmail, '-f', $envelope->{from}, $envelope->{to})
+    or $self->throw("couldn't open pipe to sendmail: $!");
 
   print $pipe $email->as_string
-    or confess "couldn't send message to sendmail: $!";
+    or $self->throw("couldn't send message to sendmail: $!");
 
   close $pipe
-    or confess "error when closing pipe to sendmail: $!";
+    or $self->throw("error when closing pipe to sendmail: $!");
 
   return $self->success;
 }

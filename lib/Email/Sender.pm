@@ -121,6 +121,8 @@ sub _setup_envelope {
       map { Email::Address->parse($_) }
       scalar $email->get_header('from');
   }
+
+  return ($envelope, \%send_arg);
 }
 
 =head2 validate_send_args

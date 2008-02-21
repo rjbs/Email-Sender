@@ -34,7 +34,7 @@ sub send_email {
 
   # This isn't a problem; we die if it fails, anyway. -- rjbs, 2007-07-17
   no warnings 'exec'; ## no critic
-  open my $pipe, q{|-}, ($sendmail, '-f', $envelope->{from}, $envelope->{to})
+  open my $pipe, q{|-}, ($sendmail, '-f', $envelope->{from}, @{$envelope->{to}})
     or $self->throw("couldn't open pipe to sendmail: $!");
 
   print $pipe $email->as_string

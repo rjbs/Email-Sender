@@ -75,7 +75,7 @@ $mailer->bad_recipients([ qr/bad-example/ ]);
   my $error = $@;
 
   ok(! $result, "mailing failed completely");
-  isa_ok($error, 'Email::Exception::Sender::TotalFailure');
+  isa_ok($error, 'Email::PEP::Exception::Sender::TotalFailure');
 
   is_deeply(
     $error->failures,

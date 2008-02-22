@@ -1,16 +1,13 @@
 use strict;
 use warnings;
-use ExtUtils::MakeMaker;
 
-WriteMakefile(
-    NAME                => 'Email::Sender',
-    AUTHOR              => 'Ricardo SIGNES <rjbs@cpan.org>',
-    VERSION_FROM        => 'lib/Email/Sender.pm',
-    ABSTRACT_FROM       => 'lib/Email/Sender.pm',
-    PL_FILES            => {},
-    PREREQ_PM => {
-        'Test::More' => 0,
-    },
-    dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
-    clean               => { FILES => 'Email-Sender-* cover_db' },
-);
+use inc::Module::Install;
+
+name          'Email-Sender';
+author        'Ricardo SIGNES <rjbs@cpan.org>';
+license       'perl';
+version_from  'lib/Email/Sender.pm';
+
+requires('Email::PEP::Base' => 0); # unknown minimum
+
+WriteAll();

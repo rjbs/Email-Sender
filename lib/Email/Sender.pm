@@ -3,21 +3,21 @@ use strict;
 
 package Email::Sender;
 
-use Email::Base;
-@Email::Sender::ISA = qw(Email::Base);
+use Email::PEP::Base;
+BEGIN { @Email::Sender::ISA = qw(Email::PEP::Base); }
 
 use Exception::Class (
-  'Email::Exception::Sender::Failure' => {
-    isa         => 'Email::Exception',
+  'Email::PEP::Exception::Sender::Failure' => {
+    isa         => 'Email::PEP::Exception',
     fields      => [ qw(failures) ],
     description => "error while sending email",
   },
-  'Email::Exception::Sender::PartialFailure' => {
-    isa         => 'Email::Exception::Sender::Failure',
+  'Email::PEP::Exception::Sender::PartialFailure' => {
+    isa         => 'Email::PEP::Exception::Sender::Failure',
     description => "could not send to all destinations",
   },
-  'Email::Exception::Sender::TotalFailure' => {
-    isa         => 'Email::Exception::Sender::Failure',
+  'Email::PEP::Exception::Sender::TotalFailure' => {
+    isa         => 'Email::PEP::Exception::Sender::Failure',
     description => "could not send to any destinations",
   },
 );

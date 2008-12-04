@@ -1,46 +1,46 @@
-package Email::Sender::SQLite;
+package Email::Sender::Transport::SQLite;
 use Squirrel;
 extends 'Email::Sender::Transport';
 
 use DBI;
 
-sub new {
-  my ($class, @arg) = @_;
+has _dbh => (
+  is       => 'rw',
+  init_arg => undef,
+);
 
-  my $self = $class->SUPER::new(@arg);
-
-  $self->dbh;  # get one now, just in case;
-
-  return $self;
-}
+has _dbh_pid => (
+  is       => 'rw',
+  init_arg => undef,
+  default  => sub { $$ },
+);
 
 sub dbh {
   my ($self) = @_;
 
   ## no critic Punctuation
-  if (not($self->{dbh}) or not($self->{pid}) or ($self->{pid} != $$)) {
-    $self->{pid} = $$;
-    return $self->{dbh} = $self->_get_dbh;
-  } else {
-    return $self->{dbh};
-  }
-}
+  my $existing_dbh = $self->_dbh;
 
-sub db_file { shift->{db_file} || 'email.db' }
+  return $existing_dbh if $existing_dbh and $self->_dbh_pid == $$;
 
-sub _get_dbh {
-  my ($self) = @_;
-
-  my $must_setup = !-e $self->db_file;
+  my $must_setup = ! -e $self->db_file;
   my $dbh        = DBI->connect("dbi:SQLite:dbname=" . $self->db_file);
 
-  $self->_setup_dbh($dbh) if $must_setup;
+  $self->_dbh($dbh);
+  $self->_dbh_pid($$);
+  $self->_setup_dbh if $must_setup;
 
   return $dbh;
 }
 
+has db_file => (
+  is      => 'ro',
+  default => 'email.db',
+);
+
 sub _setup_dbh {
-  my ($self, $dbh) = @_;
+  my ($self) = @_;
+  my $dbh = $self->_dbh;
   $dbh->do('
     CREATE TABLE emails (
       id INTEGER PRIMARY KEY,

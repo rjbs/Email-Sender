@@ -5,7 +5,7 @@ use warnings;
 use File::Spec ();
 use File::Temp ();
 
-use Test::More tests => 5;
+use Test::More tests => 4;
 
 use Email::Sender::Transport::Maildir;
 

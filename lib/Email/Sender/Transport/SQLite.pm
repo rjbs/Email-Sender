@@ -1,8 +1,6 @@
 package Email::Sender::SQLite;
-use base qw(Email::Sender);
-
-use strict;
-use warnings;
+use Squirrel;
+extends 'Email::Sender::Transport';
 
 use DBI;
 
@@ -93,4 +91,5 @@ sub send_email {
   return $self->success;
 }
 
+no Squirrel;
 1;

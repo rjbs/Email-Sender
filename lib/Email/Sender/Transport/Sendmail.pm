@@ -1,8 +1,6 @@
-use strict;
-use warnings;
-
 package Email::Sender::Sendmail;
-use base qw(Email::Sender);
+use Squirrel;
+extends 'Email::Sender::Transport';
 
 use Carp qw(confess);
 use File::Spec ();
@@ -46,4 +44,5 @@ sub send_email {
   return $self->success;
 }
 
+no Squirrel;
 1;

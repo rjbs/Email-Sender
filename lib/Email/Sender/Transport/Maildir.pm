@@ -1,8 +1,6 @@
 package Email::Sender::Maildir;
-use base qw(Email::Sender);
-
-use strict;
-use warnings;
+use Squirrel;
+extends 'Email::Sender::Transport';
 
 use File::Spec;
 use Email::LocalDelivery;
@@ -48,4 +46,5 @@ sub send_email {
   }
 }
 
+no Squirrel;
 1;

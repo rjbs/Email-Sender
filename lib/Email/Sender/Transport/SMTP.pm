@@ -1,9 +1,6 @@
-use strict;
-use warnings;
-
 package Email::Sender::SMTP;
-use Email::Sender::OldSMTP;
-@Email::Sender::SMTP::ISA = qw(Email::Sender::OldSMTP);
+use Squirrel;
+extends 'Email::Sender::Transport::OldSMTP';
 
 use Net::SMTP;
 use Sys::Hostname::Long ();
@@ -18,13 +15,10 @@ sub _new_smtp {
   );
 }
 
-sub new {
-  my ($class, $arg) = @_;
-
-  my $smtp = $class->_new_smtp($arg);
-
-  bless { arg => $arg, _smtp => $smtp } => $class;
-}
+has _smtp => (
+  is      => 'ro',
+  default => sub { shift->_new_smtp },
+);
 
 sub send_email {
   my ($self, $email, $envelope, $arg) = @_;
@@ -41,4 +35,5 @@ sub send_email {
   $self->SUPER::send($email, $envelope, $arg);
 }
 
+no Squirrel;
 1;

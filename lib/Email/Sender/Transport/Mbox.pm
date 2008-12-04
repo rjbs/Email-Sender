@@ -1,8 +1,6 @@
-use strict;
-use warnings;
-
 package Email::Sender::Mbox;
-use base qw(Email::Sender);
+use Squirrel;
+extends 'Email::Sender::Transport';
 
 use Carp;
 use File::Path;
@@ -102,4 +100,5 @@ sub unlock {
   flock($fh, LOCK_UN);
 }
 
+no Squirrel;
 1;

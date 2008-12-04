@@ -1,8 +1,7 @@
 package Email::Sender::STDOUT;
-use base qw(Email::Sender);
+use Squirrel;
+extends 'Email::Sender::Transport';
 
-use strict;
-use warnings;
 
 sub send_email {
   my ($self, $email, $envelope, $arg) = @_;
@@ -20,4 +19,5 @@ sub send_email {
   return $self->success;
 }
 
+no Squirrel;
 1;

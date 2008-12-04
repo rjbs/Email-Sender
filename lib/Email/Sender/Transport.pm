@@ -1,6 +1,5 @@
-use warnings;
-use strict;
 package Email::Sender;
+use Squirrel;
 # ABSTRACT: it sends mail
 
 use Carp;
@@ -35,18 +34,7 @@ This module provides an extended API for mailers used by Email::Sender.
 
 =cut
 
-sub send { ## no critic Homo
-  my ($self, $message, $arg) = @_;
-
-  Carp::croak "invalid argument to send; first argument must be an email"
-    unless my $email = $self->_make_email_abstract($message);
-
-  my ($envelope, $send_arg) = $self->_setup_envelope($email, $arg);
-  $self->validate_send_args($email, $send_arg);
-
-  return $self->send_email($email, $envelope, $send_arg);
-}
-
+# This code belongs in Email::Sender::Simple. -- rjbs, 2008-12-04
 sub _setup_envelope {
   my ($self, $email, $arg) = @_;
   $arg ||= {};
@@ -80,26 +68,9 @@ sub _setup_envelope {
   return ($envelope, \%send_arg);
 }
 
-=head2 validate_send_args
-
-=cut
-
-sub validate_send_args { }
-
-=head2 send_email
-
-=cut
-
-BEGIN {
-  for my $method (qw(send_email)) {
-    Sub::Install::install_sub({
-      code => sub {
-        my $class = ref $_[0] ? ref $_[0] : $_[0];
-        Carp::croak "virtual method $method not implemented on $class";
-      },
-      as => $method
-    });
-  }
+sub send {
+  my $class = ref $_[0] ? ref $_[0] : $_[0];
+  Carp::croak "send method not implemented on $class";
 }
 
 sub _make_email_abstract {
@@ -107,30 +78,18 @@ sub _make_email_abstract {
 
   return unless defined $email;
 
+  # We check ref because if someone would pass in a large message, in some
+  # perls calling isa on the string would create a package with the string as
+  # the name.  If the message was (say) two megs, now you'd have a two meg hash
+  # key in the stash.  Oops! -- rjbs, 2008-12-04
   return $email if ref $email and eval { $email->isa('Email::Abstract') };
 
   return Email::Abstract->new($email);
 }
 
-# send args:
-#   email
-#   envelope
-#   other
-
 sub success {
-  1;
-}
-
-sub partial_failure {
-  my ($self, $failures) = @_;
-
-  $self->throw(-Sender::PartialFailure => { failures => $failures });
-}
-
-sub total_failure {
-  my ($self, $failures) = @_;
-  
-  $self->throw(-Sender::TotalFailure => { failures => $failures });
+  my $self = shift;
+  my $success = Email::Sender::Success->new(@_);
 }
 
 =head1 AUTHOR
@@ -145,11 +104,12 @@ notified of progress on your bug as I make changes.
 
 =head1 COPYRIGHT
 
-Copyright 2006-2008, Ricardo SIGNES.
+Copyright 2006-2009, Ricardo SIGNES.
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
 
 =cut
 
+no Squirrel;
 1;

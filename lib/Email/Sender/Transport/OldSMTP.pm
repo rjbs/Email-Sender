@@ -1,25 +1,10 @@
-use strict;
-use warnings;
-
 package Email::Sender::OldSMTP;
-
-use Email::Sender;
-use Class::Accessor;
-
-@Email::Sender::OldSMTP::ISA = qw/
-  Email::Sender
-  Class::Accessor
-/;
+use Squirrel;
+extends 'Email::Sender::Transport';
 
 use Params::Util ();
 use Params::Validate qw(:all);
 use Scalar::Util ();
-
-sub new {
-  my ($class, $arg) = @_;
-
-  bless { arg => $arg, } => $class;
-}
 
 # _smtpsend($message, %arg)
 
@@ -253,4 +238,5 @@ sub send_email {
   }
 }
 
+no Squirrel;
 1;

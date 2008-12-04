@@ -1,21 +1,17 @@
-package Email::Sender::Wrapper;
-use base qw(Email::Sender);
+package Email::Sender::Transport::Wrapper;
+use Squirrel;
+extends 'Email::Sender::Transport';
 
-use warnings;
-use strict;
-
-use Carp qw(confess);
+use Carp;
 use Class::Trigger;
 
 =head1 NAME
 
-Email::Sender::Wrapper - a mailer that wraps a mailer for mailing mail
+Email::Sender::Transport::Wrapper - a mailer to wrap a mailer for mailing mail
 
 =head1 VERSION
 
 version 0.001
-
- $Id$
 
 =cut
 
@@ -39,25 +35,14 @@ sub new {
   my ($class, $arg) = @_;
   $arg ||= {};
 
-  eval "require $arg->{mailer};" if not ref $arg->{mailer};
-  confess "mailer isn't a Mailer"
-    unless eval { $arg->{mailer}->isa('Email::Sender') };
+  eval "require $arg->{transport};" if not ref $arg->{transport};
+  Carp::confess("transport isn't an Email::Sender::Transport")
+    unless eval { $arg->{transport}->isa('Email::Sender::Transport') };
 
-  my $new_arg = {%$arg};
-  delete $new_arg->{mailer};
-  $arg->{mailer} = $arg->{mailer}->new($new_arg) unless ref $arg->{mailer};
-  my $self = bless $arg => $class;
+  my $transport = $arg->{transport};
+     $transport = $transport->new unless ref $transport;
 
-  return $self;
-}
-
-sub AUTOLOAD { ## no critic Autoload
-  our $AUTOLOAD;
-  my $self = shift;
-  my ($class, $method) = $AUTOLOAD =~ /(.+)::([^:]+)$/;
-  return if $method eq 'DESTROY';
-
-  $self->{mailer}->$method(@_);
+  return bless { transport => $transport } => $class;
 }
 
 sub send_email {
@@ -93,4 +78,5 @@ under the same terms as Perl itself.
 
 =cut
 
+no Squirrel;
 1;

@@ -1,12 +1,8 @@
-package Email::Sender::Test;
-use base qw(Email::Sender);
+package Email::Sender::Transport::Test;
+use Squirrel;
+extends 'Email::Sender::Transport';
 
-use strict;
-use warnings;
-
-use base qw(Class::Accessor);
-
-__PACKAGE__->mk_accessors(qw(bad_recipients));
+has 'bad_recipients' => (is => 'rw');
 
 sub recipient_ok {
   my ($self, $recipient) = @_;
@@ -79,4 +75,5 @@ sub send_email {
   }
 }
 
+no Squirrel;
 1;

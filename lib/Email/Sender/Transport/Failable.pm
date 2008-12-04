@@ -1,8 +1,6 @@
-package Email::Sender::Failable;
-use base qw(Email::Sender::Wrapper);
-
-use strict;
-use warnings;
+package Email::Sender::Transport::Failable;
+use Squirrel;
+extends 'Email::Sender::Transport::Wrapper';
 
 sub fail_if { my ($self, $cond) = @_; push @{ $self->{fail_if} }, $cond; }
 sub failure_conditions { @{ $_[0]->{fail_if} ||= [] } }
@@ -17,4 +15,5 @@ __PACKAGE__->add_trigger(
   }
 );
 
+no Squirrel;
 1;

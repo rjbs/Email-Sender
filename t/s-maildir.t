@@ -7,7 +7,7 @@ use File::Temp ();
 
 use Test::More tests => 5;
 
-BEGIN { use_ok('Email::Sender::Maildir'); }
+use Email::Sender::Transport::Maildir;
 
 sub readfile {
   my ($name) = @_;
@@ -25,7 +25,7 @@ my $maildir   = File::Temp::tempdir(CLEANUP => 1);
 my (undef, $failfile) = File::Temp::tempfile(UNLINK => 1);
 my $faildir = File::Spec->catdir($failfile, 'Maildir');
 
-my $sender = Email::Sender::Maildir->new({
+my $sender = Email::Sender::Transport::Maildir->new({
   dir => $maildir,
 });
 

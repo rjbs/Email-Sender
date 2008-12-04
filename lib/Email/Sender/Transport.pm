@@ -68,23 +68,29 @@ sub _setup_envelope {
   return ($envelope, \%send_arg);
 }
 
-sub send {
+sub send_email {
   my $class = ref $_[0] ? ref $_[0] : $_[0];
-  Carp::croak "send method not implemented on $class";
+  Carp::croak "send_email method not implemented on $class";
 }
 
-sub _make_email_abstract {
-  my ($self, $email) = @_;
+sub send {
+  my ($self, $message, $env) = @_;
+  my $email = $self->prepare_email($message);
+  $self->send_email($email, $env);
+}
 
-  return unless defined $email;
+sub prepare_email {
+  my ($self, $message) = @_;
+
+  return unless defined $message;
 
   # We check ref because if someone would pass in a large message, in some
   # perls calling isa on the string would create a package with the string as
   # the name.  If the message was (say) two megs, now you'd have a two meg hash
   # key in the stash.  Oops! -- rjbs, 2008-12-04
-  return $email if ref $email and eval { $email->isa('Email::Abstract') };
+  return $message if ref $message and eval { $message->isa('Email::Abstract') };
 
-  return Email::Abstract->new($email);
+  return Email::Abstract->new($message);
 }
 
 sub success {

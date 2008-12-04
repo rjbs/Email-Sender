@@ -3,7 +3,7 @@ use strict;
 $^W = 1;
 
 use Cwd;
-use_ok('Email::Sender::Sendmail');
+use Email::Sender::Transport::Sendmail;
 
 my $email = <<'EOF';
 To:   Casey West <casey@example.com>
@@ -21,12 +21,12 @@ SKIP:
 
   local $ENV{PATH} = '/usr/bin:/usr/sbin';
   $ENV{PATH} =~ tr/:/;/ if $^O =~ /Win/;
-  my $path = Email::Sender::Sendmail->_find_sendmail;
+  my $path = Email::Sender::Transport::Sendmail->_find_sendmail;
   is( $path, '/usr/sbin/sendmail', 'found sendmail in /usr/sbin' );
 }
 
 {
-  my $sender = Email::Sender::Sendmail->new({
+  my $sender = Email::Sender::Transport::Sendmail->new({
     sendmail => './util/not-executable'
   });
 
@@ -59,7 +59,7 @@ SKIP:
 
   chmod 0755, $filename;
 
-  my $sender = Email::Sender::Sendmail->new({ sendmail => $filename });
+  my $sender = Email::Sender::Transport::Sendmail->new({ sendmail => $filename });
   my $return = $sender->send($email);
   ok( $return, 'send() succeeded with executable $SENDMAIL' );
 }
@@ -87,7 +87,7 @@ SKIP:
   chmod 0755, $filename;
 
   local $ENV{PATH} = $tempdir;
-  my $sender = Email::Sender::Sendmail->new;
+  my $sender = Email::Sender::Transport::Sendmail->new;
   my $return = eval { $sender->send($email) };
   ok( $return, 'send() succeeded with executable sendmail in path' );
 

@@ -4,14 +4,13 @@ use warnings;
 
 use Test::More tests => 20;
 
-use Email::Sender;
-BEGIN { use_ok('Email::Sender::Test'); }
+use Email::Sender::Transport::Test;
 
-my $mailer = Email::Sender::Test->new;
-isa_ok($mailer, 'Email::Sender');
-isa_ok($mailer, 'Email::Sender::Test');
+my $sender = Email::Sender::Transport::Test->new;
+isa_ok($sender, 'Email::Sender::Transport');
+isa_ok($sender, 'Email::Sender::Transport::Test');
 
-is($mailer->deliveries, 0, "no deliveries so far");
+is($sender->deliveries, 0, "no deliveries so far");
 
 my $message = <<'END_MESSAGE';
 From: sender@test.example.com
@@ -27,7 +26,7 @@ sender
 END_MESSAGE
 
 {
-  my $result = $mailer->send(
+  my $result = $sender->send(
     $message,
     { to => [ qw(recipient@nowhere.example.net) ] }
   );
@@ -35,10 +34,10 @@ END_MESSAGE
   ok($result, 'success');
 }
 
-is($mailer->deliveries, 1, "we've done one delivery so far");
+is($sender->deliveries, 1, "we've done one delivery so far");
 
 {
-  my $result = $mailer->send(
+  my $result = $sender->send(
     $message,
     { to => [ qw(secret-bcc@nowhere.example.net) ] }
   );
@@ -46,9 +45,9 @@ is($mailer->deliveries, 1, "we've done one delivery so far");
   ok($result, 'success');
 }
 
-is($mailer->deliveries, 2, "we've done two deliveries so far");
+is($sender->deliveries, 2, "we've done two deliveries so far");
 
-my @deliveries = $mailer->deliveries;
+my @deliveries = $sender->deliveries;
 
 is_deeply(
   $deliveries[0]{successes},
@@ -62,11 +61,11 @@ is_deeply(
   "second message delivered to 'secret-bcc'",
 );
 
-$mailer->bad_recipients([ qr/bad-example/ ]);
+$sender->bad_recipients([ qr/bad-example/ ]);
 
 {
   my $result = eval {
-    $mailer->send(
+    $sender->send(
       $message,
       { to => [ qw(mr.bad-example@nowhere.example.net)] }
     );
@@ -88,13 +87,13 @@ $mailer->bad_recipients([ qr/bad-example/ ]);
   );
 }
 
-is($mailer->deliveries, 2, "we've done three deliveries so far");
+is($sender->deliveries, 2, "we've done three deliveries so far");
 
 ####
 
-use_ok('Email::Sender::Failable');
+use_ok('Email::Sender::Transport::Failable');
 
-my $failer = Email::Sender::Failable->new({ mailer => $mailer });
+my $failer = Email::Sender::Transport::Failable->new({ transport => $sender });
 
 my $i = 0;
 $failer->fail_if(sub { return 1 if $i++ % 2 });

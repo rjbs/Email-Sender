@@ -2,19 +2,17 @@ use Test::More tests => 14;
 
 BEGIN {
   use_ok('Email::Sender');
-  use_ok('Email::Sender::DevNull');
-  use_ok('Email::Sender::Failable');
-  use_ok('Email::Sender::IOAll');
-  use_ok('Email::Sender::Maildir');
-  use_ok('Email::Sender::Mbox');
-  use_ok('Email::Sender::NNTP');
-  use_ok('Email::Sender::OldSMTP');
-  use_ok('Email::Sender::SMTP');
-  use_ok('Email::Sender::SQLite');
-  use_ok('Email::Sender::STDOUT');
-  use_ok('Email::Sender::Sendmail');
-  use_ok('Email::Sender::Test');
-  use_ok('Email::Sender::Wrapper');
+  use_ok('Email::Sender::Transport::DevNull');
+  use_ok('Email::Sender::Transport::Failable');
+  use_ok('Email::Sender::Transport::Maildir');
+  use_ok('Email::Sender::Transport::Mbox');
+  use_ok('Email::Sender::Transport::OldSMTP');
+  use_ok('Email::Sender::Transport::SMTP');
+  use_ok('Email::Sender::Transport::SQLite');
+  use_ok('Email::Sender::Transport::STDOUT');
+  use_ok('Email::Sender::Transport::Sendmail');
+  use_ok('Email::Sender::Transport::Test');
+  use_ok('Email::Sender::Transport::Wrapper');
 }
 
 diag( "Testing Email::Sender $Email::Sender::VERSION" );

@@ -1,10 +1,13 @@
-package Email::Sender;
+package Email::Sender::Transport;
 use Squirrel;
 # ABSTRACT: it sends mail
 
 use Carp;
 use Email::Abstract;
 use Email::Address;
+use Email::Sender::Success;
+use Email::Sender::Failure::Temporary;
+use Email::Sender::Failure::Permanent;
 use Scalar::Util ();
 use Sub::Install;
 

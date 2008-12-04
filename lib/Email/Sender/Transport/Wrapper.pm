@@ -31,19 +31,11 @@ our $VERSION = '0.001';
 
 =cut
 
-sub new {
-  my ($class, $arg) = @_;
-  $arg ||= {};
-
-  eval "require $arg->{transport};" if not ref $arg->{transport};
-  Carp::confess("transport isn't an Email::Sender::Transport")
-    unless eval { $arg->{transport}->isa('Email::Sender::Transport') };
-
-  my $transport = $arg->{transport};
-     $transport = $transport->new unless ref $transport;
-
-  return bless { transport => $transport } => $class;
-}
+has transport => (
+  is  => 'ro',
+  isa => 'Email::Sender::Transport',
+  required => 1,
+);
 
 sub send_email {
   my $self = shift;
@@ -55,7 +47,7 @@ sub send_email {
 
   return $return if $return;
 
-  $self->{mailer}->send_email(@_);
+  $self->transport->send_email(@_);
 }
 
 =head1 AUTHOR

@@ -74,7 +74,7 @@ $sender->bad_recipients([ qr/bad-example/ ]);
   my $error = $@;
 
   ok(! $result, "mailing failed completely");
-  isa_ok($error, 'Email::PEP::Exception::Sender::TotalFailure');
+  isa_ok($error, 'Email::Sender::Failure');
 
   is_deeply(
     $error->failures,
@@ -109,11 +109,11 @@ is(
   ok($result, 'success');
 }
 
-is($failer->deliveries, 3, "first post-fail_if delivery is OK");
+is($failer->transport->deliveries, 3, "first post-fail_if delivery is OK");
 
 {
   eval { my $result = $failer->send($message, { to => [ qw(ok@ok.ok) ] }) };
   ok($@, "we died"); # XXX lame -- rjbs, 2007-02-16
 }
 
-is($failer->deliveries, 3, "second post-fail_if delivery fails");
+is($failer->transport->deliveries, 3, "second post-fail_if delivery fails");

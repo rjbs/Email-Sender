@@ -2,6 +2,8 @@ package Email::Sender::Transport::Test;
 use Squirrel;
 extends 'Email::Sender::Transport';
 
+use Email::Sender::Failure::Mixed;
+
 has 'bad_recipients' => (is => 'rw');
 
 sub recipient_ok {
@@ -56,7 +58,9 @@ sub send_email {
     }
   }
 
-  $self->total_failure(\@failures) if @deliverables == 0;
+  if (@deliverables == 0) {
+    Email::Sender::Failure::Mixed->throw(failures => \@failures);
+  }
 
   $self->_deliver(
     {

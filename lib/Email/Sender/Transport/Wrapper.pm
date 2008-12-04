@@ -40,11 +40,12 @@ has transport => (
 sub send_email {
   my $self = shift;
 
-  my $return = eval { $self->call_trigger(before_send_email => (@_)); };
-
+  eval { $self->call_trigger(before_send_email => (@_)); };
   # This is not a problem.  We're just re-throwing an exception.
   die $@         if $@; ## no critic Carp
 
+  my @returns = map { @$_ } @{ $self->last_trigger_results };
+  my ($return) = grep {$_} @returns;
   return $return if $return;
 
   $self->transport->send_email(@_);

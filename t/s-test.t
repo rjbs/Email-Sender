@@ -1,10 +1,11 @@
-
+#!perl
 use strict;
 use warnings;
 
-use Test::More tests => 20;
+use Test::More tests => 17;
 
 use Email::Sender::Transport::Test;
+use Email::Sender::Transport::Failable;
 
 my $sender = Email::Sender::Transport::Test->new;
 isa_ok($sender, 'Email::Sender::Transport');
@@ -87,22 +88,17 @@ $sender->bad_recipients([ qr/bad-example/ ]);
   );
 }
 
-is($sender->deliveries, 2, "we've done three deliveries so far");
+is($sender->deliveries, 2, "we've done two deliveries so far");
 
 ####
-
-use_ok('Email::Sender::Transport::Failable');
 
 my $failer = Email::Sender::Transport::Failable->new({ transport => $sender });
 
 my $i = 0;
-$failer->fail_if(sub { return 1 if $i++ % 2 });
-
-is(
-  $failer->failure_conditions,
-  1,
-  "we're now failing on every other delivery",
-);
+$failer->fail_if(sub {
+  return "failing half of all mail to test" if $i++ % 2;
+  return;
+});
 
 {
   my $result = eval { $failer->send($message, { to => [ qw(ok@ok.ok) ] }) };

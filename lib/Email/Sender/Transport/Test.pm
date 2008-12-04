@@ -73,7 +73,7 @@ sub send_email {
   );
 
   if (@failures) {
-    $self->partial_failure(\@failures);
+    return $self->success; # partial_failure(\@failures);
   } else {
     return $self->success;
   }

@@ -30,7 +30,16 @@ SKIP:
     sendmail => './util/not-executable'
   });
 
-  eval { no warnings; $sender->send($email); };
+  eval {
+    no warnings;
+    $sender->send(
+      $email,
+      {
+        to   => [ 'devnull@example.com' ],
+        from => 'devnull@example.biz',
+      }
+    );
+  };
   like($@, qr/couldn't open pipe/, 'error message says what we expect' );
 }
 
@@ -60,7 +69,14 @@ SKIP:
   chmod 0755, $filename;
 
   my $sender = Email::Sender::Transport::Sendmail->new({ sendmail => $filename });
-  my $return = $sender->send($email);
+  my $return = $sender->send(
+    $email,
+    {
+      to   => [ 'devnull@example.com' ],
+      from => 'devnull@example.biz',
+    }
+  );
+
   ok( $return, 'send() succeeded with executable $SENDMAIL' );
 }
 

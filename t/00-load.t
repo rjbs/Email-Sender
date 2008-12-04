@@ -1,4 +1,4 @@
-use Test::More tests => 14;
+use Test::More tests => 12;
 
 BEGIN {
   use_ok('Email::Sender');

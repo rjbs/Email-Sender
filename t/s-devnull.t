@@ -1,14 +1,13 @@
 #!perl
 use strict;
 use warnings;
-
 use Test::More 'no_plan';
 
 use Email::Sender;
 use Email::Sender::Transport::DevNull;
 
 my $xport = Email::Sender::Transport::DevNull->new;
-isa_ok($xport, 'Email::Sender');
+isa_ok($xport, 'Email::Sender::Transport');
 isa_ok($xport, 'Email::Sender::Transport::DevNull');
 
 my $message = <<'END_MESSAGE';
@@ -25,4 +24,4 @@ sender
 END_MESSAGE
 
 my $result = $xport->send($message);
-ok($result, 'success');
+isa_ok($result, 'Email::Sender::Success');

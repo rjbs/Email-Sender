@@ -1,4 +1,4 @@
-package Email::Sender::Sendmail;
+package Email::Sender::Transport::Sendmail;
 use Squirrel;
 extends 'Email::Sender::Transport';
 

@@ -1,4 +1,4 @@
-use Test::More tests => 6;
+use Test::More tests => 5;
 use strict;
 $^W = 1;
 
@@ -40,7 +40,7 @@ SKIP:
       }
     );
   };
-  like($@, qr/couldn't open pipe/, 'error message says what we expect' );
+  like($@->error, qr/couldn't open pipe/, 'error message says what we expect' );
 }
 
 my $has_FileTemp = eval { require File::Temp; };
@@ -104,7 +104,16 @@ SKIP:
 
   local $ENV{PATH} = $tempdir;
   my $sender = Email::Sender::Transport::Sendmail->new;
-  my $return = eval { $sender->send($email) };
+  my $return = eval {
+    $sender->send(
+      $email,
+      {
+        to   => [ 'devnull@example.com' ],
+        from => 'devnull@example.biz',
+      }
+    );
+  };
+
   ok( $return, 'send() succeeded with executable sendmail in path' );
 
   if ( -f 'sendmail.log' ) {

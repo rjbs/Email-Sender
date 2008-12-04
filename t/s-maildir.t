@@ -32,16 +32,16 @@ my $sender = Email::Sender::Transport::Maildir->new({
 my $result = $sender->send(
   join('', @$message),
   {
-    to   => 'rjbs@example.com',
+    to   => [ 'rjbs@example.com' ],
     from => 'rjbs@example.biz',
   },
 );
 
-ok($result, "successful delivery to maildir reported");
+isa_ok($result, 'Email::Sender::Success', "delivery result");
 
 my $new = File::Spec->catdir($maildir, 'new');
 
-ok(-d $new, "maildir/new directory exists now");
+ok(-d $new, "$new directory exists now");
 
 my @files = grep { $_ !~ /^\./ } <$new/*>;
 

@@ -1,15 +1,15 @@
-package Email::Sender::Maildir;
+package Email::Sender::Transport::Maildir;
 use Squirrel;
 extends 'Email::Sender::Transport';
 
 use File::Spec;
 use Email::LocalDelivery;
 
-sub dir {
-  my ($self) = @_;
-
-  $self->{dir} ||= File::Spec->catdir(File::Spec->curdir, 'Maildir');
-}
+has dir => (
+  is  => 'ro',
+  required => 1,
+  default  => sub { File::Spec->catdir(File::Spec->curdir, 'Maildir') },
+);
 
 sub _deliver {
   my ($self, $arg) = @_;

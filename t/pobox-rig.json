@@ -1,0 +1,14 @@
+[
+  "Test::Email::SMTPRig",
+  {
+    "smtp_host": "mx-all.pobox.com",
+    "smtp_port": 25
+  },
+  [
+    {
+      "from": "rjbs@cpan.org",
+      "to"  : "rjbs@pobox.com",
+      "result_class": "Email::Sender::Success"
+    }
+  ]
+]

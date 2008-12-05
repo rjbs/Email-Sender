@@ -9,7 +9,6 @@ use Email::Sender::Success;
 use Email::Sender::Failure::Temporary;
 use Email::Sender::Failure::Permanent;
 use Scalar::Util ();
-use Sub::Install;
 
 =head1 SYNOPSIS
 

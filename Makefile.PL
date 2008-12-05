@@ -13,7 +13,6 @@ requires('Email::Address'  => 0);    # used for envelope-from-msg
 requires('Net::SMTP'       => 0);
 
 # SOON TO NOT BE PREREQUISIES
-requires('Class::Trigger'       => 0);     # XXX: ditch this, inline something
 requires('Email::LocalDelivery' => 0);     # XXX: inline code, deprecate E:LD
 requires('Email::Simple'        => 1.998); # XXX: needed(?) for ->header_obj
 requires('Params::Util'         => 0);     # XXX: not really needed anymore?
@@ -22,6 +21,9 @@ requires('Params::Validate'     => 0);     # XXX: REMOVE THIS
 
 # XXX: REMOVE SQLite TRANSPORT TO ITS OWN DIST
 requires('DBD::SQLite'          => 0);  # minimum unknown
+
+# XXX: REMOVE Wrapper TRANSPORT TO ITS OWN DIST..?
+requires('Class::Trigger'       => 0);
 
 # CORE PREREQUISITES
 requires('Carp'           => 0);    # minimum unknown

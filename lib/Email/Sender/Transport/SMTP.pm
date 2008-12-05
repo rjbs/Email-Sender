@@ -34,13 +34,10 @@ has localport => (is => 'ro', isa => 'Int');
 has sasl_user     => (is => 'ro', isa => 'Str');
 has sasl_password => (is => 'ro', isa => 'Str');
 
-sub send_email {
-  my ($self, $email, $env) = @_;
+has require_all_rcpts_ok => (is => 'ro', isa => 'Bool', default => 0);
 
-  my @undeliverable;
-  my $hook = sub { @undeliverable = @{ $_[0] } };
-
-  my $fail = sub { die shift };
+sub _smtp_client {
+  my ($self) = @_;
 
   my $class = "Net::SMTP";
   if ($self->ssl) {
@@ -50,49 +47,74 @@ sub send_email {
     require Net::SMTP;
   }
 
-  Carp::croak("no valid emails in recipient list") unless
-    my @to = grep { defined and length } @{ $env->{to} };
-
   my $smtp = $class->new(
     $self->host,
     Port => $self->port,
     $self->helo      ? (Hello     => $self->helo)      : (),
     $self->localaddr ? (LocalAddr => $self->localaddr) : (),
     $self->localport ? (LocalPort => $self->localport) : (),
-  ) or return $fail->("unable to establish smtp connection");
+  );
 
-  my $ERROR = sub {
-    return $fail->("$_[0] " . $smtp->message);
-  };
+  Email::Sender::Failure->throw("unable to establish SMTP connection")
+    unless $smtp;
 
   if ($self->sasl_user) {
-    $ERROR->("sasl_user but no sasl_password")
+    Email::Sender::Failure->throw("sasl_user but no sasl_password")
       unless defined $self->sasl_password;
 
-    $smtp->auth($self->sasl_user, $self->sasl_password)
-      or return $ERROR->("failed AUTH");
+    Email::Sender::Failure->throw($self->_error($smtp, "failed AUTH"))
+      unless $smtp->auth($self->sasl_user, $self->sasl_password)
   }
 
+  return $smtp;
+}
+
+sub _error {
+  my ($self, $smtp, $error) = @_;
+  return "$error: " . $smtp->message;
+}
+
+sub send_email {
+  my ($self, $email, $env) = @_;
+
+  Carp::croak("no valid emails in recipient list") unless
+    my @to = grep { defined and length } @{ $env->{to} };
+
+  my $smtp = $self->_smtp_client;
+
+  my $FAULT = sub {
+    Email::Sender::Failure->throw($self->_error($smtp, $_[0]));
+  };
+
   $smtp->mail(_quoteaddr($env->{from}))
-    or return $ERROR->("$env->{from} failed after MAIL FROM:");
+    or $FAULT->("$env->{from} failed after MAIL FROM:");
 
-  if (my $hook = $self->bad_to_hook) {
-    my @ok_recip
-      = $smtp->to((map { _quoteaddr($_) } @to), { SkipBad => 1 });
-
-    # In case NOTHING was OK.
-    if (not(@ok_recip) or (@ok_recip == 1 and $ok_recip[0] eq '0')) {
-      $smtp->to(map { _quoteaddr($_) } @to)
-        or return $ERROR->("$env->{from} failed after RCPT TO:");
+  my @failures;
+  my @ok_rcpts;
+  
+  for my $addr (@to) {
+    if ($smtp->to(_quoteaddr($addr))) {
+      push @ok_rcpts, $addr;
+    } else {
+      push @failures, {
+        address => $addr,
+        code    => $smtp->code,
+        message => $smtp->message,
+      };
     }
+  }
 
-    my %ok = map { $_ => 1 } @ok_recip;
-    my @fail = grep { !$ok{$_} } @to;
+  # This logic used to include: or (@ok_rcpts == 1 and $ok_rcpts[0] eq '0')
+  # because if called without SkipBad, $smtp->to can return 1 or 0.  This
+  # should not happen because we now always pass SkipBad and do the counting
+  # ourselves.  Still, I've put this comment here (a) in memory of the
+  # suffering it caused to have to find that problem and (b) in case the
+  # original problem is more insidious than I thought! -- rjbs, 2008-12-05
+  $FAULT->("all recipients were rejected") unless @ok_rcpts;
 
-    $hook->(\@fail);
-  } else {
-    $smtp->to(map { _quoteaddr($_) } @to)
-      or return $ERROR->("$env->{from} failed after RCPT TO:");
+  if ($self->require_all_rcpts_ok and @failures) {
+    # XXX: This needs to convey, like, information. -- rjbs, 2008-12-05
+    Email::Sender::Failure->throw("not all recipients were successful");
   }
 
   # restore Pobox's support for streaming, code-based messages, and arrays here
@@ -106,18 +128,13 @@ sub send_email {
 
   if ($@) {
     chomp(my $err = $@);
-    return $ERROR->("$env->{from} failed $err");
+    return $FAULT->("$env->{from} failed $err");
   }
 
   $smtp->quit;
 
-  if (@undeliverable) {
-    $self->partial_failure(
-      { map { $_ => 'rejected by smtp server' } @undeliverable }
-    );
-  } else {
-    return $self->success;
-  }
+  # XXX: We must report partial success (failures) if applicable.
+  return $self->success;
 }
 
 no Squirrel;

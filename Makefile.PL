@@ -11,6 +11,7 @@ requires('Mouse'           => 0.12); # isa=>class accepts subclasses; Squirrel
 requires('Email::Abstract' => 0);    # XXX: really use Abstract?
 requires('Email::Address'  => 0);    # used for envelope-from-msg
 requires('Net::SMTP'       => 0);
+requires('Class::Method::Modifiers' => 0); # minimum version unknown; Failable
 
 # SOON TO NOT BE PREREQUISIES
 requires('Email::LocalDelivery' => 0);     # XXX: inline code, deprecate E:LD
@@ -21,9 +22,6 @@ requires('Params::Validate'     => 0);     # XXX: REMOVE THIS
 
 # XXX: REMOVE SQLite TRANSPORT TO ITS OWN DIST
 requires('DBD::SQLite'          => 0);  # minimum unknown
-
-# XXX: REMOVE Wrapper TRANSPORT TO ITS OWN DIST..?
-requires('Class::Trigger'       => 0);
 
 # CORE PREREQUISITES
 requires('Carp'           => 0);    # minimum unknown

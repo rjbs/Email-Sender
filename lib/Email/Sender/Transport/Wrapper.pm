@@ -3,31 +3,10 @@ use Squirrel;
 extends 'Email::Sender::Transport';
 
 use Carp;
-use Class::Trigger;
 
 =head1 NAME
 
 Email::Sender::Transport::Wrapper - a mailer to wrap a mailer for mailing mail
-
-=head1 VERSION
-
-version 0.001
-
-=cut
-
-our $VERSION = '0.001';
-
-=head1 SYNOPSIS
-
-  package Email::Send::Mailer::Backwards;
-  use base qw(Email::Send::Mailer::Wrapper);
-
-  __PACKAGE__->add_trigger(before_send => sub {
-    my ($self, $message, $arg) = @_;
-    $message->body_set(reverse $message->body);
-  }
-
-=head1 DESCRIPTION
 
 =cut
 
@@ -39,14 +18,6 @@ has transport => (
 
 sub send_email {
   my $self = shift;
-
-  eval { $self->call_trigger(before_send_email => (@_)); };
-  # This is not a problem.  We're just re-throwing an exception.
-  die $@         if $@; ## no critic Carp
-
-  my @returns = map { @$_ } @{ $self->last_trigger_results };
-  my ($return) = grep {$_} @returns;
-  return $return if $return;
 
   $self->transport->send_email(@_);
 }

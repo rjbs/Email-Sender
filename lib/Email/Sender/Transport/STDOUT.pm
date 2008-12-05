@@ -1,7 +1,6 @@
-package Email::Sender::STDOUT;
+package Email::Sender::Transport::STDOUT;
 use Squirrel;
 extends 'Email::Sender::Transport';
-
 
 sub send_email {
   my ($self, $email, $envelope, $arg) = @_;

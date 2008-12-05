@@ -1,4 +1,4 @@
-package Email::Sender::Mbox;
+package Email::Sender::Transport::Mbox;
 use Squirrel;
 extends 'Email::Sender::Transport';
 

@@ -15,4 +15,3 @@ BEGIN {
   use_ok('Email::Sender::Transport::Wrapper');
 }
 
-diag( "Testing Email::Sender $Email::Sender::VERSION" );

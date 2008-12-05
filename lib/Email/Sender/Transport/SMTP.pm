@@ -1,4 +1,4 @@
-package Email::Sender::SMTP;
+package Email::Sender::Transport::SMTP;
 use Squirrel;
 extends 'Email::Sender::Transport::OldSMTP';
 

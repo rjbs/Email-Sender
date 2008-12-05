@@ -77,9 +77,10 @@ sub send_email {
 }
 
 sub send {
-  my ($self, $message, $env) = @_;
-  my $email = $self->prepare_email($message);
-  $self->send_email($email, $env);
+  my ($self, $message, $env, @rest) = @_;
+  my $email    = $self->prepare_email($message);
+  my $envelope = $self->prepare_envelope($env);
+  $self->send_email($email, $envelope, @rest);
 }
 
 sub prepare_email {
@@ -94,6 +95,16 @@ sub prepare_email {
   return $message if ref $message and eval { $message->isa('Email::Abstract') };
 
   return Email::Abstract->new($message);
+}
+
+sub prepare_envelope {
+  my ($self, $env) = @_;
+
+  my %new_env;
+  $new_env{to}   = ref $env->{to} ? $env->{to} : [ $env->{to} ];
+  $new_env{from} = $env->{from};
+
+  return \%new_env;
 }
 
 sub success {

@@ -29,7 +29,7 @@ END_MESSAGE
   my $result = $sender->send(
     $message,
     {
-      to   => [ qw(recipient@nowhere.example.net)],
+      to   => 'recipient@nowhere.example.net',
       from => 'nobody@nowhere.example.mil',
     }
   );

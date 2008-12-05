@@ -5,49 +5,44 @@ extends 'Email::Sender::Transport';
 use Carp;
 use File::Path;
 use File::Basename;
+use IO::File;
 use Email::Simple 1.998;  # needed for ->header_obj
 use Fcntl ':flock';
 
-use vars qw($VERSION);
-$VERSION = "0.001";
+has 'filename' => (is => 'ro', default => 'mbox', required => 1);
 
 sub send_email {
-  my ($self, $email, $envelope, $arg) = @_;
+  my ($self, $email, $env) = @_;
 
-  my @files = ref $self->{file} ? @{ $self->{file} } : $self->{file};
+  my $filename = $self->filename;
+  my $fh       = $self->_open_fh($filename);
 
-  return $self->total_failure("no mbox files specified") unless @files;
+  my $ok = eval {
+    if ($fh->tell > 0) {
+      $fh->print("\n") or Carp::confess("couldn't write to $filename: $!");
+    }
 
-  my %failure;
+    $fh->print($self->_from_line($email, $env))
+      or Carp::confess("couldn't write to $filename: $!");
 
-  FILE: for my $file (@files) {
-    eval {
-      my $fh = $self->_open_fh($file);
+    $fh->print($self->_escape_from_body($email))
+      or Carp::confess("couldn't write to $filename: $!");
 
-      if (tell($fh) > 0) {
-        print $fh "\n" or Carp::confess "couldn't write to $file: $!";
-      }
+    # This will make streaming a bit more annoying. -- rjbs, 2007-05-25
+    $fh->print("\n")
+      or Carp::confess("couldn't write to $filename: $!")
+      unless $email->as_string =~ /\n$/;
 
-      print $fh $self->_from_line($email, $envelope)
-        or Carp::confess "couldn't write to $file: $!";
-      print $fh $self->_escape_from_body($email)
-        or Carp::confess "couldn't write to $file: $!";
+    $self->_close_fh($fh)
+      or Carp::confess "couldn't close file $filename: $!";
 
-      # This will make streaming a bit more annoying. -- rjbs, 2007-05-25
-      print $fh "\n"
-        or Carp::confess "couldn't write to $file: $!"
-        unless $email->as_string =~ /\n$/;
+     1;
+  };
 
-      $self->_close_fh($fh, $file);
-    };
-    $failure{$file} = $@ if $@;
-  }
+  die unless $ok;
+  # Email::Sender::Failure->throw($@ || 'unknown error') unless $ok;
 
-  if (keys %failure == @files) {
-    $self->total_failure;
-  } else {
-    $self->partial_failure({ failures => \%failure });
-  }
+  return $self->success;
 }
 
 sub _open_fh {
@@ -55,31 +50,33 @@ sub _open_fh {
   my $dir = dirname($file);
   Carp::confess "couldn't make path $dir: $!" if not -d $dir or mkpath($dir);
 
-  open my $fh, '>>', $file
+  my $fh = IO::File->new($file, '>>')
     or Carp::confess "couldn't open $file for appending: $!";
-  $class->getlock($fh, $file);
-  seek $fh, 0, 2;
+
+  $class->_getlock($fh, $file);
+
+  $fh->seek(0, 2);
   return $fh;
 }
 
 sub _close_fh {
   my ($class, $fh, $file) = @_;
   $class->unlock($fh);
-  close $fh or Carp::confess "couldn't close file $file: $!";
-  return 1;
+  return $fh->close;
 }
 
 sub _escape_from_body {
   my ($class, $email) = @_;
 
-  my $body = $email->body;
+  my $body = $email->get_body;
   $body =~ s/^(From )/>$1/gm;
 
-  return $email->header_obj->as_string . $email->crlf . $body;
+  my $simple = $email->cast('Email::Simple');
+  return $simple->header_obj->as_string . $simple->crlf . $body;
 }
 
 sub _from_line {
-  my ($class, $envelope) = @_;
+  my ($class, $email, $envelope) = @_;
 
   my $fromtime = localtime;
   $fromtime =~ s/(:\d\d) \S+ (\d{4})$/$1 $2/;  # strip timezone.

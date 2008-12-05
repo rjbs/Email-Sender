@@ -1,6 +1,8 @@
 package Email::Sender::Failure;
 use Squirrel;
 
+use overload '""' => 'error', fallback => 1;
+
 has 'error' => (
   is       => 'ro',
   required => 1,

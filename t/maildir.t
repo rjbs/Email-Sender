@@ -2,21 +2,14 @@
 use strict;
 use warnings;
 
+use lib 't/lib';
+use Test::Email::Sender::Util;
 use File::Spec ();
 use File::Temp ();
 
 use Test::More tests => 5;
 
 use Email::Sender::Transport::Maildir;
-
-sub readfile {
-  my ($name) = @_;
-  local *MESSAGE_FILE;
-  open MESSAGE_FILE, "<$name" or die "coudn't read $name: $!";
-  my @lines = <MESSAGE_FILE>;
-  close MESSAGE_FILE;
-  return \@lines;
-}
 
 my $message = readfile('t/messages/simple.msg');
 

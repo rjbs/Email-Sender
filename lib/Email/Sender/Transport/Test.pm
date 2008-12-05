@@ -1,5 +1,5 @@
 package Email::Sender::Transport::Test;
-use Squirrel;
+use Mouse;
 extends 'Email::Sender::Transport';
 
 use Email::Sender::Failure::Mixed;
@@ -82,5 +82,5 @@ sub send_email {
   }
 }
 
-no Squirrel;
+no Mouse;
 1;

@@ -1,5 +1,5 @@
 package Email::Sender::Transport::Print;
-use Squirrel;
+use Mouse;
 extends 'Email::Sender::Transport';
 
 use IO::Handle;
@@ -27,5 +27,5 @@ sub send_email {
   return $self->success;
 }
 
-no Squirrel;
+no Mouse;
 1;

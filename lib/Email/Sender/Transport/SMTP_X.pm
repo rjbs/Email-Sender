@@ -1,5 +1,5 @@
 package Email::Sender::Transport::SMTP_X;
-use Squirrel;
+use Mouse;
 extends 'Email::Sender::Transport::SMTP';
 
 use Net::SMTP;
@@ -27,5 +27,5 @@ sub _smtp_client {
   return $client;
 }
 
-no Squirrel;
+no Mouse;
 1;

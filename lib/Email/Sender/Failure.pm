@@ -1,5 +1,5 @@
 package Email::Sender::Failure;
-use Squirrel;
+use Mouse;
 
 use overload '""' => 'error', fallback => 1;
 
@@ -24,5 +24,5 @@ sub BUILDARGS {
   return $self->SUPER::BUILDARGS(@args);
 }
 
-no Squirrel;
+no Mouse;
 1;

@@ -1,5 +1,5 @@
 package Email::Sender::Transport::Failable;
-use Squirrel;
+use Mouse;
 extends 'Email::Sender::Transport::Wrapper';
 
 has 'failure_conditions' => (
@@ -27,5 +27,5 @@ around send_email => sub {
   return $self->$orig($email, $env);
 };
 
-no Squirrel;
+no Mouse;
 1;

@@ -1,5 +1,5 @@
 package Email::Sender::Transport::Maildir;
-use Squirrel;
+use Mouse;
 extends 'Email::Sender::Transport';
 
 use File::Spec;
@@ -46,5 +46,5 @@ sub send_email {
   }
 }
 
-no Squirrel;
+no Mouse;
 1;

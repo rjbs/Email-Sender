@@ -1,5 +1,5 @@
 package Email::Sender::Success;
-use Squirrel;
+use Mouse;
 
-no Squirrel;
+no Mouse;
 1;

@@ -1,5 +1,5 @@
 package Email::Sender::Transport::Mbox;
-use Squirrel;
+use Mouse;
 extends 'Email::Sender::Transport';
 
 use Carp;
@@ -97,5 +97,5 @@ sub unlock {
   flock($fh, LOCK_UN);
 }
 
-no Squirrel;
+no Mouse;
 1;

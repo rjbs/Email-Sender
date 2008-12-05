@@ -1,5 +1,5 @@
 package Email::Sender::Transport;
-use Squirrel;
+use Mouse;
 # ABSTRACT: it sends mail
 
 use Carp;
@@ -96,5 +96,5 @@ under the same terms as Perl itself.
 
 =cut
 
-no Squirrel;
+no Mouse;
 1;

@@ -1,5 +1,5 @@
 package Email::Sender::Transport::Sendmail;
-use Squirrel;
+use Mouse;
 extends 'Email::Sender::Transport';
 
 use File::Spec ();
@@ -51,5 +51,5 @@ sub send_email {
   return $self->success;
 }
 
-no Squirrel;
+no Mouse;
 1;

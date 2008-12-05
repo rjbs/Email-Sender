@@ -1,5 +1,5 @@
 package Email::Sender::Transport::SMTP;
-use Squirrel;
+use Mouse;
 extends 'Email::Sender::Transport';
 
 # I am basically -sure- that this is wrong, but sending hundreds of millions of
@@ -137,5 +137,5 @@ sub send_email {
   return $self->success;
 }
 
-no Squirrel;
+no Mouse;
 1;

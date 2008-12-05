@@ -1,5 +1,5 @@
 package Email::Sender::Failure::Mixed;
-use Squirrel;
+use Mouse;
 extends 'Email::Sender::Failure';
 
 has 'failures' => (
@@ -7,5 +7,5 @@ has 'failures' => (
   isa => 'ArrayRef',
 );
 
-no Squirrel;
+no Mouse;
 1;

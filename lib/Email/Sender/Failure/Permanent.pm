@@ -1,6 +1,6 @@
 package Email::Sender::Failure::Permanent;
-use Squirrel;
+use Mouse;
 extends 'Email::Sender::Failure';
 
-no Squirrel;
+no Mouse;
 1;

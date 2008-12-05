@@ -1,5 +1,5 @@
 package Email::Sender::Transport::Wrapper;
-use Squirrel;
+use Mouse;
 extends 'Email::Sender::Transport';
 
 use Carp;
@@ -42,5 +42,5 @@ under the same terms as Perl itself.
 
 =cut
 
-no Squirrel;
+no Mouse;
 1;

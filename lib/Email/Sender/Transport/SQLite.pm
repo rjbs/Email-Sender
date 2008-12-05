@@ -1,5 +1,5 @@
 package Email::Sender::Transport::SQLite;
-use Squirrel;
+use Mouse;
 extends 'Email::Sender::Transport';
 
 use DBI;
@@ -79,5 +79,5 @@ sub send_email {
   return $self->success;
 }
 
-no Squirrel;
+no Mouse;
 1;

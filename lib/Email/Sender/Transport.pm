@@ -100,7 +100,7 @@ sub prepare_envelope {
   my ($self, $env) = @_;
 
   my %new_env;
-  $new_env{to}   = ref $env->{to} ? $env->{to} : [ $env->{to} ];
+  $new_env{to}   = ref $env->{to} ? $env->{to} : [ grep {defined} $env->{to} ];
   $new_env{from} = $env->{from};
 
   return \%new_env;

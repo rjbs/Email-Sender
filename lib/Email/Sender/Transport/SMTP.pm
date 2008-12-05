@@ -2,72 +2,9 @@ package Email::Sender::Transport::SMTP;
 use Squirrel;
 extends 'Email::Sender::Transport';
 
-use Params::Util ();
-use Params::Validate qw(:all);
-use Scalar::Util ();
-
-# This routine sends mail via SMTP.  C<$message> is the text of the message to
-# be sent.  Valid arguments are:
-#
-#  from - envelope sender
-#  to   - envelope recipient
-#  host - smtp mx to use
-#  port - port on which to connect to host
-#  helo - smtp helo greeting
-#  ssl  - boolean: use SSL?
-#  localaddr - connect from this address
-#  localport - connect from this port
-#  sasl_user     - use SASL, with this user
-#  sasl_password - use SASL, with this password
-#
-#  bad_to_hook - a callback; if given, if the mail server rejects any of the
-#                message recipients, this callback is called
-
-my %valid_smtp = (
-  from          => 1,
-  to            => 1,
-  helo          => 0,
-  sasl_user     => 0,
-  sasl_password => 0,
-  ssl           => 0,
-  localaddr     => 0,
-  localport     => 0,
-  bad_to_hook   => { optional => 1, type => CODEREF },
-);
-
-# these exist because of perl56 and closure leaks -- we can't generate them
-# anew each smtpsend
-sub _smtp_chunk_handle {
-  my $fh = shift;
-  return scalar <$fh>;
-}
-
-sub _smtp_chunk_code {
-  my $code = shift;
-  return $code->();
-}
-
-sub _smtp_chunk_array {
-  return shift @{ $_[0] };
-}
-
-sub __smtp_write_datasend {
-  my ($smtp, $chunk) = @_;
-  $smtp->datasend($chunk) or die "during DATA\n";
-}
-
-sub _smtp_loop_stream_to {
-  my ($smtp, $email) = @_;
-  $email->stream_to($smtp, { write => \&__smtp_write_datasend },);
-}
-
-sub _smtp_loop_chunk {
-  my ($smtp, $email, $chunker) = @_;
-  while (defined(my $chunk = $chunker->($email))) {
-    __smtp_write_datasend($smtp, $chunk);
-  }
-}
-
+# I am basically -sure- that this is wrong, but sending hundreds of millions of
+# messages has shown that it is right enough.  I will try to make it textbook
+# later. -- rjbs, 2008-12-05
 sub _quoteaddr {
   my $addr       = shift;
   my @localparts = split /\@/, $addr;

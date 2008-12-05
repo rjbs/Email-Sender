@@ -1,4 +1,4 @@
-use Test::More tests => 12;
+use Test::More tests => 11;
 
 BEGIN {
   use_ok('Email::Sender');
@@ -6,7 +6,6 @@ BEGIN {
   use_ok('Email::Sender::Transport::Failable');
   use_ok('Email::Sender::Transport::Maildir');
   use_ok('Email::Sender::Transport::Mbox');
-  use_ok('Email::Sender::Transport::OldSMTP');
   use_ok('Email::Sender::Transport::SMTP');
   use_ok('Email::Sender::Transport::SQLite');
   use_ok('Email::Sender::Transport::STDOUT');

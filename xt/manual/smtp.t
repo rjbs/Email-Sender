@@ -6,8 +6,8 @@ use Email::Sender::Transport::SMTP;
 my $smtp = Email::Sender::Transport::SMTP->new;
 
 my $message = <<'END';
-From: RJ <devnull+hdrF@pobox.com>
-To: Rico <devnull+hdr2@pobox.com>
+From: RJ <rjbs+hdrF@pobox.com>
+To: Rico <rjbs+hdr2@pobox.com>
 Subject: test message
 
 This is a test.
@@ -19,8 +19,8 @@ END
 my $result = $smtp->send(
   $message,
   {
-    to   => 'devnull+rcpt@pobox.com',
-    from => 'devnull+from@pobox.com',
+    to   => 'rjbs+rcpt@pobox.com',
+    from => 'rjbs+from@pobox.com',
   },
 );
 

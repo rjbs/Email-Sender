@@ -5,7 +5,7 @@ use warnings;
 use File::Spec ();
 use File::Temp ();
 
-use Test::More tests => 4;
+use Test::More tests => 5;
 
 use Email::Sender::Transport::Maildir;
 
@@ -29,15 +29,17 @@ my $sender = Email::Sender::Transport::Maildir->new({
   dir => $maildir,
 });
 
-my $result = $sender->send(
-  join('', @$message),
-  {
-    to   => [ 'rjbs@example.com' ],
-    from => 'rjbs@example.biz',
-  },
-);
+for (1..2) {
+  my $result = $sender->send(
+    join('', @$message),
+    {
+      to   => [ 'rjbs@example.com' ],
+      from => 'rjbs@example.biz',
+    },
+  );
 
-isa_ok($result, 'Email::Sender::Success', "delivery result");
+  isa_ok($result, 'Email::Sender::Success', "delivery result");
+}
 
 my $new = File::Spec->catdir($maildir, 'new');
 
@@ -45,10 +47,10 @@ ok(-d $new, "$new directory exists now");
 
 my @files = grep { $_ !~ /^\./ } <$new/*>;
 
-is(@files, 1, "there is one delivered message in the Maildir");
+is(@files, 2, "there are now two delivered messages in the Maildir");
 
 my $lines = readfile($files[0]);
 
 my $simple = Email::Simple->new(join '', @$lines);
 
-is($simple->header('X-EmailSender-To'), 'rjbs@example.com');
+is($simple->header('X-EmailSender-To'), 'rjbs@example.com', 'env info in hdr');

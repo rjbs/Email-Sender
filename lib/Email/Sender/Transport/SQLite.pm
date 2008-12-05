@@ -57,12 +57,12 @@ sub _setup_dbh {
   ');
 }
 
-sub _deliver {
-  my ($self, $arg) = @_;
+sub send_email {
+  my ($self, $email, $env) = @_;
 
-  my $message = $arg->{message}->as_string;
-  my $to      = $arg->{to};
-  my $from    = $arg->{from};
+  my $message = $email->as_string;
+  my $to      = $env->{to};
+  my $from    = $env->{from};
 
   my $dbh = $self->dbh;
 
@@ -75,18 +75,6 @@ sub _deliver {
     $dbh->do("INSERT INTO recipients (email_id, env_to) VALUES (?, ?)",
       undef, $id, $addr,);
   }
-}
-
-sub send_email {
-  my ($self, $email, $envelope, $arg) = @_;
-
-  $self->_deliver(
-    {
-      message => $email,
-      to      => $envelope->{to},
-      from    => $envelope->{from},
-    }
-  );
 
   return $self->success;
 }

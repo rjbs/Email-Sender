@@ -1,4 +1,4 @@
-use Test::More tests => 11;
+use Test::More tests => 12;
 
 BEGIN {
   use_ok('Email::Sender');
@@ -8,6 +8,7 @@ BEGIN {
   use_ok('Email::Sender::Transport::Mbox');
   use_ok('Email::Sender::Transport::Print');
   use_ok('Email::Sender::Transport::SMTP');
+  use_ok('Email::Sender::Transport::SMTP_X');
   use_ok('Email::Sender::Transport::SQLite');
   use_ok('Email::Sender::Transport::Sendmail');
   use_ok('Email::Sender::Transport::Test');

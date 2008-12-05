@@ -27,7 +27,7 @@ has port => (
 has ssl => (is => 'ro');
 has bad_to_hook => (is => 'ro');
 
-has helo      => (is => 'ro', isa => 'Str');
+has helo      => (is => 'ro', isa => 'Str'); # default to hostname_long
 has localaddr => (is => 'ro');
 has localport => (is => 'ro', isa => 'Int');
 

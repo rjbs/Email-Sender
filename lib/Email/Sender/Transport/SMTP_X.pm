@@ -5,34 +5,24 @@ extends 'Email::Sender::Transport::SMTP';
 use Net::SMTP;
 use Sys::Hostname::Long ();
 
-sub _new_smtp {
-  my ($self, $arg) = @_;
-  return Net::SMTP->new(
-    Host    => $arg->{host}    || 'localhost',
-    Port    => $arg->{port}    || 25,
-    Hello   => $arg->{helo}    || Sys::Hostname::Long::hostname_long,
-    Timeout => $arg->{timeout} || 60,
-  );
-}
-
-has _smtp => (
-  is      => 'ro',
-  default => sub { shift->_new_smtp },
+has _cached_client => (
+  is => 'rw',
 );
 
-sub send_email {
-  my ($self, $email, $envelope, $arg) = @_;
+sub _smtp_client {
+  my ($self) = @_;
 
-  eval { $self->{_smtp}->reset; };
+  if (my $client = $self->_cached_client) {
+    return $client if eval { $client->reset; 1 };
 
-  if ($@) {
-    Carp::carp $@; # XXX should this be something else?
-    $self->{_smtp} = $self->_new_smtp($self->{arg});
+    my $error = $@ || 'unknown error when resetting cached SMTP connection';
+    Carp::carp($error);
   }
 
-  $arg->{smtp} = $self->{_smtp};
+  my $client = $self->SUPER::_smtp_client;
+  $self->_cached_client($client);
 
-  $self->SUPER::send($email, $envelope, $arg);
+  return $client;
 }
 
 no Squirrel;

@@ -13,9 +13,11 @@ sub _smtp_client {
   my ($self) = @_;
 
   if (my $client = $self->_cached_client) {
-    return $client if eval { $client->reset; 1 };
+    return $client if eval { $client->reset; $client->ok; };
 
-    my $error = $@ || 'unknown error when resetting cached SMTP connection';
+    my $error = $@
+             || 'error resetting cached SMTP connection: ' . $client->message;
+
     Carp::carp($error);
   }
 

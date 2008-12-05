@@ -36,40 +36,6 @@ This module provides an extended API for mailers used by Email::Sender.
 
 =cut
 
-# This code belongs in Email::Sender::Simple. -- rjbs, 2008-12-04
-sub _setup_envelope {
-  my ($self, $email, $arg) = @_;
-  $arg ||= {};
-
-  my $envelope = {};
-  my %send_arg = %$arg;
-  delete $send_arg{$_} for qw(from to);
-
-  if (defined $arg->{to} and not ref $arg->{to}) {
-    $envelope->{to} = [ $arg->{to} ];
-  } elsif (not defined $arg->{to}) {
-    $envelope->{to} = [
-      map { $_->address }
-      map { Email::Address->parse($_) }
-      map { $email->get_header($_) }
-      qw(to cc)
-    ];
-  } else {
-    $envelope->{to} = $arg->{to};
-  }
-
-  if ($arg->{from}) {
-    $envelope->{from} = $arg->{from};
-  } else {
-    ($envelope->{from}) =
-      map { $_->address }
-      map { Email::Address->parse($_) }
-      scalar $email->get_header('from');
-  }
-
-  return ($envelope, \%send_arg);
-}
-
 sub send_email {
   my $class = ref $_[0] ? ref $_[0] : $_[0];
   Carp::croak "send_email method not implemented on $class";

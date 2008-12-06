@@ -43,7 +43,7 @@ for my $rig_conf (@rigs) {
   my $lines = readfile($rig_conf);
   my $json  = join '', @$lines;
   my $conf  = JSON->new->decode($json);
-  my ($class, $args, $tests) = @$conf;
+  my ($class, $args) = @$conf;
 
   my $rig = $class->new($args);
   isa_ok($rig, 'Test::Email::SMTPRig');
@@ -56,8 +56,6 @@ for my $rig_conf (@rigs) {
   });
 
   for my $test (@$tests) {
-    $rig->prep_next_transaction($test);
-
     # XXX: rigs need a way to provide their own messages -- rjbs, 2008-12-05
     $message_counter++;
     my $message = sprintf $stock_message,

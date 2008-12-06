@@ -28,14 +28,42 @@ sub register_client {
   return $self->_client_id;
 }
 
-sub prep_next_transaction { }
-
-# sub get_deliveries
-
 sub BUILD {
   my ($self) = @_;
   $self->register_client;
 }
+
+# sample plan:
+# {
+#   senders => {
+#     'abc@example.org' => [ 557 => 'not welcome here' ],
+#   },
+#   recipients => {
+#     'rjbs@example.org'    => [ 250 => 'awesometown' ],
+#     'hdp@example.org'     => [ 450 => 'not now dear' ],
+#     'doneill@example.org' => [ 550 => 'go away' ],
+#   },
+#
+#   deliveries => [
+#     {
+#       message => [ moniker => \%args ], # optional, default msg
+#       to      => [ 'abc@example.org' ], # required
+#       from    => 'def@example.org',     # required
+#       data    => [ 250 => 'queued' ],   # optional, assume ok
+#       result  => {
+#         class => 'Email::Sender::Success', # required
+#         # extra stuff about result here; failures, messages, etc
+#       },
+#     },
+#   ],
+# }
+
+
+has 'plan' => (
+  is  => 'ro',
+  isa => 'HashRef',
+  required => 1,
+);
 
 no Mouse;
 1;

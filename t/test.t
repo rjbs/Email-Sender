@@ -78,12 +78,8 @@ $sender->bad_recipients([ qr/bad-example/ ]);
   isa_ok($error, 'Email::Sender::Failure');
 
   is_deeply(
-    $error->failures,
-    [ {
-      to    => 'mr.bad-example@nowhere.example.net',
-      type  => 'permanent',
-      error => 'bad recipient',
-    } ],
+    [ $error->failures->[0]->recipients ],
+    [ 'mr.bad-example@nowhere.example.net' ],
     "delivery indicates failure to 'mr.bad-example'",
   );
 }

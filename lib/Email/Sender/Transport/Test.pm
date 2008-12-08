@@ -2,7 +2,7 @@ package Email::Sender::Transport::Test;
 use Mouse;
 extends 'Email::Sender::Transport';
 
-use Email::Sender::Failure::Mixed;
+use Email::Sender::Failure::Multi;
 
 has 'bad_recipients' => (is => 'rw');
 
@@ -16,13 +16,6 @@ sub recipient_ok {
   }
 
   return 1;
-}
-
-sub _deliver {
-  my ($self, $arg) = @_;
-  $self->{deliveries} ||= [];
-
-  push @{ $self->{deliveries} }, $arg;
 }
 
 sub deliveries {
@@ -50,11 +43,10 @@ sub send_email {
     if ($self->recipient_ok($to)) {
       push @deliverables, $to;
     } else {
-      push @failures, {
-        to    => $to,
-        type  => 'permanent',
-        error => 'bad recipient',
-      };
+      push @failures, Email::Sender::Failure::Permanent->new({
+        recipients => [ $to ],
+        message    => 'bad recipient',
+      });
     }
   }
 
@@ -65,15 +57,14 @@ sub send_email {
     );
   }
 
-  $self->_deliver(
-    {
-      email     => $email,
-      envelope  => $envelope,
-      arg       => $arg,
-      successes => \@deliverables,
-      failures  => \@failures,
-    }
-  );
+  $self->{deliveries} ||= [];
+  push @{ $self->{deliveries} }, {
+    email     => $email,
+    envelope  => $envelope,
+    arg       => $arg,
+    successes => \@deliverables,
+    failures  => \@failures,
+  };
 
   if (@failures) {
     return $self->success; # partial_failure(\@failures);

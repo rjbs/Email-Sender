@@ -64,6 +64,141 @@ is_deeply(
 
 ####
 
+{
+  package Email::Sender::Transport::TestFail;
+  use Mouse;
+  extends 'Email::Sender::Transport::Test';
+
+  sub delivery_failure {
+    my ($self, $email, $env) = @_;
+    return Email::Sender::Failure->new('bad sender')
+      if $env->{from} =~ /^reject@/;
+    return;
+  }
+
+  sub recipient_failure {
+    my ($self, $rcpt) = @_;
+
+    if ($rcpt =~ /^fault@/) {
+      return Email::Sender::Failure->new({
+        message    => 'fault',
+        recipients => [ $rcpt ],
+      });
+    }
+
+    if ($rcpt =~ /^tempfail@/) {
+      return Email::Sender::Failure::Temporary->new({
+        message    => 'tempfail',
+        recipients => [ $rcpt ],
+      });
+    }
+
+    if ($rcpt =~ /^permfail@/) {
+      return Email::Sender::Failure::Permanent->new({
+        message    => 'permfail',
+        recipients => [ $rcpt ],
+      });
+    }
+
+    return;
+  }
+
+  no Mouse;
+}
+
+my $fail_test = Email::Sender::Transport::TestFail->new;
+
+sub test_fail {
+  my ($env, $succ_cb, $fail_cb) = @_;
+
+  my $ok    = eval { $fail_test->send($message, $env); };
+  my $error = $@;
+
+  $succ_cb ? $succ_cb->($ok)    : ok(! $ok,    'we expected to fail');
+  $fail_cb ? $fail_cb->($error) : ok(! $error, 'we expected to succeed');
+}
+
+test_fail(
+  {
+    to   => 'ok@example.com',
+    from => 'sender@example.com',
+  },
+  sub { ok(ref $_[0] eq 'Email::Sender::Success', 'correct success class'); },
+  undef,
+);
+
+test_fail(
+  {
+    to   => 'ok@example.com',
+    from => 'reject@example.com',
+  },
+  undef,
+  sub {
+    my ($fail) = @_;
+
+    isa_ok($fail, 'Email::Sender::Failure');
+    is($fail->message, 'bad sender', 'got expected failure message');
+    is_deeply(
+      [ $fail->recipients ],
+      [ 'ok@example.com' ],
+      'correct recipients on failure notice',
+    );
+  },
+);
+
+test_fail(
+  {
+    to   => 'tempfail@example.com',
+    from => 'sender@example.com',
+  },
+  undef,
+  sub { isa_ok($_[0], 'Email::Sender::Failure::Temporary'); },
+);
+
+test_fail(
+  {
+    to   => 'permfail@example.com',
+    from => 'sender@example.com',
+  },
+  undef,
+  sub { isa_ok($_[0], 'Email::Sender::Failure::Permanent'); },
+);
+
+test_fail(
+  {
+    to   => 'fault@example.com',
+    from => 'sender@example.com',
+  },
+  undef,
+  sub { is(ref $_[0], 'Email::Sender::Failure', 'exact class on fault'); },
+);
+
+test_fail(
+  {
+    to   => [ 'permfail@example.com', 'ok@example.com' ],
+    from => 'sender@example.com',
+  },
+  undef,
+  sub {
+    my $fail = shift;
+    isa_ok($fail, 'Email::Sender::Failure', 'we got a failure');
+    isa_ok($fail, 'Email::Sender::Failure::Multi', "it's a multifailure");
+    my @failures = $fail->failures;
+    is(@failures, 1, "there is only 1 failure in our multi");
+    is_deeply(
+      [ $fail->recipients ],
+      [ 'permfail@example.com' ],
+      'failing addrs are correct',
+    );
+    ok(
+      $fail->isa('Email::Sender::Failure::Permanent'),
+      "even though it is a Multi, we report isa Permanent since it's uniform",
+    );
+  },
+);
+
+####
+
 my $failer = Email::Sender::Transport::Failable->new({ transport => $sender });
 
 my $i = 0;

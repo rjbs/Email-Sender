@@ -6,8 +6,8 @@ use Email::Sender::Failure::Multi;
 
 has allow_partial_success => (is => 'ro', isa => 'Bool', default => 0);
 
-sub recipient_failure {
-}
+sub recipient_failure { }
+sub delivery_failure  { }
 
 sub deliveries {
   my ($self) = @_;
@@ -25,10 +25,14 @@ sub clear_deliveries {
 }
 
 sub send_email {
-  my ($self, $email, $envelope, $arg) = @_;
+  my ($self, $email, $envelope) = @_;
 
   my @failures;
   my @ok_rcpts;
+
+  if (my $failure = $self->delivery_failure($email, $envelope)) {
+    $failure->throw;
+  }
 
   for my $to (@{ $envelope->{to} }) {
     if (my $failure = $self->recipient_failure($to)) {
@@ -42,7 +46,7 @@ sub send_email {
     @failures
     and ((@ok_rcpts == 0) or (! $self->allow_partial_success))
   ) {
-    $failures[0]->throw if @failures == 1;
+    $failures[0]->throw if @failures == 1 and @ok_rcpts == 0;
 
     my $message = sprintf '%s recipients were rejected',
       @ok_rcpts ? 'some' : 'all';
@@ -57,7 +61,6 @@ sub send_email {
   push @{ $self->{deliveries} }, {
     email     => $email,
     envelope  => $envelope,
-    arg       => $arg,
     successes => \@ok_rcpts,
     failures  => \@failures,
   };

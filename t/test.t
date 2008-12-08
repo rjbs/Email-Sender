@@ -197,6 +197,10 @@ test_fail(
   },
 );
 
+$fail_test = Email::Sender::Transport::TestFail->new({
+  allow_partial_success => 1,
+});
+
 ####
 
 my $failer = Email::Sender::Transport::Failable->new({ transport => $sender });

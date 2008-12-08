@@ -148,16 +148,9 @@ sub send_email {
   # restore Pobox's support for streaming, code-based messages, and arrays here
   # -- rjbs, 2008-12-04
 
-  eval {
-    $smtp->data or die "after DATA\n";
-    $smtp->datasend($email->as_string) or die "during DATA\n";
-    $smtp->dataend or die "after . (end of data)\n";
-  };
-
-  if ($@) {
-    chomp(my $err = $@);
-    return $FAULT->("$env->{from} failed $err");
-  }
+  $smtp->data                        or $FAULT->("failed $err");
+  $smtp->datasend($email->as_string) or $FAULT->("during DATA");
+  $smtp->dataend                     or $FAULT->("after DATA");
 
   $smtp->quit;
 

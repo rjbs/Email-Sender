@@ -55,26 +55,40 @@ sub _smtp_client {
     $self->localport ? (LocalPort => $self->localport) : (),
   );
 
-  Email::Sender::Failure->throw("unable to establish SMTP connection")
-    unless $smtp;
+  $self->_throw("unable to establish SMTP connection") unless $smtp;
 
   if ($self->sasl_user) {
-    Email::Sender::Failure->throw("sasl_user but no sasl_password")
+    $self->_throw("sasl_user but no sasl_password")
       unless defined $self->sasl_password;
 
-    Email::Sender::Failure->throw($self->_error($smtp, "failed AUTH"))
+    $self->_throw('failed AUTH', $smtp)
       unless $smtp->auth($self->sasl_user, $self->sasl_password)
   }
 
   return $smtp;
 }
 
-sub _error {
-  my ($self, $smtp, $error) = @_;
-  return {
-    message => "$error: " . $smtp->message,
-    code    => $smtp->code,
-  };
+sub _throw {
+  my ($self, @rest) = @_;
+  $self->_failure(@rest)->throw;
+}
+
+sub _failure {
+  my ($self, $error, $smtp, $error_class, @rest) = @_;
+  my $code = $smtp ? $smtp->code : undef;
+
+  $error_class ||= ! $code       ? 'Email::Sender::Failure'
+                 : $code =~ /^4/ ? 'Email::Sender::Failure::Temporary'
+                 : $code =~ /^5/ ? 'Email::Sender::Failure::Permanent'
+                 :                 'Email::Sender::Failure';
+
+  $error_class->new({
+    message => $smtp
+               ? ($error ? ("$error: " . $smtp->message) : $smtp->message)
+               : $error,
+    code    => $code,
+    @rest,
+  });
 }
 
 sub send_email {
@@ -85,9 +99,7 @@ sub send_email {
 
   my $smtp = $self->_smtp_client;
 
-  my $FAULT = sub {
-    Email::Sender::Failure->throw($self->_error($smtp, $_[0]));
-  };
+  my $FAULT = sub { $self->_throw($_[0], $smtp); };
 
   $smtp->mail(_quoteaddr($env->{from}))
     or $FAULT->("$env->{from} failed after MAIL FROM:");
@@ -99,11 +111,13 @@ sub send_email {
     if ($smtp->to(_quoteaddr($addr))) {
       push @ok_rcpts, $addr;
     } else {
-      push @failures, {
+      # my ($self, $error, $smtp, $error_class, @rest) = @_;
+      push @failures, $self->_failure(
+        $smtp,
+        undef,
+        undef,
         address => $addr,
-        code    => $smtp->code,
-        message => $smtp->message,
-      };
+      );
     }
   }
 
@@ -113,11 +127,20 @@ sub send_email {
   # ourselves.  Still, I've put this comment here (a) in memory of the
   # suffering it caused to have to find that problem and (b) in case the
   # original problem is more insidious than I thought! -- rjbs, 2008-12-05
-  $FAULT->("all recipients were rejected") unless @ok_rcpts;
 
-  if (@failures and not $self->allow_partial_success) {
-    # XXX: This needs to convey, like, information. -- rjbs, 2008-12-05
-    Email::Sender::Failure->throw("not all recipients were successful");
+  if (
+    @failures
+    and ((@ok_rcpts == 0) or (! $self->allow_partial_success))
+  ) {
+    $failures[0]->throw if @failures == 1;
+
+    my $message = sprintf '%s recipients were rejected during RCPT',
+      @ok_rcpts ? 'some' : 'all';
+
+    Email::Sender::Failure::Multi->throw(
+      message  => "not all recipients were successful",
+      failures => \@failures,
+    );
   }
 
   # restore Pobox's support for streaming, code-based messages, and arrays here

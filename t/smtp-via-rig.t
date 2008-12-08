@@ -57,7 +57,7 @@ for my $rig_conf (@rigs) {
 
   my $plan = {};
 
-  for my $test (@$tests) {
+  for my $test (@{ $plan->{tests} }) {
     # XXX: rigs need a way to provide their own messages -- rjbs, 2008-12-05
     $message_counter++;
     my $message = sprintf $stock_message,

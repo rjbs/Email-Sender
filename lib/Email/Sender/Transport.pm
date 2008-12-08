@@ -45,7 +45,19 @@ sub send {
   my ($self, $message, $env, @rest) = @_;
   my $email    = $self->prepare_email($message);
   my $envelope = $self->prepare_envelope($env);
-  $self->send_email($email, $envelope, @rest);
+
+  my $return = eval {
+    $self->send_email($email, $envelope, @rest);
+  };
+
+  my $err = $@;
+  return $return if $return;
+
+  if (eval { $err->isa('Email::Sender::Failure') } and ! $err->recipients) {
+    $err->_recipients([ @{ $envelope->{to} } ]);
+  }
+
+  die $err;
 }
 
 sub prepare_email {

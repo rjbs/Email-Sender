@@ -2,6 +2,8 @@ package Email::Sender::Transport::SMTP;
 use Mouse;
 extends 'Email::Sender::Transport';
 
+use Email::Sender::Failure::Multi;
+
 # I am basically -sure- that this is wrong, but sending hundreds of millions of
 # messages has shown that it is right enough.  I will try to make it textbook
 # later. -- rjbs, 2008-12-05
@@ -113,10 +115,10 @@ sub send_email {
     } else {
       # my ($self, $error, $smtp, $error_class, @rest) = @_;
       push @failures, $self->_failure(
+        undef,
         $smtp,
         undef,
-        undef,
-        address => $addr,
+        recipients => [ $addr ],
       );
     }
   }
@@ -138,7 +140,7 @@ sub send_email {
       @ok_rcpts ? 'some' : 'all';
 
     Email::Sender::Failure::Multi->throw(
-      message  => "not all recipients were successful",
+      message  => $message,
       failures => \@failures,
     );
   }

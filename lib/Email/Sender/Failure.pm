@@ -1,12 +1,21 @@
 package Email::Sender::Failure;
 use Mouse;
 
-use overload '""' => 'message', fallback => 1;
+use overload '""' => sub { $_[0]->message }, fallback => 1;
 
-has 'message' => (
+has message => (
   is       => 'ro',
   required => 1,
 );
+
+has _recipients => (
+  is         => 'rw',
+  isa        => 'ArrayRef',
+  auto_deref => 1,
+  init_arg   => 'recipients',
+);
+
+sub recipients { shift->_recipients }
 
 sub throw {
   my $inv = shift;
@@ -17,7 +26,7 @@ sub throw {
 sub BUILDARGS {
   my ($self, @args) = @_;
 
-  if (@args == 1 and defined $args[0] and length $args[0]) {
+  if (@args == 1 and (!ref $args[0]) and defined $args[0] and length $args[0]) {
     return { message => $args[0] };
   }
 

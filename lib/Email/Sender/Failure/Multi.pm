@@ -5,7 +5,14 @@ extends 'Email::Sender::Failure';
 has failures => (
   is  => 'ro',
   isa => 'ArrayRef',
+  auto_deref => 1,
 );
+
+sub recipients {
+  my ($self) = @_;
+  my @rcpts = map { $_->recipients } $self->failures;
+  return wantarray ? @rcpts : \@rcpts;
+}
 
 sub isa {
   my ($self, $class) = @_;

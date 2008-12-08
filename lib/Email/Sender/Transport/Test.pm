@@ -59,8 +59,8 @@ sub send_email {
   }
 
   if (@deliverables == 0) {
-    Email::Sender::Failure::Mixed->throw(
-      error    => 'could not deliver to any recipients',
+    Email::Sender::Failure::Multi->throw(
+      message  => 'could not deliver to any recipients',
       failures => \@failures,
     );
   }

@@ -40,7 +40,12 @@ SKIP:
       }
     );
   };
-  like($@->error, qr/couldn't open pipe/, 'error message says what we expect' );
+
+  like(
+    $@->message,
+    qr/couldn't open pipe/,
+    'error message says what we expect',
+  );
 }
 
 my $has_FileTemp = eval { require File::Temp; };

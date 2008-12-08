@@ -1,9 +1,9 @@
 package Email::Sender::Failure;
 use Mouse;
 
-use overload '""' => 'error', fallback => 1;
+use overload '""' => 'message', fallback => 1;
 
-has 'error' => (
+has 'message' => (
   is       => 'ro',
   required => 1,
 );
@@ -18,7 +18,7 @@ sub BUILDARGS {
   my ($self, @args) = @_;
 
   if (@args == 1 and defined $args[0] and length $args[0]) {
-    return { error => $args[0] };
+    return { message => $args[0] };
   }
 
   return $self->SUPER::BUILDARGS(@args);

@@ -55,6 +55,8 @@ for my $rig_conf (@rigs) {
     helo => $rig->client_id,
   });
 
+  my $plan = {};
+
   for my $test (@$tests) {
     # XXX: rigs need a way to provide their own messages -- rjbs, 2008-12-05
     $message_counter++;

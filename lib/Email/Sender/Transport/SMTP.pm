@@ -34,7 +34,7 @@ has localport => (is => 'ro', isa => 'Int');
 has sasl_user     => (is => 'ro', isa => 'Str');
 has sasl_password => (is => 'ro', isa => 'Str');
 
-has require_all_rcpts_ok => (is => 'ro', isa => 'Bool', default => 0);
+has allow_partial_success => (is => 'ro', isa => 'Bool', default => 0);
 
 sub _smtp_client {
   my ($self) = @_;
@@ -71,7 +71,10 @@ sub _smtp_client {
 
 sub _error {
   my ($self, $smtp, $error) = @_;
-  return "$error: " . $smtp->message;
+  return {
+    message => "$error: " . $smtp->message,
+    code    => $smtp->code,
+  };
 }
 
 sub send_email {
@@ -112,7 +115,7 @@ sub send_email {
   # original problem is more insidious than I thought! -- rjbs, 2008-12-05
   $FAULT->("all recipients were rejected") unless @ok_rcpts;
 
-  if ($self->require_all_rcpts_ok and @failures) {
+  if (@failures and not $self->allow_partial_success) {
     # XXX: This needs to convey, like, information. -- rjbs, 2008-12-05
     Email::Sender::Failure->throw("not all recipients were successful");
   }

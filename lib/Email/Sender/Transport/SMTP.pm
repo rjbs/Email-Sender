@@ -3,6 +3,7 @@ use Mouse;
 extends 'Email::Sender::Transport';
 
 use Email::Sender::Failure::Multi;
+use Email::Sender::Success::Partial;
 
 # I am basically -sure- that this is wrong, but sending hundreds of millions of
 # messages has shown that it is right enough.  I will try to make it textbook
@@ -148,14 +149,20 @@ sub send_email {
   # restore Pobox's support for streaming, code-based messages, and arrays here
   # -- rjbs, 2008-12-04
 
-  $smtp->data                        or $FAULT->("failed $err");
-  $smtp->datasend($email->as_string) or $FAULT->("during DATA");
-  $smtp->dataend                     or $FAULT->("after DATA");
+  $smtp->data                        or $FAULT->("error at DATA start");
+  $smtp->datasend($email->as_string) or $FAULT->("error at during DATA");
+  $smtp->dataend                     or $FAULT->("error at after DATA");
 
   $smtp->quit;
 
   # XXX: We must report partial success (failures) if applicable.
-  return $self->success;
+  return $self->success unless @failures;
+  return Email::Sender::Success::Partial->new({
+    failure => Email::Sender::Failure::Multi->new({
+      message  => 'some recipients were rejected during RCPT',
+      failures => \@failures
+    }),
+  });
 }
 
 no Mouse;

@@ -27,11 +27,14 @@ END
     $smtp->send(
       $message,
       {
-        to   => [ 'rjjjjjjbs+rcpt@pobox.com', 'dfdfdasdfase@pobox.com' ],
+        to   => [ 'rjbs+rcpt@pobox.com', 'dfdfdasdfase@pobox.com' ],
         from => 'rjbs+from@pobox.com',
       },
     );
   };
 
-  print "\n\n$class - " . Dumper($result || $@) . "\n\n";
+  # my $error = $@;
+  # print "\n\n$class - " . Dumper($result || $error) . "\n\n";
+
+  printf "fail: %s\n", $_ for $result->failure->recipients;
 }

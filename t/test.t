@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 17;
+use Test::More tests => 13;
 
 use Email::Sender::Transport::Test;
 use Email::Sender::Transport::Failable;
@@ -61,30 +61,6 @@ is_deeply(
   [ qw(secret-bcc@nowhere.example.net)],
   "second message delivered to 'secret-bcc'",
 );
-
-$sender->bad_recipients([ qr/bad-example/ ]);
-
-{
-  my $result = eval {
-    $sender->send(
-      $message,
-      { to => [ qw(mr.bad-example@nowhere.example.net)] }
-    );
-  };
-
-  my $error = $@;
-
-  ok(! $result, "mailing failed completely");
-  isa_ok($error, 'Email::Sender::Failure');
-
-  is_deeply(
-    [ $error->failures->[0]->recipients ],
-    [ 'mr.bad-example@nowhere.example.net' ],
-    "delivery indicates failure to 'mr.bad-example'",
-  );
-}
-
-is($sender->deliveries, 2, "we've done two deliveries so far");
 
 ####
 

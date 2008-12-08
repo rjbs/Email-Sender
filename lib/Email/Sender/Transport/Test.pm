@@ -4,18 +4,9 @@ extends 'Email::Sender::Transport';
 
 use Email::Sender::Failure::Multi;
 
-has 'bad_recipients' => (is => 'rw');
+has allow_partial_success => (is => 'ro', isa => 'Bool', default => 0);
 
-sub recipient_ok {
-  my ($self, $recipient) = @_;
-
-  return 1 unless my $all_exprs = $self->bad_recipients;
-
-  for my $re (@{$all_exprs}) {
-    return if $recipient =~ $re;
-  }
-
-  return 1;
+sub recipient_failure {
 }
 
 sub deliveries {
@@ -37,22 +28,27 @@ sub send_email {
   my ($self, $email, $envelope, $arg) = @_;
 
   my @failures;
-  my @deliverables;
+  my @ok_rcpts;
 
   for my $to (@{ $envelope->{to} }) {
-    if ($self->recipient_ok($to)) {
-      push @deliverables, $to;
+    if (my $failure = $self->recipient_failure($to)) {
+      push @failures, $failure;
     } else {
-      push @failures, Email::Sender::Failure::Permanent->new({
-        recipients => [ $to ],
-        message    => 'bad recipient',
-      });
+      push @ok_rcpts, $to;
     }
   }
 
-  if (@deliverables == 0) {
+  if (
+    @failures
+    and ((@ok_rcpts == 0) or (! $self->allow_partial_success))
+  ) {
+    $failures[0]->throw if @failures == 1;
+
+    my $message = sprintf '%s recipients were rejected',
+      @ok_rcpts ? 'some' : 'all';
+
     Email::Sender::Failure::Multi->throw(
-      message  => 'could not deliver to any recipients',
+      message  => $message,
       failures => \@failures,
     );
   }
@@ -62,15 +58,18 @@ sub send_email {
     email     => $email,
     envelope  => $envelope,
     arg       => $arg,
-    successes => \@deliverables,
+    successes => \@ok_rcpts,
     failures  => \@failures,
   };
 
-  if (@failures) {
-    return $self->success; # partial_failure(\@failures);
-  } else {
-    return $self->success;
-  }
+  # XXX: We must report partial success (failures) if applicable.
+  return $self->success unless @failures;
+  return Email::Sender::Success::Partial->new({
+    failure => Email::Sender::Failure::Multi->new({
+      message  => 'some recipients were rejected',
+      failures => \@failures
+    }),
+  });
 }
 
 no Mouse;

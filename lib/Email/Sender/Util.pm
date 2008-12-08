@@ -24,4 +24,22 @@ sub sender_from_email {
   return $sender;
 }
 
+sub _failure {
+  my ($self, $error, $smtp, $error_class, @rest) = @_;
+  my $code = $smtp ? $smtp->code : undef;
+
+  $error_class ||= ! $code       ? 'Email::Sender::Failure'
+                 : $code =~ /^4/ ? 'Email::Sender::Failure::Temporary'
+                 : $code =~ /^5/ ? 'Email::Sender::Failure::Permanent'
+                 :                 'Email::Sender::Failure';
+
+  $error_class->new({
+    message => $smtp
+               ? ($error ? ("$error: " . $smtp->message) : $smtp->message)
+               : $error,
+    code    => $code,
+    @rest,
+  });
+}
+
 1;

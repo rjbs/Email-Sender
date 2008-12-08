@@ -4,6 +4,7 @@ extends 'Email::Sender::Transport';
 
 use Email::Sender::Failure::Multi;
 use Email::Sender::Success::Partial;
+use Email::Sender::Util;
 
 # I am basically -sure- that this is wrong, but sending hundreds of millions of
 # messages has shown that it is right enough.  I will try to make it textbook
@@ -73,25 +74,7 @@ sub _smtp_client {
 
 sub _throw {
   my ($self, @rest) = @_;
-  $self->_failure(@rest)->throw;
-}
-
-sub _failure {
-  my ($self, $error, $smtp, $error_class, @rest) = @_;
-  my $code = $smtp ? $smtp->code : undef;
-
-  $error_class ||= ! $code       ? 'Email::Sender::Failure'
-                 : $code =~ /^4/ ? 'Email::Sender::Failure::Temporary'
-                 : $code =~ /^5/ ? 'Email::Sender::Failure::Permanent'
-                 :                 'Email::Sender::Failure';
-
-  $error_class->new({
-    message => $smtp
-               ? ($error ? ("$error: " . $smtp->message) : $smtp->message)
-               : $error,
-    code    => $code,
-    @rest,
-  });
+  Email::Sender::Util->_failure(@rest)->throw;
 }
 
 sub send_email {
@@ -115,7 +98,7 @@ sub send_email {
       push @ok_rcpts, $addr;
     } else {
       # my ($self, $error, $smtp, $error_class, @rest) = @_;
-      push @failures, $self->_failure(
+      push @failures, Email::Sender::Util->_failure(
         undef,
         $smtp,
         undef,
@@ -153,7 +136,11 @@ sub send_email {
   $smtp->datasend($email->as_string) or $FAULT->("error at during DATA");
   $smtp->dataend                     or $FAULT->("error at after DATA");
 
-  $smtp->quit;
+  # XXX: Was this quit necessary?  If it is required to "commit the
+  # transaction" we will need to deal with this QUIT because persistent
+  # connections should NOT have it. -- rjbs, 2008-12-08
+  #
+  # $smtp->quit;
 
   # XXX: We must report partial success (failures) if applicable.
   return $self->success unless @failures;

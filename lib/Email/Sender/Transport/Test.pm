@@ -3,6 +3,7 @@ use Mouse;
 extends 'Email::Sender::Transport';
 
 use Email::Sender::Failure::Multi;
+use Email::Sender::Success::Partial;
 
 has allow_partial_success => (is => 'ro', isa => 'Bool', default => 0);
 

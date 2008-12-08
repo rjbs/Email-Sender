@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 13;
+use Test::More tests => 38;
 
 use Email::Sender::Transport::Test;
 use Email::Sender::Transport::Failable;
@@ -200,6 +200,34 @@ test_fail(
 $fail_test = Email::Sender::Transport::TestFail->new({
   allow_partial_success => 1,
 });
+
+test_fail(
+  {
+    to   => [ 'permfail@example.com', 'ok@example.com' ],
+    from => 'sender@example.com',
+  },
+  sub {
+    my $succ = shift;
+    isa_ok($succ, 'Email::Sender::Success', 'we got a success');
+    isa_ok($succ, 'Email::Sender::Success::Partial', "it's partial");
+    my $failure = $succ->failure;
+    isa_ok($failure, 'Email::Sender::Failure::Multi', 'the failure is multi');
+
+    my @failures = $failure->failures;
+    is(@failures, 1, "there is only 1 failure in our partial");
+
+    is_deeply(
+      [ $succ->failure->recipients ],
+      [ 'permfail@example.com' ],
+      'failing addrs are correct',
+    );
+    ok(
+      ! $succ->isa('Email::Sender::Failure::Permanent'),
+      "we do not crazily report the success ->isa permfail",
+    );
+  },
+  undef,
+);
 
 ####
 

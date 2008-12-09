@@ -79,5 +79,6 @@ sub send_email {
   return $self->success;
 }
 
+__PACKAGE__->meta->make_immutable;
 no Mouse;
 1;

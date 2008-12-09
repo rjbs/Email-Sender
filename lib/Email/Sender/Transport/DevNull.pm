@@ -4,5 +4,6 @@ extends 'Email::Sender::Transport';
 
 sub send_email { return $_[0]->success }
 
+__PACKAGE__->meta->make_immutable;
 no Mouse;
 1;

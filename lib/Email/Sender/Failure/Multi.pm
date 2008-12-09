@@ -29,5 +29,6 @@ sub isa {
   return $self->SUPER::isa($class);
 }
 
+__PACKAGE__->meta->make_immutable;
 no Mouse;
 1;

@@ -33,5 +33,6 @@ sub BUILDARGS {
   return $self->SUPER::BUILDARGS(@args);
 }
 
+__PACKAGE__->meta->make_immutable;
 no Mouse;
 1;

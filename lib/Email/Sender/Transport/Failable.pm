@@ -27,5 +27,6 @@ around send_email => sub {
   return $self->$orig($email, $env);
 };
 
+__PACKAGE__->meta->make_immutable;
 no Mouse;
 1;

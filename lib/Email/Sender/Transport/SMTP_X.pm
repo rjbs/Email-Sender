@@ -27,5 +27,6 @@ sub _smtp_client {
   return $client;
 }
 
+__PACKAGE__->meta->make_immutable;
 no Mouse;
 1;

@@ -97,5 +97,6 @@ sub unlock {
   flock($fh, LOCK_UN);
 }
 
+__PACKAGE__->meta->make_immutable;
 no Mouse;
 1;

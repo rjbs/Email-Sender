@@ -76,5 +76,6 @@ sub send_email {
   });
 }
 
+__PACKAGE__->meta->make_immutable;
 no Mouse;
 1;

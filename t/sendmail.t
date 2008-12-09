@@ -4,6 +4,7 @@ $^W = 1;
 
 use Cwd;
 use Email::Sender::Transport::Sendmail;
+use File::Spec;
 
 my $email = <<'EOF';
 To:   Casey West <casey@example.com>
@@ -56,7 +57,7 @@ SKIP:
   skip 'Win32 does not understand shebang', 1 if $^O eq 'MSWin32';
 
   skip 'Cannot run this test without File::Temp', 1 unless $has_FileTemp;
-  my $tempdir = File::Temp::tempdir(DIR => 't', CLEANUP => 1);
+  my $tempdir = File::Temp::tempdir(CLEANUP => 1);
 
   require File::Spec;
 
@@ -73,7 +74,10 @@ SKIP:
 
   chmod 0755, $filename;
 
-  my $sender = Email::Sender::Transport::Sendmail->new({ sendmail => $filename });
+  my $sender = Email::Sender::Transport::Sendmail->new({
+    sendmail => $filename
+  });
+
   my $return = $sender->send(
     $email,
     {
@@ -91,13 +95,12 @@ SKIP:
   skip 'Win32 does not understand shebang', 2 if $^O eq 'MSWin32';
 
   skip 'Cannot run this test without File::Temp', 2 unless $has_FileTemp;
-  my $tempdir = File::Temp::tempdir(DIR => 't', CLEANUP => 1);
-
-  require File::Spec;
+  my $tempdir = File::Temp::tempdir(CLEANUP => 1);
 
   my $error = "can't prepare executable test script";
 
-  my $filename = File::Spec->catfile($tempdir, "sendmail");
+  my $filename = File::Spec->catfile($tempdir, 'sendmail');
+  my $logfile  = File::Spec->catfile($tempdir, 'sendmail.log');
   open my $sendmail_fh, ">", $filename or skip $error, 2;
   open my $template_fh, "<", './util/sendmail' or skip $error, 2;
 
@@ -108,6 +111,7 @@ SKIP:
   chmod 0755, $filename;
 
   local $ENV{PATH} = $tempdir;
+  local $ENV{EMAIL_SENDER_TRANSPORT_SENDMAIL_TEST_LOGDIR} = $tempdir;
   my $sender = Email::Sender::Transport::Sendmail->new;
   my $return = eval {
     $sender->send(
@@ -121,12 +125,12 @@ SKIP:
 
   ok( $return, 'send() succeeded with executable sendmail in path' );
 
-  if ( -f 'sendmail.log' ) {
-    open my $fh, '<sendmail.log'
-        or die "Cannot read sendmail.log: $!";
+  if (-f $logfile) {
+    open my $fh, '<', $logfile
+        or die "Cannot read $logfile: $!";
     my $log = join '', <$fh>;
-    like( $log, qr/From: Casey West/, 'log contains From header' );
+    like($log, qr/From: Casey West/, 'log contains From header');
   } else {
-    fail( 'cannot check sendmail log contents'  );
+    fail('cannot check sendmail log contents');
   }
 }

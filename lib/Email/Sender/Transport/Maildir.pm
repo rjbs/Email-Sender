@@ -11,6 +11,7 @@ use Sys::Hostname;
 
 my $HOSTNAME;
 BEGIN { ($HOSTNAME = hostname) =~ s/\..*//; }
+sub _hostname { $HOSTNAME }
 
 my $MAILDIR_TIME    = 0;
 my $MAILDIR_COUNTER = 0;
@@ -94,9 +95,11 @@ sub _deliver_email {
 sub _delivery_fh {
   my ($self) = @_;
 
+  my $hostname = $self->_hostname;
+
   my ($filename, $fh);
   until ($fh) {
-    $filename = join q{.}, $MAILDIR_TIME, $$, ++$MAILDIR_COUNTER, $HOSTNAME;
+    $filename = join q{.}, $MAILDIR_TIME, $$, ++$MAILDIR_COUNTER, $hostname;
     my $filespec = File::Spec->catfile($self->dir, 'tmp', $filename);
     sysopen $fh, $filespec, O_CREAT|O_EXCL|O_WRONLY;
     Email::Sender::Failure->throw("cannot create $filespec for delivery: $!")

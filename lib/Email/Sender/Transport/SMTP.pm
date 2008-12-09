@@ -101,7 +101,6 @@ sub send_email {
       push @failures, Email::Sender::Util->_failure(
         undef,
         $smtp,
-        undef,
         recipients => [ $addr ],
       );
     }

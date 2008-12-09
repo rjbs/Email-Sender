@@ -34,7 +34,7 @@ has helo      => (is => 'ro', isa => 'Str'); # default to hostname_long
 has localaddr => (is => 'ro');
 has localport => (is => 'ro', isa => 'Int');
 
-has sasl_user     => (is => 'ro', isa => 'Str');
+has sasl_username => (is => 'ro', isa => 'Str');
 has sasl_password => (is => 'ro', isa => 'Str');
 
 has allow_partial_success => (is => 'ro', isa => 'Bool', default => 0);
@@ -60,12 +60,12 @@ sub _smtp_client {
 
   $self->_throw("unable to establish SMTP connection") unless $smtp;
 
-  if ($self->sasl_user) {
-    $self->_throw("sasl_user but no sasl_password")
+  if ($self->sasl_username) {
+    $self->_throw("sasl_username but no sasl_password")
       unless defined $self->sasl_password;
 
     $self->_throw('failed AUTH', $smtp)
-      unless $smtp->auth($self->sasl_user, $self->sasl_password)
+      unless $smtp->auth($self->sasl_username, $self->sasl_password)
   }
 
   return $smtp;
@@ -79,8 +79,8 @@ sub _throw {
 sub send_email {
   my ($self, $email, $env) = @_;
 
-  Carp::croak("no valid emails in recipient list") unless
-    my @to = grep { defined and length } @{ $env->{to} };
+  Email::Sender::Failure->throw("no valid addresses in recipient list")
+    unless my @to = grep { defined and length } @{ $env->{to} };
 
   my $smtp = $self->_smtp_client;
 

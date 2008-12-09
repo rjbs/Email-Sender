@@ -1,4 +1,4 @@
-package Email::Sender::Transport::SMTP_X;
+package Email::Sender::Transport::SMTP::Persistent;
 use Mouse;
 extends 'Email::Sender::Transport::SMTP';
 
@@ -22,6 +22,7 @@ sub _smtp_client {
   }
 
   my $client = $self->SUPER::_smtp_client;
+
   $self->_cached_client($client);
 
   return $client;

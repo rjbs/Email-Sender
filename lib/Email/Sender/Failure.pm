@@ -8,6 +8,10 @@ has message => (
   required => 1,
 );
 
+has code => (
+  is => 'ro',
+);
+
 has _recipients => (
   is         => 'rw',
   isa        => 'ArrayRef',

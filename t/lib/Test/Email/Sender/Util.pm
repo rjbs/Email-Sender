@@ -35,6 +35,13 @@ sub perform_stock_mockery {
     return 1;
   });
 
+  $mock_smtp->mock(ok => sub {
+    my $code = shift->code;
+    return 0 < $code && $code < 400;
+  });
+
+  $mock_smtp->mock(reset => sub { $_[0]->succ });
+
   $mock_smtp->mock(auth => sub {
     my ($self, $user, $pass) = @_;
 
@@ -53,9 +60,13 @@ sub perform_stock_mockery {
     });
   }
 
-  $mock_smtp->mock(data     => sub { $_[0]->succ });
-  $mock_smtp->mock(datasend => sub { $_[0]->succ });
-  $mock_smtp->mock(dataend  => sub { $_[0]->succ });
+  $mock_smtp->{datafail} = '';
+  for my $part (qw(data datasend dataend)) {
+    $mock_smtp->mock($part => sub {
+      return $_[0]->fail(300 => 'NFI') if $_[0]->{datafail} eq $part;
+      return $_[0]->succ;
+    });
+  }
 }
 
 1;

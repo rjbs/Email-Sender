@@ -6,19 +6,19 @@ author        'Ricardo SIGNES <rjbs@cpan.org>';
 license       'perl';
 version_from  'lib/Email/Sender.pm';
 
-# REAL PREREQUISITES
+# NON-CORE PREREQUISITES
 requires('Mouse'           => 0.12); # isa=>class accepts subclasses; Squirrel
 requires('Email::Abstract' => 3);    # XXX: really use Abstract?; 3 = \$str
 requires('Email::Address'  => 0);    # used for envelope-from-msg
 requires('Net::SMTP'       => 0);
+requires('List::MoreUtils' => 0);    # minimum version unknown; uniq
 requires('Class::Method::Modifiers' => 0); # minimum version unknown; Failable
 
 # SOON TO NOT BE PREREQUISIES
 requires('Email::LocalDelivery' => 0);     # XXX: inline code, deprecate E:LD
 requires('Email::Simple'        => 1.998); # XXX: needed(?) for ->header_obj
-requires('Params::Util'         => 0);     # XXX: not really needed anymore?
+                                           # only needed my Mbox; split?
 requires('Sys::Hostname::Long'  => 0);     # XXX: do we -need- a good HELO?
-requires('Params::Validate'     => 0);     # XXX: REMOVE THIS
 
 # XXX: REMOVE SQLite TRANSPORT TO ITS OWN DIST
 requires('DBD::SQLite'          => 0);  # minimum unknown

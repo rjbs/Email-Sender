@@ -2,14 +2,17 @@ use strict;
 use warnings;
 package Email::Sender::Util;
 
+use List::MoreUtils ();
+
 # This code will be used by Email::Sender::Simple. -- rjbs, 2008-12-04
 sub recipients_from_email {
   my ($self, $email) = @_;
 
-  my @to = map { $_->address }
+  my @to = List::MoreUtils::uniq(
+           map { $_->address }
            map { Email::Address->parse($_) }
            map { $email->get_header($_) }
-           qw(to cc);
+           qw(to cc bcc));
 
   return \@to;
 }

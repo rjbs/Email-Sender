@@ -6,7 +6,6 @@ use Errno ();
 use Fcntl;
 use File::Path;
 use File::Spec;
-use Email::LocalDelivery;
 
 use Sys::Hostname;
 

@@ -15,7 +15,6 @@ requires('List::MoreUtils' => 0);    # minimum version unknown; uniq
 requires('Class::Method::Modifiers' => 0); # minimum version unknown; Failable
 
 # SOON TO NOT BE PREREQUISIES
-requires('Email::LocalDelivery' => 0);     # XXX: inline code, deprecate E:LD
 requires('Email::Simple'        => 1.998); # XXX: needed(?) for ->header_obj
                                            # only needed my Mbox; split?
 requires('Sys::Hostname::Long'  => 0);     # XXX: do we -need- a good HELO?

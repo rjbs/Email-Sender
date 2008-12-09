@@ -3,12 +3,17 @@ use strict;
 use warnings;
 
 use Test::More tests => 5;
+use File::Spec;
+use File::Temp;
 
 use Email::Sender::Transport::SQLite;
 
-unlink 't/email.db';
+my $db = File::Spec->catfile(
+  File::Temp::tempdir(CLEANUP => 1),
+  'email.db',
+);
 
-my $sender = Email::Sender::Transport::SQLite->new({ db_file => 't/email.db' });
+my $sender = Email::Sender::Transport::SQLite->new({ db_file => $db });
 isa_ok($sender, 'Email::Sender::Transport');
 isa_ok($sender, 'Email::Sender::Transport::SQLite');
 
@@ -51,7 +56,7 @@ END_MESSAGE
   ok($result, 'success');
 }
 
-my $dbh = DBI->connect("dbi:SQLite:dbname=t/email.db", undef, undef);
+my $dbh = DBI->connect("dbi:SQLite:dbname=$db", undef, undef);
 
 my ($deliveries) = $dbh->selectrow_array("SELECT COUNT(*) FROM recipients");
 

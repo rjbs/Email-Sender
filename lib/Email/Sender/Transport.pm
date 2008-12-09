@@ -63,9 +63,9 @@ sub send {
 sub prepare_email {
   my ($self, $msg) = @_;
 
-  return unless defined $msg;
+  confess("no email passed in to sender") unless defined $msg;
 
-  # We check ref because if someone would pass in a large message, in some
+  # We check blessed because if someone would pass in a large message, in some
   # perls calling isa on the string would create a package with the string as
   # the name.  If the message was (say) two megs, now you'd have a two meg hash
   # key in the stash.  Oops! -- rjbs, 2008-12-04

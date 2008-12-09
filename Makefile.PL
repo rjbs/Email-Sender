@@ -8,7 +8,7 @@ version_from  'lib/Email/Sender.pm';
 
 # REAL PREREQUISITES
 requires('Mouse'           => 0.12); # isa=>class accepts subclasses; Squirrel
-requires('Email::Abstract' => 0);    # XXX: really use Abstract?
+requires('Email::Abstract' => 3);    # XXX: really use Abstract?; 3 = \$str
 requires('Email::Address'  => 0);    # used for envelope-from-msg
 requires('Net::SMTP'       => 0);
 requires('Class::Method::Modifiers' => 0); # minimum version unknown; Failable

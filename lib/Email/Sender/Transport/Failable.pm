@@ -21,7 +21,7 @@ around send_email => sub {
   for my $cond ($self->failure_conditions) {
     my $reason = $cond->($self, $email, $env);
     next unless $reason;
-    die (ref $reason ? $reason : Email::Sender::Failure->new);
+    die (ref $reason ? $reason : Email::Sender::Failure->new($reason));
   }
 
   return $self->$orig($email, $env);

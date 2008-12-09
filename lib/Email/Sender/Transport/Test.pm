@@ -10,18 +10,16 @@ has allow_partial_success => (is => 'ro', isa => 'Bool', default => 0);
 sub recipient_failure { }
 sub delivery_failure  { }
 
-sub deliveries {
-  my ($self) = @_;
-  return @{ $self->{deliveries} ||= [] };
-}
-
-sub delivered_emails {
-  my ($self) = @_;
-  map { $_->{email} } $self->deliveries;
-}
+has deliveries => (
+  is  => 'ro',
+  isa => 'ArrayRef',
+  init_arg   => undef,
+  default    => sub { [] },
+  auto_deref => 1,
+);
 
 sub clear_deliveries {
-  delete $_[0]->{deliveries};
+  @{ $_[0]->deliveries } = ();
   return;
 }
 

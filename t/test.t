@@ -11,7 +11,7 @@ my $sender = Email::Sender::Transport::Test->new;
 isa_ok($sender, 'Email::Sender::Transport');
 isa_ok($sender, 'Email::Sender::Transport::Test');
 
-is($sender->deliveries, 0, "no deliveries so far");
+is(@{ $sender->deliveries }, 0, "no deliveries so far");
 
 my $message = <<'END_MESSAGE';
 From: sender@test.example.com
@@ -35,7 +35,7 @@ END_MESSAGE
   ok($result, 'success');
 }
 
-is($sender->deliveries, 1, "we've done one delivery so far");
+is(@{ $sender->deliveries }, 1, "we've done one delivery so far");
 
 {
   my $result = $sender->send(
@@ -46,7 +46,7 @@ is($sender->deliveries, 1, "we've done one delivery so far");
   ok($result, 'success');
 }
 
-is($sender->deliveries, 2, "we've done two deliveries so far");
+is(@{ $sender->deliveries }, 2, "we've done two deliveries so far");
 
 my @deliveries = $sender->deliveries;
 
@@ -232,6 +232,7 @@ test_fail(
 ####
 
 my $failer = Email::Sender::Transport::Failable->new({ transport => $sender });
+$failer->transport->clear_deliveries;
 
 my $i = 0;
 $failer->fail_if(sub {
@@ -244,11 +245,19 @@ $failer->fail_if(sub {
   ok($result, 'success');
 }
 
-is($failer->transport->deliveries, 3, "first post-fail_if delivery is OK");
+is(
+  @{ $failer->transport->deliveries },
+  1,
+  "first post-fail_if delivery is OK"
+);
 
 {
   eval { my $result = $failer->send($message, { to => [ qw(ok@ok.ok) ] }) };
-  ok($@, "we died"); # XXX lame -- rjbs, 2007-02-16
+  isa_ok($@, 'Email::Sender::Failure', "we died");
 }
 
-is($failer->transport->deliveries, 3, "second post-fail_if delivery fails");
+is(
+  @{ $failer->transport->deliveries },
+  1,
+  "second post-fail_if delivery fails"
+);

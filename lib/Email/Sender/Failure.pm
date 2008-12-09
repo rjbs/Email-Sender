@@ -25,7 +25,8 @@ sub throw {
 
 sub BUILD {
   my ($self) = @_;
-  confess("message contain non-space characters") unless $self->message =~ /\S/;
+  confess("message must contain non-space characters")
+    unless $self->message =~ /\S/;
 }
 
 sub BUILDARGS {

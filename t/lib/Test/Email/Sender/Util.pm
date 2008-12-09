@@ -14,4 +14,48 @@ sub readfile {
   return \@lines;
 }
 
+sub perform_stock_mockery {
+  my ($self, $mock_smtp) = @_;
+
+  for (qw(code message)) {
+    $mock_smtp->set_bound($_ => \($mock_smtp->{$_}));
+  }
+
+  $mock_smtp->mock(fail => sub {
+    my ($self, $code, $msg) = @_;
+    $self->{code} = $code;
+    $self->{message} = $msg;
+    return;
+  });
+
+  $mock_smtp->mock(succ => sub {
+    my ($self, $code, $msg) = @_;
+    $self->{code} = $code || 200;
+    $self->{message} = $msg || 'Ok';
+    return 1;
+  });
+
+  $mock_smtp->mock(auth => sub {
+    my ($self, $user, $pass) = @_;
+
+    return $self->fail(400 => 'fail') unless $self->{pass}{$user};
+    return $self->succ if $self->{pass}{$user} eq $pass;
+    return $self->fail(400 => 'fail');
+  });
+
+  for my $method (qw(mail to)) {
+    $mock_smtp->mock($method => sub {
+      my ($self, $addr) = @_;
+      if (my $fail = $self->{failaddr}{$addr}) {
+        return $self->fail(@$fail);
+      }
+      return $self->succ;
+    });
+  }
+
+  $mock_smtp->mock(data     => sub { $_[0]->succ });
+  $mock_smtp->mock(datasend => sub { $_[0]->succ });
+  $mock_smtp->mock(dataend  => sub { $_[0]->succ });
+}
+
 1;

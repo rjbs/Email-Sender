@@ -2,12 +2,26 @@ package Email::Sender::Transport::Mbox;
 use Mouse;
 extends 'Email::Sender::Transport';
 
+=head1 NAME
+
+Email::Sender::Transport::Mbox - deliver mail to an mbox on disk
+
 use Carp;
 use File::Path;
 use File::Basename;
 use IO::File;
 use Email::Simple 1.998;  # needed for ->header_obj
 use Fcntl ':flock';
+
+=head1 DESCRIPTION
+
+This transport delivers into an mbox.  The mbox file may be given by the 
+F<filename> argument to the constructor, and defaults to F<mbox>.
+
+The transport I<currently> assumes that the mbox is in F<mboxo> format, but
+this may change or be configurable in the future.
+
+=cut
 
 has 'filename' => (is => 'ro', default => 'mbox', required => 1);
 
@@ -61,7 +75,7 @@ sub _open_fh {
 
 sub _close_fh {
   my ($class, $fh, $file) = @_;
-  $class->unlock($fh);
+  $class->_unlock($fh);
   return $fh->close;
 }
 
@@ -92,7 +106,7 @@ sub _getlock {
   Carp::confess "couldn't lock file $fn";
 }
 
-sub unlock {
+sub _unlock {
   my ($class, $fh) = @_;
   flock($fh, LOCK_UN);
 }

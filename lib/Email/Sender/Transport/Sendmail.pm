@@ -2,6 +2,23 @@ package Email::Sender::Transport::Sendmail;
 use Mouse;
 extends 'Email::Sender::Transport';
 
+=head1 NAME
+
+Email::Sender::Transport::Sendmail - send mail via sendmail(1)
+
+=head2 DESCRIPTION
+
+This transport sends mail by piping it to the F<sendmail> command.  If the
+location of the F<sendmail> command is not provided in the constructor (see
+below) then the library will look for an executable file called F<sendmail> in
+the path.
+
+To specify the location of sendmail:
+
+  my $sender = Email::Sender::Transport::Sendmail->new({ sendmail => $path });
+
+=cut
+
 use File::Spec ();
 
 has 'sendmail' => (
@@ -33,7 +50,7 @@ sub _find_sendmail {
 }
 
 sub send_email {
-  my ($self, $email, $envelope, $arg) = @_;
+  my ($self, $email, $envelope) = @_;
 
   my $sendmail = $self->sendmail;
 

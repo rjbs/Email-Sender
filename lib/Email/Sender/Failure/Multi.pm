@@ -7,6 +7,13 @@ extends 'Email::Sender::Failure';
 A multiple failure report is raised when more than one failure is encountered
 when sending a single message, or when mixed states were encountered.
 
+=head1 METHODS
+
+=head2 failures
+
+This method returns a list (or arrayref, in scalar context) of other
+Email::Sender::Failure objects represented by this multi.
+
 =cut
 
 has failures => (
@@ -20,6 +27,13 @@ sub recipients {
   my @rcpts = map { $_->recipients } $self->failures;
   return wantarray ? @rcpts : \@rcpts;
 }
+
+=head2 isa
+
+A multiple failure will report that it is a Permanent or Temporary if all of
+its contained failures are failures of that type.
+
+=cut
 
 sub isa {
   my ($self, $class) = @_;

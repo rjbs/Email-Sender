@@ -2,12 +2,34 @@ package Email::Sender::Transport::Maildir;
 use Mouse;
 extends 'Email::Sender::Transport';
 
+=head1 NAME
+
+Email::Sender::Transport::Maildir - deliver mail to a maildir on disk
+
+=cut
+
 use Errno ();
 use Fcntl;
 use File::Path;
 use File::Spec;
 
 use Sys::Hostname;
+
+=head1 DESCRIPTION
+
+This transport delivers into a maildir.  The maildir's location may be given as
+the F<dir> argument to the constructor, and defaults to F<Maildir> in the
+current directory (at the time of transport initialization).
+
+If the directory does not exist, it will be created.
+
+Three headers will be added:
+
+ * X-Email-Sender-From - the envelope sender
+ * X-Email-Sender-To   - the envelope recipients (one header per rcpt)
+ * Lines               - the number of lines in the body
+
+=cut
 
 my $HOSTNAME;
 BEGIN { ($HOSTNAME = hostname) =~ s/\..*//; }
@@ -27,8 +49,8 @@ sub send_email {
 
   my $dupe = Email::Abstract->new(\do { $email->as_string });
 
-  $dupe->set_header('X-EmailSender-From' => $env->{from});
-  $dupe->set_header('X-EmailSender-To'   => @{ $env->{to} });
+  $dupe->set_header('X-Email-Sender-From' => $env->{from});
+  $dupe->set_header('X-Email-Sender-To'   => @{ $env->{to} });
 
   $self->_ensure_maildir_exists;
 

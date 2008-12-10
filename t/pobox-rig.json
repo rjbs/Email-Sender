@@ -6,8 +6,8 @@
   },
   [
     {
-      "from": "rjbs@cpan.org",
-      "to"  : "rjbs@pobox.com",
+      "from": null,
+      "to"  : null,
       "result_class": "Email::Sender::Success"
     }
   ]

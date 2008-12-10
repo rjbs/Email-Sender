@@ -27,7 +27,7 @@ END
     $smtp->send(
       $message,
       {
-        to   => [ 'rjbs+rcpt@pobox.com', 'dfdfdasdfase@pobox.com' ],
+        to   => [ 'rjbs+rcpt@pobox.com', 'rsignes@pobox.com' ],
         from => 'rjbs+from@pobox.com',
       },
     );

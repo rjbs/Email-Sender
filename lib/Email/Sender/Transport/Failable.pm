@@ -2,6 +2,12 @@ package Email::Sender::Transport::Failable;
 use Mouse;
 extends 'Email::Sender::Transport::Wrapper';
 
+=head1 NAME
+
+Email::Sender::Transport::Failable - a wrapper to makes things fail predictably
+
+=cut
+
 has 'failure_conditions' => (
   is  => 'ro',
   isa => 'ArrayRef',

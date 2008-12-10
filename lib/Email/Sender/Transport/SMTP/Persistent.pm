@@ -2,6 +2,17 @@ package Email::Sender::Transport::SMTP::Persistent;
 use Mouse;
 extends 'Email::Sender::Transport::SMTP';
 
+=head1 NAME
+
+Email::Sender::Transport::SMTP::Persistent - an SMTP client that stays online
+
+=head1 DESCRIPTION
+
+The stock Email::Sender::Transport::SMTP reconnects each time it sends a
+message.  This transport only reconnects when the existing connection fails.
+
+=cut
+
 use Net::SMTP;
 use Sys::Hostname::Long ();
 

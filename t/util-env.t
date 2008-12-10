@@ -23,13 +23,13 @@ END
 my $email = Email::Sender::Transport->prepare_email(\$message);
 
 is_deeply(
-  Email::Sender::Util->sender_from_email($email),
+  Email::Sender::Util->_sender_from_email($email),
   'rjbs@example.com',
   "we get the sender we expect",
 );
 
 is_deeply(
-  [ sort @{ Email::Sender::Util->recipients_from_email($email) } ],
+  [ sort @{ Email::Sender::Util->_recipients_from_email($email) } ],
   [ sort qw(dude@example.com guy@example.com buddy@example.ca cc@cc.example.cc
     multiple@example.cc bcc@example.biz) ],
   "we get the rcpts we expect",

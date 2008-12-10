@@ -2,6 +2,12 @@ package Email::Sender::Transport::Test;
 use Mouse;
 extends 'Email::Sender::Transport';
 
+=head1 NAME
+
+Email::Sender::Transport::Test - delivery mail in memory for testing
+
+=cut
+
 use Email::Sender::Failure::Multi;
 use Email::Sender::Success::Partial;
 

@@ -8,6 +8,12 @@ use Carp;
 
 Email::Sender::Transport::Wrapper - a mailer to wrap a mailer for mailing mail
 
+=head1 DESCRIPTION
+
+Email::Sender::Transport::Wrapper wraps a transport, provided as the
+C<transport> argument to the constructor.  It is provided as a simple way to
+use method modifiers to create wrapping classes.
+
 =cut
 
 has transport => (
@@ -24,7 +30,7 @@ sub send_email {
 
 =head1 AUTHOR
 
-Ricardo Signes, C<< <rjbs@cpan.org> >>
+Ricardo SIGNES, C<< <rjbs@cpan.org> >>
 
 =head1 BUGS
 
@@ -35,7 +41,7 @@ notified of progress on your bug as I make changes.
 
 =head1 COPYRIGHT
 
-Copyright 2006 Ricardo Signes, All Rights Reserved.
+Copyright 2006-2008, Ricardo SIGNES, all rights reserved.
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.

@@ -2,6 +2,12 @@ package Email::Sender::Transport::SQLite;
 use Mouse;
 extends 'Email::Sender::Transport';
 
+=head1 NAME
+
+Email::Sender::Transport::SQLite - deliver mail to an sqlite db for testing
+
+=cut
+
 use DBI;
 
 has _dbh => (

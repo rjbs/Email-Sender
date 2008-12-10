@@ -9,12 +9,12 @@ version_from  'lib/Email/Sender.pm';
 # NON-CORE PREREQUISITES
 requires('Mouse'           => 0.12); # isa=>class accepts subclasses; Squirrel
 requires('Email::Abstract' => 3);    # XXX: really use Abstract?; 3 = \$str
-requires('Email::Address'  => 0);    # used for envelope-from-msg
 requires('Net::SMTP'       => 0);
 requires('List::MoreUtils' => 0);    # minimum version unknown; uniq
 requires('Class::Method::Modifiers' => 0); # minimum version unknown; Failable
 
 # SOON TO NOT BE PREREQUISIES
+requires('Email::Address'       => 0);     # used for env-from-msg (::Simple)
 requires('Email::Simple'        => 1.998); # XXX: needed(?) for ->header_obj
                                            # only needed my Mbox; split?
 requires('Sys::Hostname::Long'  => 0);     # XXX: do we -need- a good HELO?

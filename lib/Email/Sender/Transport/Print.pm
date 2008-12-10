@@ -2,6 +2,12 @@ package Email::Sender::Transport::Print;
 use Mouse;
 extends 'Email::Sender::Transport';
 
+=head1 NAME
+
+Email::Sender::Transport::Print - print email to a filehandle (like stdout)
+
+=cut
+
 use IO::Handle;
 
 has 'fh' => (

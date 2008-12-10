@@ -2,9 +2,65 @@ package Email::Sender::Transport::SMTP;
 use Mouse;
 extends 'Email::Sender::Transport';
 
+=head1 NAME
+
+Email::Sender::Transport::SMTP - send email over SMTP
+
+=cut
+
 use Email::Sender::Failure::Multi;
 use Email::Sender::Success::Partial;
 use Email::Sender::Util;
+
+=head1 DESCRIPTION
+
+=head1 ATTRIBUTES
+
+The following attributes may be passed to the constructor:
+
+=over
+
+=item host - the name of the host to connect to; defaults to localhost
+
+=item ssl - if true, connect via SSL; defaults to false
+
+=item port - port to connect to; defaults to 25 for non-SSL, 465 for SSL
+
+=cut
+
+has host => (is => 'ro', isa => 'Str',  default => 'localhost');
+has ssl  => (is => 'ro', isa => 'Bool', default => 0);
+has port => (
+  is  => 'ro',
+  isa => 'Int',
+  lazy    => 1,
+  default => sub { return $_[0]->ssl ? 465 : 25; },
+);
+
+=item sasl_username - the username to use for auth; optional
+
+=item sasl_password - the password to use for auth; must be provided if username is provided
+
+=item allow_partial_success - if true, will send data even if some recipients were rejected
+
+=cut
+
+has sasl_username => (is => 'ro', isa => 'Str');
+has sasl_password => (is => 'ro', isa => 'Str');
+
+has allow_partial_success => (is => 'ro', isa => 'Bool', default => 0);
+
+=item helo - what to say when saying HELO; no default
+
+=item localaddr
+
+=item localpart
+
+=cut
+
+has helo      => (is => 'ro', isa => 'Str'); # default to hostname_long
+has localaddr => (is => 'ro');
+has localport => (is => 'ro', isa => 'Int');
 
 # I am basically -sure- that this is wrong, but sending hundreds of millions of
 # messages has shown that it is right enough.  I will try to make it textbook
@@ -19,25 +75,6 @@ sub _quoteaddr {
   return $addr unless $localpart =~ /[^\w.+-]/ or $localpart =~ /^\./;
   return join q{@}, qq("$localpart"), $domain;
 }
-
-has host => (is => 'ro', isa => 'Str', default => 'localhost');
-has port => (
-  is  => 'ro',
-  isa => 'Int',
-  lazy    => 1,
-  default => sub { return $_[0]->ssl ? 465 : 25; },
-);
-
-has ssl => (is => 'ro');
-
-has helo      => (is => 'ro', isa => 'Str'); # default to hostname_long
-has localaddr => (is => 'ro');
-has localport => (is => 'ro', isa => 'Int');
-
-has sasl_username => (is => 'ro', isa => 'Str');
-has sasl_password => (is => 'ro', isa => 'Str');
-
-has allow_partial_success => (is => 'ro', isa => 'Bool', default => 0);
 
 sub _smtp_client {
   my ($self) = @_;

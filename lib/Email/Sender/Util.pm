@@ -5,11 +5,16 @@ package Email::Sender::Util;
 use Email::Sender::Failure;
 use Email::Sender::Failure::Permanent;
 use Email::Sender::Failure::Temporary;
-
 use List::MoreUtils ();
 
+=head1 NAME
+
+Email::Sender::Util - random stuff that makes Email::Sender go
+
+=cut
+
 # This code will be used by Email::Sender::Simple. -- rjbs, 2008-12-04
-sub recipients_from_email {
+sub _recipients_from_email {
   my ($self, $email) = @_;
 
   my @to = List::MoreUtils::uniq(
@@ -21,7 +26,7 @@ sub recipients_from_email {
   return \@to;
 }
 
-sub sender_from_email {
+sub _sender_from_email {
   my ($self, $email) = @_;
 
   my ($sender) = map { $_->address }

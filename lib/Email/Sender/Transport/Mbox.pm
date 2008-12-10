@@ -8,6 +8,8 @@ our $VERSION = '0.000';
 
 Email::Sender::Transport::Mbox - deliver mail to an mbox on disk
 
+=cut
+
 use Carp;
 use File::Path;
 use File::Basename;

@@ -4,6 +4,7 @@ package Email::Sender::Util;
 
 our $VERSION = '0.000';
 
+use Email::Address;
 use Email::Sender::Failure;
 use Email::Sender::Failure::Permanent;
 use Email::Sender::Failure::Temporary;

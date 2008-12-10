@@ -46,5 +46,5 @@ my $lines = readfile($files[0]);
 
 my $simple = Email::Simple->new(join '', @$lines);
 
-is($simple->header('X-EmailSender-To'), 'rjbs@example.com', 'env info in hdr');
+is($simple->header('X-Email-Sender-To'), 'rjbs@example.com', 'env info in hdr');
 

@@ -4,6 +4,10 @@ extends 'Email::Sender::Failure';
 
 our $VERSION = '0.000';
 
+=head1 NAME
+
+Email::Sender::Failure::Multi - an aggregate of multiple failures
+
 =head1 DESCRIPTION
 
 A multiple failure report is raised when more than one failure is encountered

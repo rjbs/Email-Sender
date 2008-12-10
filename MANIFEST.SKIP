@@ -6,3 +6,4 @@ cover_db
 ^Makefile$
 ^Makefile.old$
 \.bak$
+Email-Sender-*

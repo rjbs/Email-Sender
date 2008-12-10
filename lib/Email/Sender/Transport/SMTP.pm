@@ -52,9 +52,11 @@ has allow_partial_success => (is => 'ro', isa => 'Bool', default => 0);
 
 =item helo - what to say when saying HELO; no default
 
-=item localaddr
+=item localaddr - local address from which to connect
 
-=item localpart
+=item localpart - local port from which to connect
+
+=back
 
 =cut
 
@@ -186,6 +188,14 @@ sub send_email {
     }),
   });
 }
+
+=head1 PARTIAL SUCCESS
+
+If C<allow_partial_success> was set when creating the transport, the transport
+may return L<Email::Sender::Success::Partial> objects.  Consult that module's
+documentation.
+
+=cut
 
 __PACKAGE__->meta->make_immutable;
 no Mouse;

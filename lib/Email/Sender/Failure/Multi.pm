@@ -2,6 +2,13 @@ package Email::Sender::Failure::Multi;
 use Mouse;
 extends 'Email::Sender::Failure';
 
+=head1 DESCRIPTION
+
+A multiple failure report is raised when more than one failure is encountered
+when sending a single message, or when mixed states were encountered.
+
+=cut
+
 has failures => (
   is  => 'ro',
   isa => 'ArrayRef',

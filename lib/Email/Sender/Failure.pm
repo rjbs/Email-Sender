@@ -3,14 +3,41 @@ use Mouse;
 
 use overload '""' => sub { $_[0]->message }, fallback => 1;
 
+=head1 NAME
+
+Email::Sender::Failure - a report of failure from an email sending transport
+
+=head1 METHODS
+
+=head2 message
+
+This method returns the failure message, which should describe the failure.
+Failures stringify to this message.
+
+=cut
+
 has message => (
   is       => 'ro',
   required => 1,
 );
 
+=head2 code
+
+This returns the numeric code of the failure, if any.  This is mostly useful
+for network protocol transports like SMTP.  This may be undefined.
+
+=cut
+
 has code => (
   is => 'ro',
 );
+
+=head2 recipients
+
+This returns a list (or, in scalar context, an arrayref) of addresses to which
+the email could not be sent.
+
+=cut
 
 has _recipients => (
   is         => 'rw',
@@ -42,6 +69,20 @@ sub BUILDARGS {
 
   return $self->SUPER::BUILDARGS(@args);
 }
+
+=head1 SEE ALSO
+
+=over
+
+=item * L<Email::Sender::Permanent>
+
+=item * L<Email::Sender::Temporary>
+
+=item * L<Email::Sender::Multi>
+
+=back
+
+=cut
 
 __PACKAGE__->meta->make_immutable;
 no Mouse;

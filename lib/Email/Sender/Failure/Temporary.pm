@@ -6,7 +6,7 @@ our $VERSION = '0.000';
 
 =head1 NAME
 
-Email::Sender::Failure::Permanent - a temporary delivery failure
+Email::Sender::Failure::Temporary - a temporary delivery failure
 
 =cut
 

@@ -4,7 +4,6 @@ use Mouse;
 
 use Carp;
 use Email::Abstract;
-use Email::Address;
 use Email::Sender::Success;
 use Email::Sender::Failure::Temporary;
 use Email::Sender::Failure::Permanent;
@@ -12,34 +11,59 @@ use Scalar::Util ();
 
 =head1 SYNOPSIS
 
-  package Email::Sender::Transport::STDOUT;
-  use base qw(Email::Sender::Transport);
+  package Email::Sender::Transport::IM2000;
+  use Mouse;
+  extends 'Email::Sender::Transport';
 
-  sub send {
-    my ($self, $email, $arg) = @_;
+  sub send_email {
+    my ($self, $email, $env) = @_;
     print $email->as_string;
     return $self->success;
   }
 
   ...
 
-  my $xport = Email::Sender::Transport::STDOUT->new;
+  my $xport = Email::Sender::Transport::IM2000->new;
   $xport->send($email, { to => [ $recipient, ... ], from => $from });
 
 =head1 DESCRIPTION
 
-This module provides an extended API for mailers used by Email::Sender.
+Email::Sender::Transport is the base class for mail-sending classes in the
+Email::Sender system.
 
-=cut
+=head1 USER'S API
+
+There are only three critical things to know about using an Email::Sender
+transport:
+
+=over
+
+=item * create the transport, consulting its documentation for parameters
+
+=item * call its send method, passing an email and envelope
+
+=item * it will return an L<Email::Sender::Success> or throw an L<Email::Sender::Failure>
+
+=back
+
+Some transports will either succeed or fail totally.  Some also allow partial
+success to be signalled.  Others (like LMTP) may I<require> that partial
+success be accounted for.
+
+Partial success is indicated by the return of a
+L<Email::Sender::Success::Partial>.  The most commonly useful network
+transports, Sendmail and SMTP, will never return a partial success in their
+default configuration, so most users can avoid worrying about them.
 
 =head2 send
 
-=cut
+  my $result = eval { $sender->send($email, \%env) };
 
-sub send_email {
-  my $class = ref $_[0] ? ref $_[0] : $_[0];
-  Carp::croak "send_email method not implemented on $class";
-}
+This is the only method that most users will ever need to call.  It attempts to
+send the message across the transport, and will either return success or raise
+an exception.
+
+=cut
 
 sub send {
   my ($self, $message, $env, @rest) = @_;
@@ -60,6 +84,34 @@ sub send {
   die $err;
 }
 
+=head1 DEVELOPER'S API
+
+=head2 send_email
+
+This method is called by C<send>, which should probably not be overriden.
+Instead, override this method.  It is passed an L<Email::Abstract> object and
+an envelope.  The envelope is a hashref in the following form:
+
+  to   - an arrayref of email addresses (strings)
+  from - a single email address (string)
+
+It should either return success or throw an exception (preferably one that is
+an Email::Sender::Failure).
+
+=cut
+
+sub send_email {
+  my $class = ref $_[0] ? ref $_[0] : $_[0];
+  Carp::croak "send_email method not implemented on $class";
+}
+
+=head2 prepare_email
+
+This method is passed a scalar and is expected to return an Email::Abstract
+object.  You probably shouldn't override it in most cases.
+
+=cut
+
 sub prepare_email {
   my ($self, $msg) = @_;
 
@@ -74,6 +126,15 @@ sub prepare_email {
   return Email::Abstract->new($msg);
 }
 
+=head2 prepare_envelope
+
+This method is passed a hashref and returns a new hashref that should be used
+as the envelope passed to the C<send_email> method.  This method is responsible
+for ensuring that the F<to> entry is an array.
+
+=cut
+
+
 sub prepare_envelope {
   my ($self, $env) = @_;
 
@@ -83,6 +144,17 @@ sub prepare_envelope {
 
   return \%new_env;
 }
+
+=head2 success
+
+  ...
+  return $self->success;
+
+This method returns a new Email::Sender::Success object.  Arguments passed to
+this method are passed along to the Success's constructor.  This is provided as
+a convenience for returning success from subclasses' C<send_email> methods.
+
+=cut
 
 sub success {
   my $self = shift;
@@ -101,7 +173,7 @@ notified of progress on your bug as I make changes.
 
 =head1 COPYRIGHT
 
-Copyright 2006-2009, Ricardo SIGNES.
+Copyright 2006-2008, Ricardo SIGNES.
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.

@@ -2,6 +2,8 @@ package Email::Sender::Transport::Test;
 use Mouse;
 extends 'Email::Sender::Transport';
 
+our $VERSION = '0.000';
+
 =head1 NAME
 
 Email::Sender::Transport::Test - delivery mail in memory for testing

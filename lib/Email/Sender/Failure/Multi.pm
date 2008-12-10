@@ -2,6 +2,8 @@ package Email::Sender::Failure::Multi;
 use Mouse;
 extends 'Email::Sender::Failure';
 
+our $VERSION = '0.000';
+
 =head1 DESCRIPTION
 
 A multiple failure report is raised when more than one failure is encountered

@@ -2,6 +2,8 @@ package Email::Sender::Transport::SMTP;
 use Mouse;
 extends 'Email::Sender::Transport';
 
+our $VERSION = '0.000';
+
 =head1 NAME
 
 Email::Sender::Transport::SMTP - send email over SMTP

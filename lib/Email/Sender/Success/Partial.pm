@@ -2,6 +2,8 @@ package Email::Sender::Success::Partial;
 use Mouse;
 extends 'Email::Sender::Success';
 
+our $VERSION = '0.000';
+
 =head1 NAME
 
 Email::Sender::Success::Partial - a report of partial success when delivering

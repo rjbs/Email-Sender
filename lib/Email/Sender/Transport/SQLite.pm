@@ -2,6 +2,8 @@ package Email::Sender::Transport::SQLite;
 use Mouse;
 extends 'Email::Sender::Transport';
 
+our $VERSION = '0.000';
+
 =head1 NAME
 
 Email::Sender::Transport::SQLite - deliver mail to an sqlite db for testing

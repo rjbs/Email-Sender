@@ -2,6 +2,8 @@ package Email::Sender::Transport::Mbox;
 use Mouse;
 extends 'Email::Sender::Transport';
 
+our $VERSION = '0.000';
+
 =head1 NAME
 
 Email::Sender::Transport::Mbox - deliver mail to an mbox on disk

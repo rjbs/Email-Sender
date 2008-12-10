@@ -1,6 +1,8 @@
 package Email::Sender::Failure;
 use Mouse;
 
+our $VERSION = '0.000';
+
 use overload '""' => sub { $_[0]->message }, fallback => 1;
 
 =head1 NAME

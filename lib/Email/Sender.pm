@@ -3,6 +3,8 @@ use strict;
 package Email::Sender;
 # ABSTRACT: it sends mail
 
+our $VERSION = '0.000';
+
 =head1 NAME
 
 Email::Sender - a library for sending email

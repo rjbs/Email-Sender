@@ -2,6 +2,8 @@ package Email::Sender::Transport;
 use Mouse;
 # ABSTRACT: it sends mail
 
+our $VERSION = '0.000';
+
 use Carp;
 use Email::Abstract;
 use Email::Sender::Success;

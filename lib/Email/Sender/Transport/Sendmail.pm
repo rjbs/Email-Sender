@@ -2,6 +2,8 @@ package Email::Sender::Transport::Sendmail;
 use Mouse;
 extends 'Email::Sender::Transport';
 
+our $VERSION = '0.000';
+
 =head1 NAME
 
 Email::Sender::Transport::Sendmail - send mail via sendmail(1)

@@ -2,6 +2,8 @@ package Email::Sender::Transport::Wrapper;
 use Mouse;
 extends 'Email::Sender::Transport';
 
+our $VERSION = '0.000';
+
 use Carp;
 
 =head1 NAME

@@ -2,6 +2,8 @@ package Email::Sender::Transport::SMTP::Persistent;
 use Mouse;
 extends 'Email::Sender::Transport::SMTP';
 
+our $VERSION = '0.000';
+
 =head1 NAME
 
 Email::Sender::Transport::SMTP::Persistent - an SMTP client that stays online

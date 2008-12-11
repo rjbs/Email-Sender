@@ -19,9 +19,6 @@ requires('Email::Simple'        => 1.998); # XXX: needed(?) for ->header_obj
                                            # only needed my Mbox; split?
 requires('Sys::Hostname::Long'  => 0);     # XXX: do we -need- a good HELO?
 
-# XXX: REMOVE SQLite TRANSPORT TO ITS OWN DIST
-requires('DBD::SQLite'          => 0);  # minimum unknown
-
 # CORE PREREQUISITES
 requires('Carp'           => 0);    # minimum unknown
 requires('Cwd'            => 0);    # minimum unknown

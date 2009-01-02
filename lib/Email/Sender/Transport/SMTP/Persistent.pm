@@ -43,6 +43,24 @@ sub _smtp_client {
 
 sub _message_complete { }
 
+=head1 METHODS
+
+=head2 disconnect
+
+  $transport->disconnect;
+
+This method sends an SMTP QUIT command and destroys the SMTP client, if on
+exists and is connected.
+
+=cut
+
+sub disconnect {
+  my ($self) = @_;
+  return unless $self->_cached_client;
+  $self->_cached_client->quit;
+  $self->_cached_client(undef);
+}
+
 __PACKAGE__->meta->make_immutable;
 no Mouse;
 1;

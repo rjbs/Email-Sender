@@ -41,6 +41,7 @@ sub perform_stock_mockery {
   });
 
   $mock_smtp->mock(reset => sub { $_[0]->succ });
+  $mock_smtp->mock(quit  => sub { $_[0]->succ });
 
   $mock_smtp->mock(auth => sub {
     my ($self, $user, $pass) = @_;

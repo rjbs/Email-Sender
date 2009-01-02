@@ -175,11 +175,7 @@ sub send_email {
   $smtp->datasend($email->as_string) or $FAULT->("error at during DATA");
   $smtp->dataend                     or $FAULT->("error at after DATA");
 
-  # XXX: Was this quit necessary?  If it is required to "commit the
-  # transaction" we will need to deal with this QUIT because persistent
-  # connections should NOT have it. -- rjbs, 2008-12-08
-  #
-  # $smtp->quit;
+  $self->_message_complete($smtp);
 
   # XXX: We must report partial success (failures) if applicable.
   return $self->success unless @failures;
@@ -190,6 +186,8 @@ sub send_email {
     }),
   });
 }
+
+sub _message_complete { $_[1]->quit; }
 
 =head1 PARTIAL SUCCESS
 

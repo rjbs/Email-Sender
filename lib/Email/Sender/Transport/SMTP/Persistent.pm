@@ -41,6 +41,8 @@ sub _smtp_client {
   return $client;
 }
 
+sub _message_complete { }
+
 __PACKAGE__->meta->make_immutable;
 no Mouse;
 1;

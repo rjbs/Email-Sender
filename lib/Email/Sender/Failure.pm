@@ -1,7 +1,7 @@
 package Email::Sender::Failure;
 use Mouse;
 
-our $VERSION = '0.000';
+our $VERSION = '0.001';
 
 use overload '""' => sub { $_[0]->message }, fallback => 1;
 

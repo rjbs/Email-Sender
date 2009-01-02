@@ -2,7 +2,7 @@ package Email::Sender::Failure::Temporary;
 use Mouse;
 extends 'Email::Sender::Failure';
 
-our $VERSION = '0.000';
+our $VERSION = '0.001';
 
 =head1 NAME
 

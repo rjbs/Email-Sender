@@ -8,7 +8,7 @@ Email::Sender::Simple - send mail simply (not yet implemented)
 
 =cut
 
-our $VERSION = '0.000';
+our $VERSION = '0.001';
 
 # This is gonna be good. -- rjbs, 2008-12-10
 

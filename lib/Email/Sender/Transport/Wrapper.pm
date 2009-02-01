@@ -2,7 +2,7 @@ package Email::Sender::Transport::Wrapper;
 use Mouse;
 extends 'Email::Sender::Transport';
 
-our $VERSION = '0.001';
+our $VERSION = '0.002';
 
 use Carp;
 

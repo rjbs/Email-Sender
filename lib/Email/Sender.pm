@@ -3,7 +3,7 @@ use strict;
 package Email::Sender;
 # ABSTRACT: it sends mail
 
-our $VERSION = '0.001';
+our $VERSION = '0.002';
 
 =head1 NAME
 

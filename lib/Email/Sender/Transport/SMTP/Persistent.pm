@@ -2,7 +2,7 @@ package Email::Sender::Transport::SMTP::Persistent;
 use Mouse;
 extends 'Email::Sender::Transport::SMTP';
 
-our $VERSION = '0.001';
+our $VERSION = '0.002';
 
 =head1 NAME
 

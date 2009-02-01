@@ -2,7 +2,7 @@ package Email::Sender::Success::Partial;
 use Mouse;
 extends 'Email::Sender::Success';
 
-our $VERSION = '0.001';
+our $VERSION = '0.002';
 
 =head1 NAME
 

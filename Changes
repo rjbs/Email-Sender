@@ -1,5 +1,8 @@
 Revision history for Email-Sender
 
+0.002   2009-01-31
+        fix minor documentation errors
+
 0.001   2009-01-02
         SQLite transport split into its own dist, removed from this
         QUIT when ending a transmission in non-persist SMTP

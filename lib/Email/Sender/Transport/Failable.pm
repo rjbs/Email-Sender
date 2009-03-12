@@ -2,7 +2,7 @@ package Email::Sender::Transport::Failable;
 use Mouse;
 extends 'Email::Sender::Transport::Wrapper';
 
-our $VERSION = '0.002';
+our $VERSION = '0.003';
 
 =head1 NAME
 

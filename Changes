@@ -1,5 +1,8 @@
 Revision history for Email-Sender
 
+0.003   2009-03-12
+        Sendmail transport now uses 2-arg open on Win32 so it can work at all
+
 0.002   2009-01-31
         fix minor documentation errors
 

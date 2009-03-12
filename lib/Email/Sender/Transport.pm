@@ -2,7 +2,7 @@ package Email::Sender::Transport;
 use Mouse;
 # ABSTRACT: it sends mail
 
-our $VERSION = '0.002';
+our $VERSION = '0.003';
 
 use Carp;
 use Email::Abstract;

@@ -1,7 +1,7 @@
 package Email::Sender::Success;
 use Mouse;
 
-our $VERSION = '0.002';
+our $VERSION = '0.003';
 
 =head1 NAME
 

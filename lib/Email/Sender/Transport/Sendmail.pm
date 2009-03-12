@@ -51,15 +51,27 @@ sub _find_sendmail {
   Carp::confess("couldn't find a sendmail executable");
 }
 
+sub _sendmail_pipe {
+  my ($self, $envelope) = @_;
+
+  my $prog = $self->sendmail;
+
+  my ($first, @args) = $^O eq 'MSWin32'
+           ? "| $prog -f $envelope->{from} @{$envelope->{to}}"
+           : (q{|-}, $prog, '-f', $envelope->{from}, @{$envelope->{to}});
+
+  no warnings 'exec'; ## no critic
+  my $pipe;
+  Email::Sender::Failure->throw("couldn't open pipe to sendmail ($prog): $!")
+    unless open($pipe, $first, @args);
+
+  return $pipe;
+}
+
 sub send_email {
   my ($self, $email, $envelope) = @_;
 
-  my $sendmail = $self->sendmail;
-
-  # This isn't a problem; we die if it fails, anyway. -- rjbs, 2007-07-17
-  no warnings 'exec'; ## no critic
-  open my $pipe, q{|-}, ($sendmail, '-f', $envelope->{from}, @{$envelope->{to}})
-    or Email::Sender::Failure->throw("couldn't open pipe to sendmail: $!");
+  my $pipe = $self->_sendmail_pipe($envelope);
 
   print $pipe $email->as_string
     or Email::Sender::Failure->throw("couldn't send message to sendmail: $!");

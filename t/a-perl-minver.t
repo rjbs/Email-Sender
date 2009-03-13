@@ -2,6 +2,9 @@
 use strict;
 use Test::More;
 
+plan skip_all => "this test only runs during release"
+  unless $ENV{RELEASE_TESTING};
+
 eval {
   require Test::MinimumVersion;
   Test::MinimumVersion->VERSION(0.003);

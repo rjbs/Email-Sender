@@ -53,7 +53,7 @@ SKIP:
     };
   };
 
-  my $error_re = $IS_WIN32 ? qr/closing pipe/ : qr/opening pipe/;
+  my $error_re = $IS_WIN32 ? qr/closing pipe/ : qr/open pipe/;
   like(
     $@->message,
     $error_re,

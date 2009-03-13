@@ -12,6 +12,7 @@ requires('Email::Abstract' => 3);    # XXX: really use Abstract?; 3 = \$str
 requires('Net::SMTP'       => 0);
 requires('List::MoreUtils' => 0);    # minimum version unknown; uniq
 requires('Class::Method::Modifiers' => 0); # minimum version unknown; Failable
+requires('Capture::Tiny'   => 0);    # for testing
 
 # SOON TO NOT BE PREREQUISIES
 requires('Email::Address'       => 0);     # used for env-from-msg (::Simple)

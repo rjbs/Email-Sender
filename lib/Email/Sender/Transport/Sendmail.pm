@@ -45,7 +45,7 @@ sub _find_sendmail {
 
   for my $dir (File::Spec->path) {
     my $sendmail = File::Spec->catfile($dir, $program_name);
-    return $sendmail if -x $sendmail;
+    return $sendmail if ($^O eq 'MSWin32') ? -f $sendmail : -x $sendmail;
   }
 
   Carp::confess("couldn't find a sendmail executable");

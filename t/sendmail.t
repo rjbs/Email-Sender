@@ -2,9 +2,13 @@ use Test::More tests => 5;
 use strict;
 $^W = 1;
 
+use Capture::Tiny 'capture';
 use Cwd;
+use Config;
 use Email::Sender::Transport::Sendmail;
 use File::Spec;
+
+my $IS_WIN32 = $^O eq 'MSWin32';
 
 my $email = <<'EOF';
 To:   Casey West <casey@example.com>
@@ -14,37 +18,45 @@ Subject: This should never show up in my inbox
 blah blah blah
 EOF
 
+my $bin_path = File::Spec->rel2abs('util');
+my $bin_name = $IS_WIN32 ? 'sendmail.bat' : 'sendmail';
+my $sendmail_bin = File::Spec->catfile( $bin_path, $bin_name );
+local $ENV{PATH} = join( $Config{path_sep}, $bin_path, $ENV{PATH});
+
 SKIP:
 {
-  skip 'Cannot run unless sendmail is at /usr/sbin/sendmail', 1
-    unless -x '/usr/sbin/sendmail'
-      && ! -x '/usr/bin/sendmail';
+  chmod 0755, $sendmail_bin;
+  skip "Cannot run unless '$sendmail_bin' is executable", 1
+    unless -x $sendmail_bin;
 
-  local $ENV{PATH} = '/usr/bin:/usr/sbin';
-  $ENV{PATH} =~ tr/:/;/ if $^O =~ /Win/;
-  my $path = Email::Sender::Transport::Sendmail->_find_sendmail;
-  is( $path, '/usr/sbin/sendmail', 'found sendmail in /usr/sbin' );
+  my $path = eval { 
+    Email::Sender::Transport::Sendmail->_find_sendmail($bin_name) 
+  };
+  is( $path, $sendmail_bin, "found (fake) sendmail at '$sendmail_bin'" );
 }
 
 {
   my $sender = Email::Sender::Transport::Sendmail->new({
-    sendmail => './util/not-executable'
+    sendmail => File::Spec->catfile(qw/. util not-executable/)
   });
 
-  eval {
-    no warnings;
-    $sender->send(
-      $email,
-      {
-        to   => [ 'devnull@example.com' ],
-        from => 'devnull@example.biz',
-      }
-    );
+  capture { # hide errors from cmd.exe on Win32
+    eval {
+      no warnings;
+      $sender->send(
+        $email,
+        {
+          to   => [ 'devnull@example.com' ],
+          from => 'devnull@example.biz',
+        }
+      );
+    };
   };
 
+  my $error_re = $IS_WIN32 ? qr/closing pipe/ : qr/opening pipe/;
   like(
     $@->message,
-    qr/couldn't open pipe/,
+    $error_re,
     'error message says what we expect',
   );
 }
@@ -54,28 +66,9 @@ my $has_FileTemp = eval { require File::Temp; };
 SKIP:
 {
   skip 'Cannot run this test unless current perl is -x', 1 unless -x $^X;
-  skip 'Win32 does not understand shebang', 1 if $^O eq 'MSWin32';
-
-  skip 'Cannot run this test without File::Temp', 1 unless $has_FileTemp;
-  my $tempdir = File::Temp::tempdir(CLEANUP => 1);
-
-  require File::Spec;
-
-  my $error = "can't prepare executable test script";
-
-  my $filename = File::Spec->catfile($tempdir, "executable");
-  open my $fh, ">", $filename or skip "$error: opening $filename", 1;
-
-  open my $exec, "<", './util/executable' or skip $error, 1;
-
-  print {$fh} "#!$^X\n" or skip "$error: outputting shebang", 1;
-  print {$fh} <$exec>   or skip "$error: outputting body", 1;
-  close $fh             or skip "$error: closing", 1;
-
-  chmod 0755, $filename;
 
   my $sender = Email::Sender::Transport::Sendmail->new({
-    sendmail => $filename
+    sendmail => $sendmail_bin
   });
 
   my $return = $sender->send(
@@ -92,27 +85,16 @@ SKIP:
 SKIP:
 {
   skip 'Cannot run this test unless current perl is -x', 2 unless -x $^X;
-  skip 'Win32 does not understand shebang', 2 if $^O eq 'MSWin32';
 
   skip 'Cannot run this test without File::Temp', 2 unless $has_FileTemp;
   my $tempdir = File::Temp::tempdir(CLEANUP => 1);
-
-  my $error = "can't prepare executable test script";
-
-  my $filename = File::Spec->catfile($tempdir, 'sendmail');
   my $logfile  = File::Spec->catfile($tempdir, 'sendmail.log');
-  open my $sendmail_fh, ">", $filename or skip $error, 2;
-  open my $template_fh, "<", './util/sendmail' or skip $error, 2;
 
-  print {$sendmail_fh} "#!$^X\n"      or skip $error, 2;
-  print {$sendmail_fh} <$template_fh> or skip $error, 2;
-  close $sendmail_fh                  or skip $error, 2;
-
-  chmod 0755, $filename;
-
-  local $ENV{PATH} = $tempdir;
   local $ENV{EMAIL_SENDER_TRANSPORT_SENDMAIL_TEST_LOGDIR} = $tempdir;
-  my $sender = Email::Sender::Transport::Sendmail->new;
+  my $sender = Email::Sender::Transport::Sendmail->new({
+    sendmail => $sendmail_bin
+  });
+
   my $return = eval {
     $sender->send(
       $email,

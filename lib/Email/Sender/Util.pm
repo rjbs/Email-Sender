@@ -2,7 +2,7 @@ use strict;
 use warnings;
 package Email::Sender::Util;
 
-our $VERSION = '0.003';
+our $VERSION = '0.004';
 
 use Email::Address;
 use Email::Sender::Failure;

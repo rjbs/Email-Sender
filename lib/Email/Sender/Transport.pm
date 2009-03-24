@@ -2,7 +2,7 @@ package Email::Sender::Transport;
 use Moose;
 # ABSTRACT: it sends mail
 
-our $VERSION = '0.003';
+our $VERSION = '0.004';
 
 use Carp;
 use Email::Abstract;

@@ -2,7 +2,7 @@ package Email::Sender::Transport::Wrapper;
 use Moose;
 extends 'Email::Sender::Transport';
 
-our $VERSION = '0.003';
+our $VERSION = '0.004';
 
 use Carp;
 

@@ -1,7 +1,7 @@
 package Email::Sender::Failure;
 use Moose;
 
-our $VERSION = '0.003';
+our $VERSION = '0.004';
 
 use overload '""' => sub { $_[0]->message }, fallback => 1;
 

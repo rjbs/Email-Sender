@@ -2,7 +2,7 @@ package Email::Sender::Success::Partial;
 use Moose;
 extends 'Email::Sender::Success';
 
-our $VERSION = '0.003';
+our $VERSION = '0.004';
 
 =head1 NAME
 

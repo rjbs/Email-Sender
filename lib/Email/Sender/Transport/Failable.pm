@@ -2,7 +2,7 @@ package Email::Sender::Transport::Failable;
 use Moose;
 extends 'Email::Sender::Transport::Wrapper';
 
-our $VERSION = '0.003';
+our $VERSION = '0.004';
 
 =head1 NAME
 

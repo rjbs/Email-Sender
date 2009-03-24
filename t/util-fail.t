@@ -7,12 +7,12 @@ use Email::Sender::Util;
 
 {
   package FakeSMTP;
-  use Mouse;
+  use Moose;
 
   has code    => (is => 'rw');
   has message => (is => 'rw');
 
-  no Mouse;
+  no Moose;
 }
 
 sub smtp { FakeSMTP->new({ code => $_[0], message => $_[1] }); }

@@ -1,5 +1,5 @@
 package Email::Sender::Transport::DevNull;
-use Mouse;
+use Moose;
 extends 'Email::Sender::Transport';
 
 our $VERSION = '0.003';
@@ -13,5 +13,5 @@ Email::Sender::Transport::DevNull - happily throw away your mail
 sub send_email { return $_[0]->success }
 
 __PACKAGE__->meta->make_immutable;
-no Mouse;
+no Moose;
 1;

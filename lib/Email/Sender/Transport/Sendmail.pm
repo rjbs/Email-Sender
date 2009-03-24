@@ -1,5 +1,5 @@
 package Email::Sender::Transport::Sendmail;
-use Mouse;
+use Moose;
 extends 'Email::Sender::Transport';
 
 our $VERSION = '0.003';
@@ -29,7 +29,7 @@ has 'sendmail' => (
   required => 1,
   lazy     => 1,
   default  => sub {
-    # This should not have to be lazy, but Mouse has a bug(?) that prevents the
+    # This should not have to be lazy, but Moose has a bug(?) that prevents the
     # instance or partial-instance from being passed in to the default sub.
     # Laziness doesn't hurt much, though, because (ugh) of the BUILD below.
     # -- rjbs, 2008-12-04
@@ -83,5 +83,5 @@ sub send_email {
 }
 
 __PACKAGE__->meta->make_immutable;
-no Mouse;
+no Moose;
 1;

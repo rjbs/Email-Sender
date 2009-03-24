@@ -1,5 +1,10 @@
 Revision history for Email-Sender
 
+0.004   2009-03-12
+        require perl5 version 8
+        move to Moose; let's not mess around, the Moose/Mouse stuff is not
+        worth the minor savings
+
 0.003   2009-03-12
         Sendmail transport now uses 2-arg open on Win32 so it can work at all
         Win32-friendly tests added for Sendmail by the ever-awesome DAGOLDEN

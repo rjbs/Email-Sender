@@ -1,5 +1,5 @@
 package Email::Sender::Transport;
-use Mouse;
+use Moose;
 # ABSTRACT: it sends mail
 
 our $VERSION = '0.003';
@@ -14,7 +14,7 @@ use Scalar::Util ();
 =head1 SYNOPSIS
 
   package Email::Sender::Transport::IM2000;
-  use Mouse;
+  use Moose;
   extends 'Email::Sender::Transport';
 
   sub send_email {
@@ -183,5 +183,5 @@ under the same terms as Perl itself.
 =cut
 
 __PACKAGE__->meta->make_immutable;
-no Mouse;
+no Moose;
 1;

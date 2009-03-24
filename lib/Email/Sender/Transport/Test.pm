@@ -1,5 +1,5 @@
 package Email::Sender::Transport::Test;
-use Mouse;
+use Moose;
 extends 'Email::Sender::Transport';
 
 our $VERSION = '0.003';
@@ -83,5 +83,5 @@ sub send_email {
 }
 
 __PACKAGE__->meta->make_immutable;
-no Mouse;
+no Moose;
 1;

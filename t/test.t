@@ -66,7 +66,7 @@ is_deeply(
 
 {
   package Email::Sender::Transport::TestFail;
-  use Mouse;
+  use Moose;
   extends 'Email::Sender::Transport::Test';
 
   sub delivery_failure {
@@ -103,7 +103,7 @@ is_deeply(
     return;
   }
 
-  no Mouse;
+  no Moose;
 }
 
 my $fail_test = Email::Sender::Transport::TestFail->new;

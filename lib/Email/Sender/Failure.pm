@@ -1,5 +1,5 @@
 package Email::Sender::Failure;
-use Mouse;
+use Moose;
 
 our $VERSION = '0.003';
 
@@ -65,6 +65,9 @@ sub BUILD {
 sub BUILDARGS {
   my ($self, @args) = @_;
 
+  return {} unless @args;
+  return {} if @args == 1 and ! defined $args[0];
+
   if (@args == 1 and (!ref $args[0]) and defined $args[0] and length $args[0]) {
     return { message => $args[0] };
   }
@@ -87,5 +90,5 @@ sub BUILDARGS {
 =cut
 
 __PACKAGE__->meta->make_immutable;
-no Mouse;
+no Moose;
 1;

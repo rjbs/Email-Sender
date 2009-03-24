@@ -1,5 +1,5 @@
 package Email::Sender::Transport::Mbox;
-use Mouse;
+use Moose;
 extends 'Email::Sender::Transport';
 
 our $VERSION = '0.003';
@@ -116,5 +116,5 @@ sub _unlock {
 }
 
 __PACKAGE__->meta->make_immutable;
-no Mouse;
+no Moose;
 1;

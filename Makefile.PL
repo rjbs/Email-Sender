@@ -1,4 +1,4 @@
-require 5.006001;
+require 5.008001; # Moose will need this
 use inc::Module::Install;
 
 name          'Email-Sender';
@@ -7,11 +7,10 @@ license       'perl';
 version_from  'lib/Email/Sender.pm';
 
 # NON-CORE PREREQUISITES
-requires('Mouse'           => 0.12); # isa=>class accepts subclasses; Squirrel
+requires('Moose'           => 0);    # minimum version unknown;
 requires('Email::Abstract' => 3);    # XXX: really use Abstract?; 3 = \$str
 requires('Net::SMTP'       => 0);
 requires('List::MoreUtils' => 0);    # minimum version unknown; uniq
-requires('Class::Method::Modifiers' => 0); # minimum version unknown; Failable
 requires('Capture::Tiny'   => 0);    # for testing
 
 # SOON TO NOT BE PREREQUISIES

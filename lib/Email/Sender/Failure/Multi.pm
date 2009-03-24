@@ -1,5 +1,5 @@
 package Email::Sender::Failure::Multi;
-use Mouse;
+use Moose;
 extends 'Email::Sender::Failure';
 
 our $VERSION = '0.003';
@@ -57,5 +57,5 @@ sub isa {
 }
 
 __PACKAGE__->meta->make_immutable;
-no Mouse;
+no Moose;
 1;

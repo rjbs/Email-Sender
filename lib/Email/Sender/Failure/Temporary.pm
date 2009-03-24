@@ -1,5 +1,5 @@
 package Email::Sender::Failure::Temporary;
-use Mouse;
+use Moose;
 extends 'Email::Sender::Failure';
 
 our $VERSION = '0.003';
@@ -11,5 +11,5 @@ Email::Sender::Failure::Temporary - a temporary delivery failure
 =cut
 
 __PACKAGE__->meta->make_immutable;
-no Mouse;
+no Moose;
 1;

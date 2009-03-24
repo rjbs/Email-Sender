@@ -1,5 +1,5 @@
 package Email::Sender::Transport::SMTP::Persistent;
-use Mouse;
+use Moose;
 extends 'Email::Sender::Transport::SMTP';
 
 our $VERSION = '0.003';
@@ -62,5 +62,5 @@ sub disconnect {
 }
 
 __PACKAGE__->meta->make_immutable;
-no Mouse;
+no Moose;
 1;

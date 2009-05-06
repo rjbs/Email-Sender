@@ -1,10 +1,14 @@
 package Email::Sender::Simple;
-use Moose;
+use strict;
+use warnings;
 
 use Sub::Exporter::Util ();
 use Sub::Exporter -setup => {
   exports => { sendmail => Sub::Exporter::Util::curry_class('send') },
 };
+
+use Email::Address;
+use Email::Sender::Transport;
 
 {
   my $DEFAULT_TRANSPORT;
@@ -52,10 +56,8 @@ use Sub::Exporter -setup => {
 }
 
 sub send {
-  my ($self, $message, $arg) = @_;
-
-  Carp::cluck "Email::Sender::Simple->send in non-void context considered harmful"
-    if defined wantarray;
+  my ($self, $email, $arg) = @_;
+  $email = Email::Sender::Transport->prepare_email($email);
 
   my $transport = $self->_default_transport;
 
@@ -64,8 +66,36 @@ sub send {
     $transport = delete $arg->{transport} unless $self->_default_was_from_env;
   }
 
-  $transport->send($message, $arg);
+  my $to = $arg->{to};
+  unless ($to) {
+    my @to_addrs =
+      map  { $_->address               }
+      grep { defined                   }
+      map  { Email::Address->parse($_) }
+      map  { $email->get_header($_)        }
+      qw(to cc);
+    $to = \@to_addrs;
+  }
+
+  my $from = $arg->{from};
+  unless (defined $from) {
+    ($from) =
+      map  { $_->address               }
+      grep { defined                   }
+      map  { Email::Address->parse($_) }
+      map  { $email->get_header($_)        }
+      qw(from);
+  }
+
+  $transport->send(
+    $email,
+    {
+      to   => $to,
+      from => $from,
+    },
+  );
+
+  return 1;
 }
 
-no Moose;
 "220 OK";

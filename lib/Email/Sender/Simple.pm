@@ -2,6 +2,12 @@ package Email::Sender::Simple;
 use strict;
 use warnings;
 
+=head1 NAME
+
+Email::Sender::Simple - the simple interface for sending mail with Sender
+
+=cut
+
 use Sub::Exporter::Util ();
 use Sub::Exporter -setup => {
   exports => { sendmail => Sub::Exporter::Util::curry_class('send') },

@@ -1,7 +1,7 @@
 use warnings;
 use strict;
 package Email::Sender;
-# ABSTRACT: it sends mail
+# ABSTRACT: a library for sending email
 
 our $VERSION = '0.004';
 

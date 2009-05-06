@@ -1,6 +1,11 @@
 package Email::Sender::Transport;
 use Moose;
-# ABSTRACT: it sends mail
+
+=head1 NAME
+
+Email::Sender::Transport - base class for email transports
+
+=cut
 
 our $VERSION = '0.004';
 

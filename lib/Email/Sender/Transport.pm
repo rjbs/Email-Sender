@@ -83,7 +83,7 @@ sub send {
     $err->_recipients([ @{ $envelope->{to} } ]);
   }
 
-  die $err;
+  defined($err) ? die($err) : confess('unknown error');
 }
 
 =head1 DEVELOPER'S API

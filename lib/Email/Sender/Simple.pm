@@ -23,7 +23,7 @@ use Sub::Exporter -setup => {
       my $transport_class = $ENV{EMAIL_SENDER_TRANSPORT};
 
       if ($transport_class !~ tr/://) {
-        $transport_class = "Email::Send::Mailer::$transport_class";
+        $transport_class = "Email::Sender::Transport::$transport_class";
       }
 
       eval "require $transport_class" or die $@;
@@ -37,9 +37,9 @@ use Sub::Exporter -setup => {
       $DEFAULT_FROM_ENV  = 1;
       $DEFAULT_TRANSPORT = $transport_class->new(\%arg);
     } else {
-      require Email::Send::Mailer::SMTP;
+      require Email::Sender::Transport::SMTP;
       $DEFAULT_FROM_ENV  = 0;
-      $DEFAULT_TRANSPORT = Email::Send::Mailer::SMTP->new;
+      $DEFAULT_TRANSPORT = Email::Sender::Transport::SMTP->new;
     }
 
     return $DEFAULT_TRANSPORT;
@@ -54,7 +54,7 @@ use Sub::Exporter -setup => {
 sub send {
   my ($self, $message, $arg) = @_;
 
-  Carp::cluck "ICG::Sendmail->sendmail in non-void context considered harmful"
+  Carp::cluck "Email::Sender::Simple->send in non-void context considered harmful"
     if defined wantarray;
 
   my $transport = $self->_default_transport;
@@ -64,7 +64,7 @@ sub send {
     $transport = delete $arg->{transport} unless $self->_default_was_from_env;
   }
 
-  $transport->send_email($message, $arg);
+  $transport->send($message, $arg);
 }
 
 no Moose;

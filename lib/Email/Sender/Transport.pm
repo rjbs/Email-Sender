@@ -102,8 +102,8 @@ an envelope.  The envelope is a hashref in the following form:
   to   - an arrayref of email addresses (strings)
   from - a single email address (string)
 
-It should either return success or throw an exception (preferably one that is
-an Email::Sender::Failure).
+It should either return success (as an L<Email::Sender::Success>) or throw an
+exception (preferably one that is an L<Email::Sender::Failure>).
 
 =cut
 
@@ -141,7 +141,6 @@ for ensuring that the F<to> entry is an array.
 
 =cut
 
-
 sub prepare_envelope {
   my ($self, $env) = @_;
 
@@ -167,6 +166,16 @@ sub success {
   my $self = shift;
   my $success = Email::Sender::Success->new(@_);
 }
+
+=head2 allow_partial_success
+
+If true, the transport may signal partial success by returning an
+L<Email::Sender::Success::Partial> object.  For most transports, this is always
+false.
+
+=cut
+
+sub allow_partial_success { 0 }
 
 =head1 AUTHOR
 

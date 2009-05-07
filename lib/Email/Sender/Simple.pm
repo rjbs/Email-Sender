@@ -28,6 +28,7 @@ use Email::Sender::Transport;
 
   sub _default_transport {
     return $DEFAULT_TRANSPORT if $DEFAULT_TRANSPORT;
+    my ($self) = @_;
     
     if ($ENV{EMAIL_SENDER_TRANSPORT}) {
       my $transport_class = $ENV{EMAIL_SENDER_TRANSPORT};
@@ -47,12 +48,16 @@ use Email::Sender::Transport;
       $DEFAULT_FROM_ENV  = 1;
       $DEFAULT_TRANSPORT = $transport_class->new(\%arg);
     } else {
-      require Email::Sender::Transport::SMTP;
       $DEFAULT_FROM_ENV  = 0;
-      $DEFAULT_TRANSPORT = Email::Sender::Transport::SMTP->new;
+      $DEFAULT_TRANSPORT = $self->build_default_transport;
     }
 
     return $DEFAULT_TRANSPORT;
+  }
+
+  sub build_default_transport {
+    require Email::Sender::Transport::SMTP;
+    Email::Sender::Transport::SMTP->new;
   }
 
   sub reset_default_transport {
@@ -72,13 +77,30 @@ sub send {
     $transport = delete $arg->{transport} unless $self->_default_was_from_env;
   }
 
+  confess("can't use transports that may return partial success with Email::Sender::Simple")
+    if $transport->allow_partial_success;
+
+  my ($to, $from) = $self->_get_to_from($email, $arg);
+
+  return $transport->send(
+    $email,
+    {
+      to   => $to,
+      from => $from,
+    },
+  );
+}
+
+sub _get_to_from {
+  my ($self, $email, $arg) = @_;
+
   my $to = $arg->{to};
   unless ($to) {
     my @to_addrs =
       map  { $_->address               }
       grep { defined                   }
       map  { Email::Address->parse($_) }
-      map  { $email->get_header($_)        }
+      map  { $email->get_header($_)    }
       qw(to cc);
     $to = \@to_addrs;
   }
@@ -89,19 +111,11 @@ sub send {
       map  { $_->address               }
       grep { defined                   }
       map  { Email::Address->parse($_) }
-      map  { $email->get_header($_)        }
+      map  { $email->get_header($_)    }
       qw(from);
   }
 
-  $transport->send(
-    $email,
-    {
-      to   => $to,
-      from => $from,
-    },
-  );
-
-  return 1;
+  return ($to, $from);
 }
 
 "220 OK";

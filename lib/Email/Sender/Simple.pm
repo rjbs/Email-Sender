@@ -91,7 +91,7 @@ sub send {
   );
 }
 
-sub maybe_send {
+sub try_to_send {
   my ($self, $email, $arg) = @_;
 
   my $succ = eval { $self->send($email, $arg); };

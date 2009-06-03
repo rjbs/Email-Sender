@@ -1,6 +1,6 @@
 package Email::Sender::Simple;
-use strict;
-use warnings;
+use Moose;
+with 'Email::Sender';
 
 =head1 NAME
 
@@ -77,8 +77,8 @@ sub send {
     $transport = delete $arg->{transport} unless $self->_default_was_from_env;
   }
 
-  confess("can't use transports that may return partial success with Email::Sender::Simple")
-    if $transport->allow_partial_success;
+  confess("transport $transport not safe for use with Email::Sender::Simple")
+    unless $transport->is_simple;
 
   my ($to, $from) = $self->_get_to_from($email, $arg);
 
@@ -89,6 +89,18 @@ sub send {
       from => $from,
     },
   );
+}
+
+sub maybe_send {
+  my ($self, $email, $arg) = @_;
+
+  my $succ = eval { $self->send($email, $arg); };
+
+  return $succ if $succ;
+  my $error = $@ || 'unknown error';
+  return if eval { $error->isa('Email::Sender::Failure') };
+
+  die $error;
 }
 
 sub _get_to_from {
@@ -118,4 +130,5 @@ sub _get_to_from {
   return ($to, $from);
 }
 
+no Moose;
 "220 OK";

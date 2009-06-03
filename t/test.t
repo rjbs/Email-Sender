@@ -8,7 +8,7 @@ use Email::Sender::Transport::Test;
 use Email::Sender::Transport::Failable;
 
 my $sender = Email::Sender::Transport::Test->new;
-isa_ok($sender, 'Email::Sender::Transport');
+ok($sender->does('Email::Sender::Transport'));
 isa_ok($sender, 'Email::Sender::Transport::Test');
 
 is(@{ $sender->deliveries }, 0, "no deliveries so far");

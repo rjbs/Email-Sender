@@ -7,7 +7,7 @@ use Email::Sender;
 use Email::Sender::Transport::DevNull;
 
 my $xport = Email::Sender::Transport::DevNull->new;
-isa_ok($xport, 'Email::Sender::Transport');
+ok($xport->does('Email::Sender::Transport'));
 isa_ok($xport, 'Email::Sender::Transport::DevNull');
 
 my $message = <<'END_MESSAGE';

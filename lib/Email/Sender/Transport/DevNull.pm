@@ -1,6 +1,6 @@
 package Email::Sender::Transport::DevNull;
 use Moose;
-extends 'Email::Sender::Transport';
+with 'Email::Sender::Transport';
 
 our $VERSION = '0.004';
 

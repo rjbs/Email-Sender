@@ -1,9 +1,10 @@
-use warnings;
-use strict;
 package Email::Sender;
+use Moose::Role;
 # ABSTRACT: a library for sending email
 
 our $VERSION = '0.004';
+
+requires 'send';
 
 =head1 NAME
 
@@ -42,4 +43,5 @@ under the same terms as Perl itself.
 
 =cut
 
+no Moose::Role;
 1;

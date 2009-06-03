@@ -15,7 +15,7 @@ use Email::Sender::Transport::Print;
 }
 
 my $xport = Email::Sender::Transport::Print->new({ fh => CP->new });
-isa_ok($xport, 'Email::Sender::Transport');
+ok($xport->does('Email::Sender::Transport'));
 isa_ok($xport, 'Email::Sender::Transport::Print');
 
 my $message = <<'END_MESSAGE';

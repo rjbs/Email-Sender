@@ -1,7 +1,7 @@
 package Email::Sender::Simple;
 use Moose;
 with 'Email::Sender::Role::CommonSending';
-# ABSTRCT: the simple interface for sending mail with Sender
+# ABSTRACT: the simple interface for sending mail with Sender
 
 use Sub::Exporter::Util ();
 use Sub::Exporter -setup => {

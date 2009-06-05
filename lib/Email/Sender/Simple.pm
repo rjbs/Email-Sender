@@ -66,6 +66,21 @@ use Email::Sender::Transport;
   }
 }
 
+# Maybe this should be an around, but I'm just not excited about figuring out
+# order at the moment.  It just has to work. -- rjbs, 2009-06-05
+around prepare_envelope => sub {
+  my ($orig, $self, $arg) = @_;
+  $arg ||= {};
+  my $env = $self->$orig($arg);
+
+  $env = {
+    %$arg,
+    %$env,
+  };
+
+  return $env;
+};
+
 sub send_email {
   my ($self, $email, $arg) = @_;
 
@@ -80,6 +95,9 @@ sub send_email {
     unless $transport->is_simple;
 
   my ($to, $from) = $self->_get_to_from($email, $arg);
+
+  Email::Sender::Failure::Permanent->throw("no recipients") if ! @$to;
+  Email::Sender::Failure::Permanent->throw("no sender") if ! defined $from;
 
   return $transport->send(
     $email,

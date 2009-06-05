@@ -1,14 +1,7 @@
 package Email::Sender::Transport::Print;
 use Moose;
 with 'Email::Sender::Transport';
-
-our $VERSION = '0.004';
-
-=head1 NAME
-
-Email::Sender::Transport::Print - print email to a filehandle (like stdout)
-
-=cut
+# ABSTRACT: print email to a filehandle (like stdout)
 
 use IO::Handle;
 

@@ -1,13 +1,6 @@
 package Email::Sender::Success;
 use Moose;
-
-our $VERSION = '0.004';
-
-=head1 NAME
-
-Email::Sender::Success - the result of successfully sending mail
-
-=cut
+# ABSTRACT: the result of successfully sending mail
 
 __PACKAGE__->meta->make_immutable;
 no Moose;

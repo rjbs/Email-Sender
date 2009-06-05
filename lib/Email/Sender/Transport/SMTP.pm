@@ -1,20 +1,11 @@
 package Email::Sender::Transport::SMTP;
 use Moose;
 with 'Email::Sender::Transport';
-
-our $VERSION = '0.004';
-
-=head1 NAME
-
-Email::Sender::Transport::SMTP - send email over SMTP
-
-=cut
+# ABSTRACT: send email over SMTP
 
 use Email::Sender::Failure::Multi;
 use Email::Sender::Success::Partial;
 use Email::Sender::Util;
-
-=head1 DESCRIPTION
 
 =head1 ATTRIBUTES
 

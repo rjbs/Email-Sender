@@ -1,14 +1,7 @@
 package Email::Sender::Transport::Maildir;
 use Moose;
 with 'Email::Sender::Transport';
-
-our $VERSION = '0.004';
-
-=head1 NAME
-
-Email::Sender::Transport::Maildir - deliver mail to a maildir on disk
-
-=cut
+# ABSTRACT: deliver mail to a maildir on disk
 
 use Errno ();
 use Fcntl;

@@ -1,5 +1,6 @@
 package Email::Sender::Role::CommonSending;
 use Moose::Role;
+# ABSTRACT: the common sending tasks most Email::Sender classes will need
 
 use Carp;
 use Email::Abstract;
@@ -31,7 +32,7 @@ sub send {
   defined($err) ? die($err) : confess('unknown error');
 }
 
-=head2 prepare_email
+=method prepare_email
 
 This method is passed a scalar and is expected to return an Email::Abstract
 object.  You probably shouldn't override it in most cases.
@@ -52,7 +53,7 @@ sub prepare_email {
   return Email::Abstract->new($msg);
 }
 
-=head2 prepare_envelope
+=method prepare_envelope
 
 This method is passed a hashref and returns a new hashref that should be used
 as the envelope passed to the C<send_email> method.  This method is responsible
@@ -70,7 +71,7 @@ sub prepare_envelope {
   return \%new_env;
 }
 
-=head2 success
+=method success
 
   ...
   return $self->success;
@@ -85,25 +86,6 @@ sub success {
   my $self = shift;
   my $success = Email::Sender::Success->new(@_);
 }
-
-=head1 AUTHOR
-
-Ricardo SIGNES, C<< <rjbs@cpan.org> >>
-
-=head1 BUGS
-
-Please report any bugs or feature requests through the web interface at
-L<http://rt.cpan.org>.  I will be notified, and then you'll automatically be
-notified of progress on your bug as I make changes.
-
-=head1 COPYRIGHT
-
-Copyright 2006-2008, Ricardo SIGNES.
-
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
-
-=cut
 
 no Moose::Role;
 1;

@@ -1,21 +1,14 @@
 package Email::Sender::Failure::Multi;
 use Moose;
 extends 'Email::Sender::Failure';
-
-our $VERSION = '0.004';
-
-=head1 NAME
-
-Email::Sender::Failure::Multi - an aggregate of multiple failures
+# ABSTRACT: an aggregate of multiple failures
 
 =head1 DESCRIPTION
 
 A multiple failure report is raised when more than one failure is encountered
 when sending a single message, or when mixed states were encountered.
 
-=head1 METHODS
-
-=head2 failures
+=attr failures
 
 This method returns a list (or arrayref, in scalar context) of other
 Email::Sender::Failure objects represented by this multi.
@@ -34,7 +27,7 @@ sub recipients {
   return wantarray ? @rcpts : \@rcpts;
 }
 
-=head2 isa
+=method isa
 
 A multiple failure will report that it is a Permanent or Temporary if all of
 its contained failures are failures of that type.

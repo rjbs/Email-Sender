@@ -1,14 +1,7 @@
 package Email::Sender::Transport::DevNull;
 use Moose;
 with 'Email::Sender::Transport';
-
-our $VERSION = '0.004';
-
-=head1 NAME
-
-Email::Sender::Transport::DevNull - happily throw away your mail
-
-=cut
+# ABSTRACT: happily throw away your mail
 
 sub send_email { return $_[0]->success }
 

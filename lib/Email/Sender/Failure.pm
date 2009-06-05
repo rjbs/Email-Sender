@@ -1,17 +1,12 @@
 package Email::Sender::Failure;
 use Moose;
+# ABSTRACT: a report of failure from an email sending transport
 
 our $VERSION = '0.004';
 
 use overload '""' => sub { $_[0]->message }, fallback => 1;
 
-=head1 NAME
-
-Email::Sender::Failure - a report of failure from an email sending transport
-
-=head1 METHODS
-
-=head2 message
+=attr message
 
 This method returns the failure message, which should describe the failure.
 Failures stringify to this message.
@@ -23,7 +18,7 @@ has message => (
   required => 1,
 );
 
-=head2 code
+=attr code
 
 This returns the numeric code of the failure, if any.  This is mostly useful
 for network protocol transports like SMTP.  This may be undefined.
@@ -34,7 +29,7 @@ has code => (
   is => 'ro',
 );
 
-=head2 recipients
+=attr recipients
 
 This returns a list (or, in scalar context, an arrayref) of addresses to which
 the email could not be sent.

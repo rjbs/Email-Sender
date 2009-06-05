@@ -1,20 +1,13 @@
 use strict;
 use warnings;
 package Email::Sender::Util;
-
-our $VERSION = '0.004';
+# ABSTRACT: random stuff that makes Email::Sender go
 
 use Email::Address;
 use Email::Sender::Failure;
 use Email::Sender::Failure::Permanent;
 use Email::Sender::Failure::Temporary;
 use List::MoreUtils ();
-
-=head1 NAME
-
-Email::Sender::Util - random stuff that makes Email::Sender go
-
-=cut
 
 # This code will be used by Email::Sender::Simple. -- rjbs, 2008-12-04
 sub _recipients_from_email {

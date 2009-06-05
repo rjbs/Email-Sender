@@ -1,12 +1,7 @@
 package Email::Sender::Transport::Sendmail;
 use Moose;
 with 'Email::Sender::Transport';
-
-our $VERSION = '0.004';
-
-=head1 NAME
-
-Email::Sender::Transport::Sendmail - send mail via sendmail(1)
+# ABSTRACT: send mail via sendmail(1)
 
 =head2 DESCRIPTION
 

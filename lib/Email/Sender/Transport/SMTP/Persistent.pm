@@ -1,12 +1,7 @@
 package Email::Sender::Transport::SMTP::Persistent;
 use Moose;
 extends 'Email::Sender::Transport::SMTP';
-
-our $VERSION = '0.004';
-
-=head1 NAME
-
-Email::Sender::Transport::SMTP::Persistent - an SMTP client that stays online
+# ABSTRACT: an SMTP client that stays online
 
 =head1 DESCRIPTION
 
@@ -43,9 +38,7 @@ sub _smtp_client {
 
 sub _message_complete { }
 
-=head1 METHODS
-
-=head2 disconnect
+=method disconnect
 
   $transport->disconnect;
 

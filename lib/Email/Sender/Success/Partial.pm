@@ -1,12 +1,7 @@
 package Email::Sender::Success::Partial;
 use Moose;
 extends 'Email::Sender::Success';
-
-our $VERSION = '0.004';
-
-=head1 NAME
-
-Email::Sender::Success::Partial - a report of partial success when delivering
+# ABSTRACT: a report of partial success when delivering
 
 =head1 DESCRIPTION
 

@@ -1,14 +1,7 @@
 package Email::Sender::Transport::Mbox;
 use Moose;
 with 'Email::Sender::Transport';
-
-our $VERSION = '0.004';
-
-=head1 NAME
-
-Email::Sender::Transport::Mbox - deliver mail to an mbox on disk
-
-=cut
+# ABSTRACT: deliver mail to an mbox on disk
 
 use Carp;
 use File::Path;

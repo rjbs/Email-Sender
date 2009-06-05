@@ -1,14 +1,7 @@
 package Email::Sender::Transport::Failable;
 use Moose;
 extends 'Email::Sender::Transport::Wrapper';
-
-our $VERSION = '0.004';
-
-=head1 NAME
-
-Email::Sender::Transport::Failable - a wrapper to makes things fail predictably
-
-=cut
+# ABSTRACT: a wrapper to makes things fail predictably
 
 has 'failure_conditions' => (
   is  => 'ro',

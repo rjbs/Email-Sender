@@ -1,14 +1,7 @@
 package Email::Sender::Transport::Test;
 use Moose;
 with 'Email::Sender::Transport';
-
-our $VERSION = '0.004';
-
-=head1 NAME
-
-Email::Sender::Transport::Test - delivery mail in memory for testing
-
-=cut
+# ABSTRACT: deliver mail in memory for testing
 
 use Email::Sender::Failure::Multi;
 use Email::Sender::Success::Partial;

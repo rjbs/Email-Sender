@@ -2,13 +2,7 @@ package Email::Sender;
 use Moose::Role;
 # ABSTRACT: a library for sending email
 
-our $VERSION = '0.004';
-
 requires 'send';
-
-=head1 NAME
-
-Email::Sender - a library for sending email
 
 =head1 DESCRIPTION
 
@@ -23,23 +17,6 @@ through your relay host.
 
 In the future, L<Email::Sender::Simple> will provide a very simple interface
 for sending mail.
-
-=head1 AUTHOR
-
-Ricardo SIGNES, C<< <rjbs@cpan.org> >>
-
-=head1 BUGS
-
-Please report any bugs or feature requests through the web interface at
-L<http://rt.cpan.org>.  I will be notified, and then you'll automatically be
-notified of progress on your bug as I make changes.
-
-=head1 COPYRIGHT
-
-Copyright 2006-2008, Ricardo SIGNES.
-
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
 
 =cut
 

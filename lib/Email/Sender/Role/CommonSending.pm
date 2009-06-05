@@ -9,6 +9,27 @@ use Email::Sender::Failure::Temporary;
 use Email::Sender::Failure::Permanent;
 use Scalar::Util ();
 
+=head1 DESCRIPTION
+
+Email::Sender::Role::CommonSending provides a number of features that should
+ease writing new classes that perform the L<Email::Sender> role.  Instead of
+writing a C<send> method, implementors will need to write a smaller
+C<send_email> method, which will be passed an L<Email::Abstract> object and
+envelope containing C<from> and C<to> entries.  The C<to> entry will be
+guaranteed to be an array reference.
+
+A C<success> method will also be provided as a shortcut for calling:
+
+  Email::Sender::Success->new(...);
+
+A few other minor details are handled by CommonSending; for more information,
+consult the source.
+
+The methods documented here may be overriden to alter the behavior of the
+CommonSending role.
+
+=cut
+
 with 'Email::Sender';
 
 requires 'send_email';

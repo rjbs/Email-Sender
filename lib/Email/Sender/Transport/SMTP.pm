@@ -7,6 +7,15 @@ use Email::Sender::Failure::Multi;
 use Email::Sender::Success::Partial;
 use Email::Sender::Util;
 
+=head1 DESCRIPTION
+
+This transport is used to send email over SMTP, either with or without secure
+sockets (SSL).  It is one of the most complex transports available, capable of
+partial success.
+
+For a potentially more efficient version of this transport, see
+L<Email::Sender::Transport::SMTP::Persistent>.
+
 =head1 ATTRIBUTES
 
 The following attributes may be passed to the constructor:

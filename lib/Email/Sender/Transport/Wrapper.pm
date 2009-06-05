@@ -12,8 +12,8 @@ use method modifiers to create wrapping classes.
 =cut
 
 has transport => (
-  is  => 'ro',
-  isa => 'Email::Sender::Transport',
+  is   => 'ro',
+  does => 'Email::Sender::Transport',
   required => 1,
 );
 

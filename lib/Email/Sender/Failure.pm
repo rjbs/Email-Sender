@@ -43,6 +43,18 @@ has _recipients => (
 
 sub recipients { shift->_recipients }
 
+=method throw
+
+This method can be used to instantiate and throw an Email::Sender::Failure
+object at once.
+
+  Email::Sender::Failure->throw(\%arg);
+
+Instead of a hashref of args, you can pass a single string argument which will
+be used as the C<message> of the new failure.
+
+=cut
+
 sub throw {
   my $inv = shift;
   die $inv if ref $inv;

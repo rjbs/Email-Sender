@@ -5,7 +5,7 @@ extends 'Email::Sender::Transport::SMTP';
 
 =head1 DESCRIPTION
 
-The stock Email::Sender::Transport::SMTP reconnects each time it sends a
+The stock L<Email::Sender::Transport::SMTP> reconnects each time it sends a
 message.  This transport only reconnects when the existing connection fails.
 
 =cut

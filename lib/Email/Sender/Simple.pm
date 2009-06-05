@@ -3,6 +3,13 @@ use Moose;
 with 'Email::Sender::Role::CommonSending';
 # ABSTRACT: the simple interface for sending mail with Sender
 
+=head1 SEE INSTEAD
+
+For now, the best documentation of this class is in
+L<Email::Sender::Manual::QuickStart>.
+
+=cut
+
 use Sub::Exporter::Util ();
 use Sub::Exporter -setup => {
   exports => {

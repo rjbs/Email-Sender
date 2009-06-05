@@ -1,6 +1,6 @@
 package Email::Sender::Simple;
 use Moose;
-with 'Email::Sender';
+with 'Email::Sender::Role::CommonSending';
 
 =head1 NAME
 
@@ -66,9 +66,8 @@ use Email::Sender::Transport;
   }
 }
 
-sub send {
+sub send_email {
   my ($self, $email, $arg) = @_;
-  $email = Email::Sender::Transport->prepare_email($email);
 
   my $transport = $self->_default_transport;
 
@@ -107,7 +106,7 @@ sub _get_to_from {
   my ($self, $email, $arg) = @_;
 
   my $to = $arg->{to};
-  unless ($to) {
+  unless (@$to) {
     my @to_addrs =
       map  { $_->address               }
       grep { defined                   }

@@ -21,7 +21,7 @@ my $result = Email::Sender::Simple->send($email);
 
 isa_ok($result, 'Email::Sender::Success');
 
-my $env_transport = Email::Sender::Simple->_default_transport;
+my $env_transport = Email::Sender::Simple->default_transport;
 my $deliveries = $env_transport->deliveries;
 
 is(@$deliveries, 1, "we sent one message");

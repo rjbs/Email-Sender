@@ -13,8 +13,8 @@ L<Email::Sender::Manual::QuickStart>.
 use Sub::Exporter::Util ();
 use Sub::Exporter -setup => {
   exports => {
-    sendmail        => Sub::Exporter::Util::curry_class('send')
-    try_to_sendmail => Sub::Exporter::Util::curry_class('try_to_send')
+    sendmail        => Sub::Exporter::Util::curry_class('send'),
+    try_to_sendmail => Sub::Exporter::Util::curry_class('try_to_send'),
   },
 };
 

@@ -53,8 +53,11 @@ those fields.  Similarly, if no sender is specified, it will use the first
 address found in the F<From> header.
 
 In most email transmission systems, though, the headers are not by necessity
-tied to the addresses used as the sender and recipients.  Being able to set
-those distinctly is important, and Email::Sender::Simple lets you do this:
+tied to the addresses used as the sender and recipients.  For example, your
+message header might say "From: mailing-list@example.com" while your SMTP
+client says "MAIL FROM:E<lt>verp-1234@lists.example.comE<gt>".  This is a
+powerful feature, and is necessary for many email application.  Being able to
+set those distinctly is important, and Email::Sender::Simple lets you do this:
 
   sendmail($email, { to => [ $to_1, $to_2 ], from => $sender });
 
@@ -67,8 +70,8 @@ What's more useful is what happens if the message can't be sent.
 
 If there is an error sending the message, an exception will be thrown.  It will
 be an object belonging to the class L<Email::Sender::Failure>.  This object
-will have a C<message> attribute that should describe the nature of the
-failure.  There are several specialized forms of failure, like
+will have a C<message> attribute describing the nature of the failure.  There
+are several specialized forms of failure, like
 L<Email::Sender::Failure::Multi>, which is thrown when more than one error is
 encountered when trying to send.  You don't need to know about these to use
 Email::Sender::Simple, though.  All you need to know is that C<sendmail>
@@ -128,7 +131,7 @@ environment, I<< no subsequent C<transport> args to C<sendmail> will be
 respected >>.  If you set the default transport via the environment, that's it.
 Everything will use that transport.
 
-This is extremely valuable behavior, as it allows you to audit ever message
+This is extremely valuable behavior, as it allows you to audit every message
 that would be sent by a program by running something like this:
 
   $ export EMAIL_SENDER_TRANSPORT=Maildir
@@ -158,7 +161,7 @@ The simplest way is to do something like this:
 
 Now you've got an array containing every delivery performed through
 Email::Sender::Simple, in order.  Because you set the transport via the
-environment, no other code will be been able to force a different transport.
+environment, no other code will be able to force a different transport.
 
 When testing code that forks, L<Email::Sender::Transport::SQLite> can be used
 to allow every child process to deliver to a single, easy to inspect

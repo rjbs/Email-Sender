@@ -35,7 +35,7 @@ to Email::Sender::Simple.  Email::Sender::Simple tries to make a good guess
 about how to send the message.  It will usually try to use the F<sendmail>
 program on unix-like systems and to use SMTP on Windows.  You can specify a
 transport, if you need to, but normally that shouldn't be an issue.  (See
-C<{citation needed}>, though, for more information.)
+L</Picking a Transport>, though, for more information.)
 
 Also note that we imported and used a C<sendmail> routine in the example above.
 This is exactly the same as saying:

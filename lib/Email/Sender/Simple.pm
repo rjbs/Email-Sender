@@ -61,6 +61,11 @@ use Email::Sender::Transport;
   }
 
   sub build_default_transport {
+    require Email::Sender::Transport::Sendmail;
+    my $transport = eval { Email::Sender::Transport::Sendmail->new };
+
+    return $transport if $transport;
+
     require Email::Sender::Transport::SMTP;
     Email::Sender::Transport::SMTP->new;
   }

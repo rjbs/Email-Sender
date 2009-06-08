@@ -34,6 +34,10 @@ has 'sendmail' => (
   },
 );
 
+sub BUILD {
+  $_[0]->sendmail; # force population -- rjbs, 2009-06-08
+}
+
 sub _find_sendmail {
   my ($self, $program_name) = @_;
   $program_name ||= 'sendmail';

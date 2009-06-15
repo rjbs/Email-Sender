@@ -1,21 +1,28 @@
 Revision history for Email-Sender
 
-0.004   2009-03-24
-        require perl5 version 8
-        move to Moose; let's not mess around, the Moose/Mouse stuff is not
-        worth the minor savings
+0.091661  2009-06-15
+          THIS RELEASE MAY BREAK YOUR CODE... but probably not
 
-0.003   2009-03-12
-        Sendmail transport now uses 2-arg open on Win32 so it can work at all
-        Win32-friendly tests added for Sendmail by the ever-awesome DAGOLDEN
+          Email::Sender::Simple has been added, along with a manual
+          Email::Sender is now a role
+          Email::Sender::Transport is now a role, too; subclasses will break
 
-0.002   2009-01-31
-        fix minor documentation errors
+0.004     2009-03-24
+          require perl5 version 8
+          move to Moose; let's not mess around, the Moose/Mouse stuff is not
+          worth the minor savings
 
-0.001   2009-01-02
-        SQLite transport split into its own dist, removed from this
-        QUIT when ending a transmission in non-persist SMTP
+0.003     2009-03-12
+          Sendmail transport now uses 2-arg open on Win32 so it can work at all
+          Win32-friendly tests added for Sendmail by the ever-awesome DAGOLDEN
 
-0.000   2008-12-10
-        first CPAN demo release; It Probably Works!
+0.002     2009-01-31
+          fix minor documentation errors
+
+0.001     2009-01-02
+          SQLite transport split into its own dist, removed from this
+          QUIT when ending a transmission in non-persist SMTP
+
+0.000     2008-12-10
+          first CPAN demo release; It Probably Works!
 

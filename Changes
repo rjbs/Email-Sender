@@ -1,5 +1,9 @@
 Revision history for Email-Sender
 
+0.091740  2009-06-23
+          no code changes
+          remove prereq of Test::More 0.88; weird things happened
+
 0.091661  2009-06-15
           THIS RELEASE MAY BREAK YOUR CODE... but probably not
 

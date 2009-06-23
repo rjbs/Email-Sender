@@ -1,4 +1,4 @@
-use Test::More;
+use Test::More 'no_plan';
 
    use_ok('Email::Sender')
 && use_ok('Email::Sender::Simple')
@@ -14,4 +14,3 @@ use Test::More;
 && use_ok('Email::Sender::Transport::Wrapper')
 || BAIL_OUT("can't even compile all relevant modules");
 
-done_testing;

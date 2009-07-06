@@ -1,5 +1,9 @@
 Revision history for Email-Sender
 
+0.091870  2009-07-06
+          exclude unwanted methods from Email::Sender::Transport
+          to suppress a new warning from Moose role composition
+
 0.091740  2009-06-23
           no code changes
           remove prereq of Test::More 0.88; weird things happened

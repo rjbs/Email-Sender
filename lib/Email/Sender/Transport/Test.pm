@@ -1,6 +1,6 @@
 package Email::Sender::Transport::Test;
 use Moose;
-with 'Email::Sender::Transport';
+with 'Email::Sender::Transport' => { exclude => 'allow_partial_success' };
 # ABSTRACT: deliver mail in memory for testing
 
 use Email::Sender::Failure::Multi;

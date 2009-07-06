@@ -1,6 +1,6 @@
 package Email::Sender::Transport::SMTP;
 use Moose;
-with 'Email::Sender::Transport';
+with 'Email::Sender::Transport' => { exclude => 'allow_partial_success' };
 # ABSTRACT: send email over SMTP
 
 use Email::Sender::Failure::Multi;

@@ -42,7 +42,17 @@ sub _find_sendmail {
   my ($self, $program_name) = @_;
   $program_name ||= 'sendmail';
 
-  for my $dir (File::Spec->path) {
+  my @path = File::Spec->path;
+
+  if ($program_name eq 'sendmail') {
+    # for 'real' sendmail we will look in common locations -- rjbs, 2009-07-12
+    push @path, (
+      File::Spec->catfile('', qw(usr sbin)),
+      File::Spec->catfile('', qw(usr lib)),
+    );
+  }
+
+  for my $dir (@path) {
     my $sendmail = File::Spec->catfile($dir, $program_name);
     return $sendmail if ($^O eq 'MSWin32') ? -f $sendmail : -x $sendmail;
   }

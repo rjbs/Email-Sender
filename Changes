@@ -1,5 +1,8 @@
 Revision history for Email-Sender
 
+0.091940  2009-07-12
+          packaging fixes (EU:MM version for LICENSE param) rt #47817
+
 0.091930  2009-07-12
           add some more common sendmail locations to default search
 

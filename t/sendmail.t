@@ -18,8 +18,32 @@ Subject: This should never show up in my inbox
 blah blah blah
 EOF
 
+my @to_unlink;
+END { unlink @to_unlink }
+
+sub get_bin_name {
+  return 'sendmail.bat' if $IS_WIN32;
+
+  my ($bin_path) = @_;
+  my $input_file = File::Spec->catfile( $bin_path, 'sendmail' );
+  my $fn = "sendmail-$$-$^T.tmp";
+  my $output_file = File::Spec->catfile( $bin_path, $fn );
+
+  open my $in_fh,  '<', $input_file  or die "can't read input sendmail: $!";
+  open my $out_fh, '>', $output_file or die "can't write temp sendmail: $!";
+
+  while (<$in_fh>) {
+    s/\A#!perl$/#!$^X/;
+    print $out_fh $_;
+  }
+
+  push @to_unlink, $output_file;
+
+  return $fn;
+}
+
 my $bin_path = File::Spec->rel2abs('util');
-my $bin_name = $IS_WIN32 ? 'sendmail.bat' : 'sendmail';
+my $bin_name = get_bin_name($bin_path);
 my $sendmail_bin = File::Spec->catfile( $bin_path, $bin_name );
 local $ENV{PATH} = join( $Config{path_sep}, $bin_path, $ENV{PATH});
 

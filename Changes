@@ -1,5 +1,8 @@
 Revision history for Email-Sender
 
+0.092840  2009-10-10
+          fix packaging error
+
 0.092820  2009-10-09
           improve reliability of t/sendmail.t (thanks, Mark Grimes)
 

@@ -175,12 +175,14 @@ sub send_email {
   $smtp->datasend($email->as_string) or $FAULT->("error at during DATA");
   $smtp->dataend                     or $FAULT->("error at after DATA");
 
+  my $message = $smtp->message;
+
   $self->_message_complete($smtp);
 
   # We must report partial success (failures) if applicable.
-  return $self->success({ message => $smtp->message }) unless @failures;
+  return $self->success({ message => $message }) unless @failures;
   return $self->partial_success({
-    message => $smtp->message,
+    message => $message,
     failure => Email::Sender::Failure::Multi->new({
       message  => 'some recipients were rejected during RCPT',
       failures => \@failures

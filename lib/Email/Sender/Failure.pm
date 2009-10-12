@@ -2,19 +2,13 @@ package Email::Sender::Failure;
 use Moose;
 # ABSTRACT: a report of failure from an email sending transport
 
+with 'Email::Sender::Role::HasMessage';
 use overload '""' => sub { $_[0]->message }, fallback => 1;
 
 =attr message
 
 This method returns the failure message, which should describe the failure.
 Failures stringify to this message.
-
-=cut
-
-has message => (
-  is       => 'ro',
-  required => 1,
-);
 
 =attr code
 

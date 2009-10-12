@@ -177,14 +177,40 @@ sub send_email {
 
   $self->_message_complete($smtp);
 
-  # XXX: We must report partial success (failures) if applicable.
-  return $self->success unless @failures;
-  return Email::Sender::Success::Partial->new({
+  # We must report partial success (failures) if applicable.
+  return $self->success({ message => $smtp->message }) unless @failures;
+  return $self->partial_success({
+    message => $smtp->message,
     failure => Email::Sender::Failure::Multi->new({
       message  => 'some recipients were rejected during RCPT',
       failures => \@failures
     }),
   });
+}
+
+my %SUCCESS_CLASS;
+BEGIN {
+  $SUCCESS_CLASS{FULL} = Moose::Meta::Class->create_anon_class(
+    superclasses => [ 'Email::Sender::Success' ], 
+    roles        => [ 'Email::Sender::Role::HasMessage' ],
+    cache        => 1,
+  );
+  $SUCCESS_CLASS{PARTIAL} = Moose::Meta::Class->create_anon_class(
+    superclasses => [ 'Email::Sender::Success::Partial' ], 
+    roles        => [ 'Email::Sender::Role::HasMessage' ],
+    cache        => 1,
+  );
+}
+
+sub success {
+  my $self = shift;
+  my $success = $SUCCESS_CLASS{FULL}->name->new(@_);
+}
+
+sub partial_success {
+  my ($self, @args) = @_;
+  my $obj = $SUCCESS_CLASS{PARTIAL}->name->new(@args);
+  return $obj;
 }
 
 sub _message_complete { $_[1]->quit; }

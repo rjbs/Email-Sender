@@ -1,5 +1,8 @@
 Revision history for Email-Sender
 
+0.092850  2009-10-12
+          add "message" attribute to successes returned by SMTP transports
+
 0.092840  2009-10-10
           fix packaging error
 

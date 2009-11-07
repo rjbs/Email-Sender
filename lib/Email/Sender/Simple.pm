@@ -47,7 +47,7 @@ use Email::Sender::Transport;
       my %arg;
       for my $key (grep { /^EMAIL_SENDER_TRANSPORT_\w+/ } keys %ENV) {
         (my $new_key = $key) =~ s/^EMAIL_SENDER_TRANSPORT_//;
-        $arg{$new_key} = $ENV{$key};
+        $arg{lc $new_key} = $ENV{$key};
       }
 
       $DEFAULT_FROM_ENV  = 1;

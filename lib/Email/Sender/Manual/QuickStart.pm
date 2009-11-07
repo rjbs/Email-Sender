@@ -129,7 +129,10 @@ environment variables to change the default.  For example:
 It is important to note that if you have set the default transport by using the
 environment, I<< no subsequent C<transport> args to C<sendmail> will be
 respected >>.  If you set the default transport via the environment, that's it.
-Everything will use that transport.
+Everything will use that transport.  (Also, note that while we gave the host and
+port arguments above in lower case, the casing of arguments in the environment
+is flattened to support systems where environment variables are of a fixed
+case.  So, C<EMAIL_SENDER_TRANSPORT_PORT> woudl also work.
 
 This is extremely valuable behavior, as it allows you to audit every message
 that would be sent by a program by running something like this:

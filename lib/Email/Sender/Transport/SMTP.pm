@@ -132,7 +132,7 @@ sub send_email {
 
   my @failures;
   my @ok_rcpts;
-  
+
   for my $addr (@to) {
     if ($smtp->to(_quoteaddr($addr))) {
       push @ok_rcpts, $addr;
@@ -193,12 +193,12 @@ sub send_email {
 my %SUCCESS_CLASS;
 BEGIN {
   $SUCCESS_CLASS{FULL} = Moose::Meta::Class->create_anon_class(
-    superclasses => [ 'Email::Sender::Success' ], 
+    superclasses => [ 'Email::Sender::Success' ],
     roles        => [ 'Email::Sender::Role::HasMessage' ],
     cache        => 1,
   );
   $SUCCESS_CLASS{PARTIAL} = Moose::Meta::Class->create_anon_class(
-    superclasses => [ 'Email::Sender::Success::Partial' ], 
+    superclasses => [ 'Email::Sender::Success::Partial' ],
     roles        => [ 'Email::Sender::Role::HasMessage' ],
     cache        => 1,
   );

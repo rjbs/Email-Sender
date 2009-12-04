@@ -1,6 +1,8 @@
 Revision history for Email-Sender
 
 {{$NEXT}}
+
+0.093380  2009-12-04 12:29:55 America/New_York
           bump Moose prereq to 0.70 based on feedback from ANDK
 
 0.093110  2009-11-07

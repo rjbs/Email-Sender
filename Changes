@@ -1,5 +1,7 @@
 Revision history for Email-Sender
 
+{{$NEXT}}
+          bump Moose prereq to 0.70 based on feedback from ANDK
 
 0.093110  2009-11-07
           allow uppercase env vars to set transport attributes (charsbar)

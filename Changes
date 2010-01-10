@@ -1,6 +1,7 @@
 Revision history for Email-Sender
 
 {{$NEXT}}
+          Email::Sender::Failure is now a Throwable::Error
 
 0.093380  2009-12-04 12:29:55 America/New_York
           bump Moose prereq to 0.70 based on feedback from ANDK

@@ -8,6 +8,7 @@ use Email::Sender::Success;
 use Email::Sender::Failure::Temporary;
 use Email::Sender::Failure::Permanent;
 use Scalar::Util ();
+use Try::Tiny;
 
 =head1 DESCRIPTION
 
@@ -39,18 +40,17 @@ sub send {
   my $email    = $self->prepare_email($message);
   my $envelope = $self->prepare_envelope($env);
 
-  my $return = eval {
-    $self->send_email($email, $envelope, @rest);
-  };
+  try {
+    return $self->send_email($email, $envelope, @rest);
+  } catch {
+    confess('unknown error') unless my $err = $_;
 
-  my $err = $@;
-  return $return if $return;
+    if (try { $err->isa('Email::Sender::Failure') } and ! $err->recipients) {
+      $err->_recipients([ @{ $envelope->{to} } ]);
+    }
 
-  if (eval { $err->isa('Email::Sender::Failure') } and ! $err->recipients) {
-    $err->_recipients([ @{ $envelope->{to} } ]);
+    die $err;
   }
-
-  defined($err) ? die($err) : confess('unknown error');
 }
 
 =method prepare_email

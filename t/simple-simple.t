@@ -66,12 +66,12 @@ is_deeply(
 
   {
     my $result = eval { Email::Sender::Simple->send($email); };
-    isa_ok($@, 'Email::Sender::Failure', "we throw on failure");
+    isa_ok($@, 'Email::Sender::Failure', "we throw on failure, obj");
     is($result, undef, "...meaning there is no return value");
   }
 
   {
-    my $result = Email::Sender::Simple->try_to_send($email);
+    my $result = eval { Email::Sender::Simple->try_to_send($email) };
     ok(! $@, "no exception when we try_to_send and fail");
     ok(! $result, "...but we do get a false value");
   }

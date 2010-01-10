@@ -20,6 +20,7 @@ use Sub::Exporter -setup => {
 
 use Email::Address;
 use Email::Sender::Transport;
+use Try::Tiny;
 
 {
   my $DEFAULT_TRANSPORT;
@@ -42,7 +43,7 @@ use Email::Sender::Transport;
         $transport_class = "Email::Sender::Transport::$transport_class";
       }
 
-      eval "require $transport_class" or die $@;
+      Class::MOP::load_class($transport_class);
 
       my %arg;
       for my $key (grep { /^EMAIL_SENDER_TRANSPORT_\w+/ } keys %ENV) {
@@ -121,13 +122,13 @@ sub send_email {
 sub try_to_send {
   my ($self, $email, $arg) = @_;
 
-  my $succ = eval { $self->send($email, $arg); };
-
-  return $succ if $succ;
-  my $error = $@ || 'unknown error';
-  return if eval { $error->isa('Email::Sender::Failure') };
-
-  die $error;
+  try {
+    return $self->send($email, $arg);
+  } catch {
+    my $error = $_ || 'unknown error';
+    return if try { $error->isa('Email::Sender::Failure') };
+    die $error;
+  };
 }
 
 sub _get_to_from {

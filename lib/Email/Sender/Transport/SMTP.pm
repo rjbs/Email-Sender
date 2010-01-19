@@ -20,13 +20,13 @@ L<Email::Sender::Transport::SMTP::Persistent>.
 
 The following attributes may be passed to the constructor:
 
-=over
+=over 4
 
-=item host - the name of the host to connect to; defaults to localhost
+=item C<host>: the name of the host to connect to; defaults to C<localhost>
 
-=item ssl - if true, connect via SSL; defaults to false
+=item C<ssl>: if true, connect via SSL; defaults to false
 
-=item port - port to connect to; defaults to 25 for non-SSL, 465 for SSL
+=item C<port>: port to connect to; defaults to 25 for non-SSL, 465 for SSL
 
 =cut
 
@@ -39,11 +39,11 @@ has port => (
   default => sub { return $_[0]->ssl ? 465 : 25; },
 );
 
-=item sasl_username - the username to use for auth; optional
+=item C<sasl_username>: the username to use for auth; optional
 
-=item sasl_password - the password to use for auth; must be provided if username is provided
+=item C<sasl_password>: the password to use for auth; required if C<username> is provided
 
-=item allow_partial_success - if true, will send data even if some recipients were rejected
+=item C<allow_partial_success>: if true, will send data even if some recipients were rejected; defaults to false
 
 =cut
 
@@ -52,11 +52,11 @@ has sasl_password => (is => 'ro', isa => 'Str');
 
 has allow_partial_success => (is => 'ro', isa => 'Bool', default => 0);
 
-=item helo - what to say when saying HELO; no default
+=item C<helo>: what to say when saying HELO; no default
 
-=item localaddr - local address from which to connect
+=item C<localaddr>: local address from which to connect
 
-=item localpart - local port from which to connect
+=item C<localport>: local port from which to connect
 
 =back
 

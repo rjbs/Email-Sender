@@ -1,6 +1,7 @@
 Revision history for Email-Sender
 
 {{$NEXT}}
+          allow timeout option to SMTP transport
 
 0.100110  2010-01-11 10:43:57 America/New_York
           Email::Sender::Failure is now a Throwable::Error

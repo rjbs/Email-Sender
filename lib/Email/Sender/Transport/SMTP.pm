@@ -28,6 +28,8 @@ The following attributes may be passed to the constructor:
 
 =item C<port>: port to connect to; defaults to 25 for non-SSL, 465 for SSL
 
+=item C<timeout>: maximum time in secs to wait for server; default is 120
+
 =cut
 
 has host => (is => 'ro', isa => 'Str',  default => 'localhost');
@@ -38,6 +40,8 @@ has port => (
   lazy    => 1,
   default => sub { return $_[0]->ssl ? 465 : 25; },
 );
+
+has timeout => (is => 'ro', isa => 'Int', default => 120);
 
 =item C<sasl_username>: the username to use for auth; optional
 
@@ -91,13 +95,7 @@ sub _smtp_client {
     require Net::SMTP;
   }
 
-  my $smtp = $class->new(
-    $self->host,
-    Port => $self->port,
-    $self->helo      ? (Hello     => $self->helo)      : (),
-    $self->localaddr ? (LocalAddr => $self->localaddr) : (),
-    $self->localport ? (LocalPort => $self->localport) : (),
-  );
+  my $smtp = $class->new( $self->_net_smtp_args );
 
   $self->_throw("unable to establish SMTP connection") unless $smtp;
 
@@ -110,6 +108,19 @@ sub _smtp_client {
   }
 
   return $smtp;
+}
+
+sub _net_smtp_args {
+  my ($self) = @_;
+
+  return (
+    $self->host,
+    Port    => $self->port,
+    Timeout => $self->timeout,
+    $self->helo      ? (Hello     => $self->helo)      : (),
+    $self->localaddr ? (LocalAddr => $self->localaddr) : (),
+    $self->localport ? (LocalPort => $self->localport) : (),
+  );
 }
 
 sub _throw {

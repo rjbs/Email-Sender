@@ -1,6 +1,7 @@
 Revision history for Email-Sender
 
 {{$NEXT}}
+          avoid using AutoPrereq, as it brings in build_requires as requires
 
 0.100450  2010-02-14 17:55:48 America/New_York
           allow timeout option to SMTP transport

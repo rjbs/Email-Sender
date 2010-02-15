@@ -26,7 +26,7 @@ A C<success> method will also be provided as a shortcut for calling:
 A few other minor details are handled by CommonSending; for more information,
 consult the source.
 
-The methods documented here may be overriden to alter the behavior of the
+The methods documented here may be overridden to alter the behavior of the
 CommonSending role.
 
 =cut

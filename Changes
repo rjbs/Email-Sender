@@ -1,6 +1,8 @@
 Revision history for Email-Sender
 
 {{$NEXT}}
+
+0.100460  2010-02-15 12:58:18 America/New_York
           avoid using AutoPrereq, as it brings in build_requires as requires
 
 0.100450  2010-02-14 17:55:48 America/New_York

@@ -4,6 +4,31 @@ use Moose::Role;
 
 requires 'send';
 
+=head1 SYNOPSIS
+
+  my $message = Email::MIME->create( ... );
+  # produce an Email::Abstract compatible message object,
+  # e.g. produced by Email::Simple, Email::MIME, Email::Stuff
+
+  use Email::Sender::Simple qw(sendmail);
+  use Email::Sender::Transport::SMTP qw();
+  use Try::Tiny;
+
+  try {
+    sendmail(
+      $message,
+      {
+        from => $SMTP_ENVELOPE_FROM_ADDRESS,
+        transport => Email::Sender::Transport::SMTP->new({
+            host => $SMTP_HOSTNAME,
+            port => $SMTP_PORT,
+        })
+      }
+    );
+  } catch {
+      warn "sending failed: $_";
+  };
+
 =head1 OVERVIEW
 
 Email::Sender replaces the old and sometimes problematic Email::Send library,

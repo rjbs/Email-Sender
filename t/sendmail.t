@@ -2,7 +2,7 @@ use Test::More tests => 5;
 use strict;
 $^W = 1;
 
-use Capture::Tiny 'capture';
+use Capture::Tiny 0.08 'capture';
 use Cwd;
 use Config;
 use Email::Sender::Transport::Sendmail;

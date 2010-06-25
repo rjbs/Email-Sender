@@ -1,6 +1,8 @@
 Revision history for Email-Sender
 
 {{$NEXT}}
+
+0.101760  2010-06-25 08:18:26 America/New_York
           fix sendmail.t with latest Capture::Tiny (Justin Hunter)
 
 0.100460  2010-02-15 12:58:18 America/New_York

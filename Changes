@@ -1,6 +1,8 @@
 Revision history for Email-Sender
 
 {{$NEXT}}
+          avoid the need to use "excludes" in role application; this silences
+          warnings with Moose 1.10
 
 0.101760  2010-06-25 08:18:26 America/New_York
           fix sendmail.t with latest Capture::Tiny (Justin Hunter)

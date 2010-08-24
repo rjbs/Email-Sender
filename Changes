@@ -1,6 +1,8 @@
 Revision history for Email-Sender
 
 {{$NEXT}}
+
+0.102360  2010-08-24 07:47:24 America/New_York
           avoid the need to use "excludes" in role application; this silences
           warnings with Moose 1.10
 

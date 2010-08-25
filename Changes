@@ -2,6 +2,10 @@ Revision history for Email-Sender
 
 {{$NEXT}}
 
+0.102370  2010-08-25 08:37:22 America/New_York
+          remove spurious prereq on Sys::Hostname::Long (thanks ABH)
+          tweak some tests for truth/definedness in SMTP transport
+
 0.102360  2010-08-24 07:47:24 America/New_York
           avoid the need to use "excludes" in role application; this silences
           warnings with Moose 1.10

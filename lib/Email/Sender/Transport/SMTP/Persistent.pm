@@ -11,7 +11,6 @@ message.  This transport only reconnects when the existing connection fails.
 =cut
 
 use Net::SMTP;
-use Sys::Hostname::Long ();
 
 has _cached_client => (
   is => 'rw',

@@ -65,7 +65,7 @@ has allow_partial_success => (is => 'ro', isa => 'Bool', default => 0);
 
 =cut
 
-has helo      => (is => 'ro', isa => 'Str'); # default to hostname_long
+has helo      => (is => 'ro', isa => 'Str');
 has localaddr => (is => 'ro');
 has localport => (is => 'ro', isa => 'Int');
 
@@ -116,9 +116,9 @@ sub _net_smtp_args {
     $self->host,
     Port    => $self->port,
     Timeout => $self->timeout,
-    $self->helo      ? (Hello     => $self->helo)      : (),
-    $self->localaddr ? (LocalAddr => $self->localaddr) : (),
-    $self->localport ? (LocalPort => $self->localport) : (),
+    defined $self->helo      ? (Hello     => $self->helo)      : (),
+    defined $self->localaddr ? (LocalAddr => $self->localaddr) : (),
+    defined $self->localport ? (LocalPort => $self->localport) : (),
   );
 }
 

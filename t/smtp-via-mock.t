@@ -30,7 +30,7 @@ BEGIN {
   $mock_smtp->{failaddr}{'permfail@example.net'} = [ 519 => 'Permanent STHU' ];
 }
 
-plan tests => 94;
+plan tests => 98;
 
 use Email::Sender::Transport::SMTP;
 use Email::Sender::Transport::SMTP::Persistent;
@@ -346,4 +346,23 @@ for my $class (qw(
       },
     );
   }
+
+  # Warning on missing from address?  2010-10-22 mjd@icgroup.com
+  {
+    local $test = 'simple okay with omitted from addr';
+    my @warnings;
+    local $SIG{__WARN__} = sub { push @warnings, @_ };
+    test_smtp(
+      {
+        from => undef,
+        to   => 'okay@example.com',
+      },
+      sub {
+          is(@warnings, 0, 'No warnings for omitted from addr');
+          note $_ for @warnings;
+        },
+      undef,
+    );
+  }
+
 }

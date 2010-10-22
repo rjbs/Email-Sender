@@ -74,6 +74,7 @@ has localport => (is => 'ro', isa => 'Int');
 # later. -- rjbs, 2008-12-05
 sub _quoteaddr {
   my $addr       = shift;
+  $addr = '' unless defined $addr;
   my @localparts = split /\@/, $addr;
   my $domain     = pop @localparts;
   my $localpart  = join q{@}, @localparts;

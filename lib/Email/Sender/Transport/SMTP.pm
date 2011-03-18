@@ -102,8 +102,13 @@ sub _smtp_client {
     $self->_throw("sasl_username but no sasl_password")
       unless defined $self->sasl_password;
 
-    $self->_throw('failed AUTH', $smtp)
-      unless $smtp->auth($self->sasl_username, $self->sasl_password)
+    unless ($smtp->auth($self->sasl_username, $self->sasl_password)) {
+      if ($smtp->message =~ /MIME::Base64|Authen::SASL/) {
+        Carp::confess("SMTP auth requires MIME::Base64 and Authen::SASL");
+      }
+
+      $self->_throw('failed AUTH', $smtp);
+    }
   }
 
   return $smtp;

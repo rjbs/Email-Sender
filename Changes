@@ -1,6 +1,8 @@
 Revision history for Email-Sender
 
 {{$NEXT}}
+          provide a much clearer and more fatal error when SASL authentication
+          has failed because Authen::SASL or MIME::Base64 is not available
 
 0.102370  2010-08-25 08:37:22 America/New_York
           remove spurious prereq on Sys::Hostname::Long (thanks ABH)

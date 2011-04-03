@@ -2,6 +2,11 @@ Revision history for Email-Sender
 
 {{$NEXT}}
 
+0.110001  2011-04-03 16:32:15 America/New_York
+
+          prevent Test::MinimumVersion test from causing a requirement on T::MV
+          and, thus, PPI!  Thanks for the report, Matt S. Trout!
+
 0.110000  2011-03-17 21:40:36 America/New_York
           provide a much clearer and more fatal error when SASL authentication
           has failed because Authen::SASL or MIME::Base64 is not available

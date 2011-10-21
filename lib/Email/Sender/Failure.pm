@@ -1,5 +1,5 @@
 package Email::Sender::Failure;
-use Moose;
+use Any::Moose;
 extends 'Throwable::Error';
 # ABSTRACT: a report of failure from an email sending transport
 
@@ -68,5 +68,5 @@ sub BUILD {
 =cut
 
 __PACKAGE__->meta->make_immutable(inline_constructor => 0);
-no Moose;
+no Any::Moose;
 1;

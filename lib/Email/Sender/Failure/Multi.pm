@@ -1,5 +1,5 @@
 package Email::Sender::Failure::Multi;
-use Moose;
+use Any::Moose;
 extends 'Email::Sender::Failure';
 # ABSTRACT: an aggregate of multiple failures
 
@@ -50,5 +50,5 @@ sub isa {
 }
 
 __PACKAGE__->meta->make_immutable(inline_constructor => 0);
-no Moose;
+no Any::Moose;
 1;

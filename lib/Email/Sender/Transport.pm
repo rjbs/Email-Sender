@@ -1,5 +1,5 @@
 package Email::Sender::Transport;
-use Moose::Role;
+use Any::Moose 'Role';
 # ABSTRACT: a role for email transports
 
 =head1 DESCRIPTION
@@ -36,5 +36,5 @@ sub is_simple {
 
 sub allow_partial_success { 0 }
 
-no Moose::Role;
+no Any::Moose 'Role';
 1;

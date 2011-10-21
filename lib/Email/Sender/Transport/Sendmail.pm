@@ -1,5 +1,5 @@
 package Email::Sender::Transport::Sendmail;
-use Moose;
+use Any::Moose;
 with 'Email::Sender::Transport';
 # ABSTRACT: send mail via sendmail(1)
 
@@ -92,5 +92,5 @@ sub send_email {
 }
 
 __PACKAGE__->meta->make_immutable;
-no Moose;
+no Any::Moose;
 1;

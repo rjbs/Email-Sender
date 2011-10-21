@@ -1,5 +1,5 @@
 package Email::Sender::Simple;
-use Moose;
+use Any::Moose;
 with 'Email::Sender::Role::CommonSending';
 # ABSTRACT: the simple interface for sending mail with Sender
 
@@ -35,7 +35,7 @@ use Try::Tiny;
   sub default_transport {
     return $DEFAULT_TRANSPORT if $DEFAULT_TRANSPORT;
     my ($self) = @_;
-    
+
     if ($ENV{EMAIL_SENDER_TRANSPORT}) {
       my $transport_class = $ENV{EMAIL_SENDER_TRANSPORT};
 
@@ -43,7 +43,8 @@ use Try::Tiny;
         $transport_class = "Email::Sender::Transport::$transport_class";
       }
 
-      Class::MOP::load_class($transport_class);
+      require Class::Load;
+      Class::Load::load_class($transport_class);
 
       my %arg;
       for my $key (grep { /^EMAIL_SENDER_TRANSPORT_\w+/ } keys %ENV) {
@@ -158,5 +159,5 @@ sub _get_to_from {
   return ($to, $from);
 }
 
-no Moose;
+no Any::Moose;
 "220 OK";

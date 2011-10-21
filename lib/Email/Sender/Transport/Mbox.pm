@@ -1,5 +1,5 @@
 package Email::Sender::Transport::Mbox;
-use Moose;
+use Any::Moose;
 with 'Email::Sender::Transport';
 # ABSTRACT: deliver mail to an mbox on disk
 
@@ -109,5 +109,5 @@ sub _unlock {
 }
 
 __PACKAGE__->meta->make_immutable;
-no Moose;
+no Any::Moose;
 1;

@@ -1,5 +1,5 @@
 package Email::Sender::Transport::Test;
-use Moose;
+use Any::Moose;
 # ABSTRACT: deliver mail in memory for testing
 
 use Email::Sender::Failure::Multi;
@@ -119,5 +119,5 @@ sub send_email {
 
 with 'Email::Sender::Transport';
 __PACKAGE__->meta->make_immutable;
-no Moose;
+no Any::Moose;
 1;

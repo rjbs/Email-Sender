@@ -1,5 +1,5 @@
 package Email::Sender::Transport::Failable;
-use Moose;
+use Any::Moose;
 extends 'Email::Sender::Transport::Wrapper';
 # ABSTRACT: a wrapper to makes things fail predictably
 
@@ -46,5 +46,5 @@ around send_email => sub {
 };
 
 __PACKAGE__->meta->make_immutable;
-no Moose;
+no Any::Moose;
 1;

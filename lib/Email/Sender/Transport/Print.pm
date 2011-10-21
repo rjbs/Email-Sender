@@ -1,5 +1,5 @@
 package Email::Sender::Transport::Print;
-use Moose;
+use Any::Moose;
 with 'Email::Sender::Transport';
 # ABSTRACT: print email to a filehandle (like stdout)
 
@@ -37,5 +37,5 @@ sub send_email {
 }
 
 __PACKAGE__->meta->make_immutable;
-no Moose;
+no Any::Moose;
 1;

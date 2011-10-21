@@ -1,5 +1,5 @@
 package Email::Sender::Transport::SMTP;
-use Moose 0.90;
+use Any::Moose;
 # ABSTRACT: send email over SMTP
 
 use Email::Sender::Failure::Multi;
@@ -207,12 +207,12 @@ sub send_email {
 
 my %SUCCESS_CLASS;
 BEGIN {
-  $SUCCESS_CLASS{FULL} = Moose::Meta::Class->create_anon_class(
+  $SUCCESS_CLASS{FULL} = any_moose('::Meta::Class')->create_anon_class(
     superclasses => [ 'Email::Sender::Success' ],
     roles        => [ 'Email::Sender::Role::HasMessage' ],
     cache        => 1,
   );
-  $SUCCESS_CLASS{PARTIAL} = Moose::Meta::Class->create_anon_class(
+  $SUCCESS_CLASS{PARTIAL} = any_moose('::Meta::Class')->create_anon_class(
     superclasses => [ 'Email::Sender::Success::Partial' ],
     roles        => [ 'Email::Sender::Role::HasMessage' ],
     cache        => 1,
@@ -242,5 +242,5 @@ documentation.
 
 with 'Email::Sender::Transport';
 __PACKAGE__->meta->make_immutable;
-no Moose;
+no Any::Moose;
 1;

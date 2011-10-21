@@ -1,5 +1,5 @@
 package Email::Sender;
-use Moose::Role;
+use Any::Moose 'Role';
 # ABSTRACT: a library for sending email
 
 requires 'send';
@@ -53,5 +53,5 @@ L<Email::Sender::Failure> on failure.
 
 =cut
 
-no Moose::Role;
+no Any::Moose 'Role';
 1;

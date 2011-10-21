@@ -1,5 +1,5 @@
 package Test::Email::SMTPRig;
-use Moose;
+use Any::Moose;
 
 has 'smtp_host' => (is => 'ro', required => 1);
 has 'smtp_ssl'  => (is => 'ro', default  => 0);
@@ -66,5 +66,5 @@ has 'plan' => (
 );
 
 __PACKAGE__->meta->make_immutable;
-no Moose;
+no Any::Moose;
 1;

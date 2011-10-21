@@ -1,5 +1,5 @@
 package Email::Sender::Transport::Maildir;
-use Moose;
+use Any::Moose;
 with 'Email::Sender::Transport';
 # ABSTRACT: deliver mail to a maildir on disk
 
@@ -127,5 +127,5 @@ sub _delivery_fh {
 }
 
 __PACKAGE__->meta->make_immutable;
-no Moose;
+no Any::Moose;
 1;

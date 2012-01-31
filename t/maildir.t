@@ -7,7 +7,7 @@ use Test::Email::Sender::Util;
 use File::Spec ();
 use File::Temp ();
 
-use Test::More tests => 5;
+use Test::More tests => 9;
 
 use Email::Sender::Transport::Maildir;
 
@@ -32,6 +32,16 @@ for (1..2) {
   );
 
   isa_ok($result, 'Email::Sender::Success', "delivery result");
+  is(
+    index($result->filename, $maildir),
+    0,
+    "the result filename begins with the maildir",
+  );
+
+  ok(
+    -f $result->filename,
+    "...and exists",
+  );
 }
 
 my $new = File::Spec->catdir($maildir, 'new');

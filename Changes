@@ -1,6 +1,8 @@
 Revision history for Email-Sender
 
 {{$NEXT}}
+          Maildir deliveries now have a ->filename method to tell you just
+          where the mail was delivered
 
 0.110001  2011-04-03 16:32:15 America/New_York
 

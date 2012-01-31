@@ -24,7 +24,25 @@ Three headers will be added:
  * X-Email-Sender-To   - the envelope recipients (one header per rcpt)
  * Lines               - the number of lines in the body
 
+The L<Email::Sender::Success> object returned on success has a C<filename>
+method that returns the filename to which the message was delivered.
+
 =cut
+
+{
+  package
+    Email::Sender::Success::MaildirSuccess;
+  use Moose;
+  extends 'Email::Sender::Success';
+  has filename => (
+    is  => 'ro',
+    isa => 'Str',
+    required => 1,
+  );
+  __PACKAGE__->meta->make_immutable;
+  no Moose;
+}
+
 
 my $HOSTNAME;
 BEGIN { ($HOSTNAME = hostname) =~ s/\..*//; }
@@ -52,9 +70,11 @@ sub send_email {
   $self->_add_lines_header($dupe);
   $self->_update_time;
 
-  $self->_deliver_email($dupe);
+  my $fn = $self->_deliver_email($dupe);
 
-  return $self->success;
+  return Email::Sender::Success::MaildirSuccess->new({
+    filename => $fn,
+  });
 }
 
 sub _ensure_maildir_exists {
@@ -100,13 +120,17 @@ sub _deliver_email {
   close $tmp_fh
     or Email::Sender::Failure->throw("error closing $tmp_filename: $!");
 
+  my $target_name = File::Spec->catfile($self->dir, 'new', $tmp_filename);
+
   my $ok = rename(
     File::Spec->catfile($self->dir, 'tmp', $tmp_filename),
-    File::Spec->catfile($self->dir, 'new', $tmp_filename),
+    $target_name,
   );
 
   Email::Sender::Failure->throw("could not move $tmp_filename from tmp to new")
     unless $ok;
+
+  return $target_name;
 }
 
 sub _delivery_fh {

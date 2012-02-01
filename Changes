@@ -2,6 +2,10 @@ Revision history for Email-Sender
 
 {{$NEXT}}
 
+0.110003  2012-02-01 15:09:52 America/New_York
+          add the add_lines_header and add_envelope_headers attributes to
+          Maildir transports
+
 0.110002  2012-01-31 17:02:35 America/New_York
           Maildir deliveries now have a ->filename method to tell you just
           where the mail was delivered

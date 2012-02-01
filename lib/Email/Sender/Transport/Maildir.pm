@@ -18,11 +18,14 @@ current directory (at the time of transport initialization).
 
 If the directory does not exist, it will be created.
 
-Three headers will be added:
+By default, three headers will be added:
 
  * X-Email-Sender-From - the envelope sender
  * X-Email-Sender-To   - the envelope recipients (one header per rcpt)
  * Lines               - the number of lines in the body
+
+These can be controlled with the C<add_lines_header> and
+C<add_envelope_headers> constructor arguments.
 
 The L<Email::Sender::Success> object returned on success has a C<filename>
 method that returns the filename to which the message was delivered.
@@ -51,6 +54,12 @@ sub _hostname { $HOSTNAME }
 my $MAILDIR_TIME    = 0;
 my $MAILDIR_COUNTER = 0;
 
+has [ qw(add_lines_header add_envelope_headers) ] => (
+  is  => 'ro',
+  isa => 'Bool',
+  default => 1,
+);
+
 has dir => (
   is  => 'ro',
   required => 1,
@@ -62,12 +71,14 @@ sub send_email {
 
   my $dupe = Email::Abstract->new(\do { $email->as_string });
 
-  $dupe->set_header('X-Email-Sender-From' => $env->{from});
-  $dupe->set_header('X-Email-Sender-To'   => @{ $env->{to} });
+  if ($self->add_envelope_headers) {
+    $dupe->set_header('X-Email-Sender-From' => $env->{from});
+    $dupe->set_header('X-Email-Sender-To'   => @{ $env->{to} });
+  }
 
   $self->_ensure_maildir_exists;
 
-  $self->_add_lines_header($dupe);
+  $self->_add_lines_header($dupe) if $self->add_lines_header;
   $self->_update_time;
 
   my $fn = $self->_deliver_email($dupe);

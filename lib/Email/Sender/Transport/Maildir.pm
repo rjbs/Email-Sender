@@ -103,8 +103,8 @@ sub _ensure_maildir_exists {
 sub _add_lines_header {
   my ($class, $email) = @_;
   return if $email->get_header("Lines");
-  my @lines = split /\n/, $email->get_body;
-  $email->set_header("Lines", scalar @lines);
+  my $lines = $email->get_body =~ tr/\n/\n/;
+  $email->set_header("Lines", $lines);
 }
 
 sub _update_time {

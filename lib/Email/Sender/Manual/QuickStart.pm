@@ -170,6 +170,70 @@ When testing code that forks, L<Email::Sender::Transport::SQLite> can be used
 to allow every child process to deliver to a single, easy to inspect
 destination database.
 
+=head2 Hey, where's my Bcc support?
+
+A common question is "Why doesn't Email::Sender::Simple automatically respect
+my Bcc header?"  This is often combined with, "Here is a patch to 'fix' it."
+This is not a bug or oversight. Bcc is being ignored intentionally for now
+because simply adding the Bcc addresses to the message recipients would not
+produce the usually-desired behavior.
+
+For example, here is a set of headers:
+
+  From: sender@example.com
+  To:   to_rcpt@example.com
+  Cc:   cc_rcpt@example.com
+  Bcc:  the_boss@example.com
+
+In this case, we'd expect the message to be delivered to three people:
+to_rcpt, cc_rcpt, and the_boss.  This is why it's often suggested that the
+Bcc header should be a source for envelope recipients.  In fact, though, a
+message with a Bcc header should probably be delivered I<only> to the Bcc
+recipients.  The "B" in Bcc means "blind."  The other recipients should not
+see who has been Bcc'd.  This means you want to send I<two> messages:  one to
+to_rcpt and cc_rcpt, with no Bcc header present; and another to the_boss
+only, with the Bcc header.  B<If you just pick up Bcc addresses as
+recipients, everyone will see who was Bcc'd.>
+
+Email::Sender::Simple promises to send messages atomically.  That is:  it
+won't deliver to only some of the recipients, and not to others.  That means
+it can't automatically detect the Bcc header and make two deliveries.  There
+would be a possibility for the second to fail after the first succeeded,
+which would break the promise of a pure failure or success.
+
+The other strategy for dealing with Bcc is to remove the Bcc header from the
+message and then inject the message with an envelope including the Bcc
+addresses.  The envelope information will not be visible to the final
+recipients, so this is safe.  Unfortunately, this requires modifying the
+message, and Email::Sender::Simple should not be altering the mutable email
+object passed to it.  There is no C<clone> method on Email::Abstract, so it
+cannot just build a clone and modify that, either.  When such a method
+exists, Bcc handling may be possible.
+
+=head3 Example Bcc Handling
+
+If you want to support the Bcc header now, it is up to you to deal with how
+you want to munge the mail and inject the (possibly) munged copies into your
+outbound mailflow.  It is not reasonable to suggest that
+Email::Sender::Simple do this job.
+
+=head4 Example 1: Explicitly set the envelope recipients for Bcc recipients
+
+Create the email without a Bcc header, send it to the Bcc users explicitly
+and then send it to the To/Cc users implicitly.
+
+  my $message = create_email_mime_msg;  # <- whatever you do to get the message
+
+  $message->delete_header('bcc');       # delete the Bcc header before sending
+  sendmail($message, { to => $rcpt' }); # send to explicit Bcc address
+  sendmail($message);                   # and then send as normal
+
+=head4 Example 2: Explicitly set the envelope recipients for all recipients
+
+You can make a single call to C<sendmail> by pulling all the recipient
+addresses from the headers yourself and specifying all the envelope
+recipients once.  Again, delete the Bcc header before the message is sent.
+
 =head1 SEE ALSO
 
 =head2 This is awesome!  Where can I learn more?

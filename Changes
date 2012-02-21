@@ -1,6 +1,9 @@
 Revision history for Email-Sender
 
 {{$NEXT}}
+          import the "Bcc" page from the (otherwise empty) github wiki; this
+          adds some information to the QuickStart page about why Bcc support
+          isn't there and why this isn't a bug
 
 0.110003  2012-02-01 15:09:52 America/New_York
           add the add_lines_header and add_envelope_headers attributes to

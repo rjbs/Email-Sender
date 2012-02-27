@@ -154,6 +154,7 @@ sub _delivery_fh {
     $filename = join q{.}, $MAILDIR_TIME, $$, ++$MAILDIR_COUNTER, $hostname;
     my $filespec = File::Spec->catfile($self->dir, 'tmp', $filename);
     sysopen $fh, $filespec, O_CREAT|O_EXCL|O_WRONLY;
+    binmode $fh;
     Email::Sender::Failure->throw("cannot create $filespec for delivery: $!")
       unless $fh or $!{EEXIST};
   }

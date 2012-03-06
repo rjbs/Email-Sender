@@ -1,6 +1,8 @@
 Revision history for Email-Sender
 
 {{$NEXT}}
+          binmode output handle to avoid line ending munging in Mbox and
+          Maildir; thanks, Christian Walde!
 
 0.110004  2012-02-21 17:47:35 America/New_York
           import the "Bcc" page from the (otherwise empty) github wiki; this

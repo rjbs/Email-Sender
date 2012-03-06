@@ -1,6 +1,8 @@
 Revision history for Email-Sender
 
 {{$NEXT}}
+
+0.110005  2012-03-05 21:37:35 America/New_York
           binmode output handle to avoid line ending munging in Mbox and
           Maildir; thanks, Christian Walde!
 

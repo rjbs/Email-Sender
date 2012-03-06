@@ -64,6 +64,8 @@ sub _open_fh {
   my $fh = IO::File->new($file, '>>')
     or Carp::confess "couldn't open $file for appending: $!";
 
+  $fh->binmode(':raw');
+
   $class->_getlock($fh, $file);
 
   $fh->seek(0, 2);

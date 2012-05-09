@@ -1,6 +1,20 @@
 Revision history for Email-Sender
 
 {{$NEXT}}
+          THIS IS A BIG DEAL:
+
+          This release deprecates the scalar context behavior of:
+
+          * Failure->recipients
+          * Failure::Multi->failures
+          * Failure::Multi->recipients
+          * Transport::Test->deliveries
+          * Transport::Failable->failure_conditions
+
+          Until now, these methods returned a list in list context and
+          an array reference in scalar context.  This still works, but
+          scalar context calls will now generate a warning.  In one
+          year (2013-05), they will be become fatal.
 
 0.110005  2012-03-05 21:37:35 America/New_York
           binmode output handle to avoid line ending munging in Mbox and

@@ -21,19 +21,27 @@ has code => (
 
 =attr recipients
 
-This returns a list (or, in scalar context, an arrayref) of addresses to which
-the email could not be sent.
+This returns a list of addresses to which the email could not be sent.
 
 =cut
 
-has _recipients => (
-  is         => 'rw',
-  isa        => 'ArrayRef',
-  auto_deref => 1,
-  init_arg   => 'recipients',
+has recipients => (
+  isa     => 'ArrayRef',
+  traits  => [ 'Array' ],
+  handles => { __recipients => 'elements' },
+  default => sub {  []  },
+  writer  => '_set_recipients',
+  reader  => '__get_recipients',
 );
 
-sub recipients { shift->_recipients }
+sub recipients {
+  my ($self) = @_;
+  return $self->__recipients if wantarray;
+  return $self->__recipients if ! defined wantarray;
+
+  Carp::carp("recipients in scalar context is deprecated and WILL BE REMOVED");
+  return $self->__get_recipients;
+}
 
 =method throw
 

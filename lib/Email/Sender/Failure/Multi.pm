@@ -10,21 +10,37 @@ when sending a single message, or when mixed states were encountered.
 
 =attr failures
 
-This method returns a list (or arrayref, in scalar context) of other
-Email::Sender::Failure objects represented by this multi.
+This method returns a list of other Email::Sender::Failure objects represented
+by this multi.
 
 =cut
 
 has failures => (
-  is  => 'ro',
   isa => 'ArrayRef',
-  auto_deref => 1,
+  traits  => [ 'Array' ],
+  handles  => { __failures => 'elements' },
+  required => 1,
+  reader   => '__get_failures',
 );
+
+sub failures {
+  my ($self) = @_;
+  return $self->__failures if wantarray;
+  return if ! defined wantarray;
+
+  Carp::carp("failures in scalar context is deprecated and WILL BE REMOVED");
+  return $self->__get_failures;
+}
 
 sub recipients {
   my ($self) = @_;
   my @rcpts = map { $_->recipients } $self->failures;
-  return wantarray ? @rcpts : \@rcpts;
+
+  return @rcpts if wantarray;
+  return if ! defined wantarray;
+
+  Carp::carp("recipients in scalar context is deprecated and WILL BE REMOVED");
+  return \@rcpts;
 }
 
 =method isa

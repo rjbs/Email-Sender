@@ -45,8 +45,11 @@ sub send {
   } catch {
     confess('unknown error') unless my $err = $_;
 
-    if (try { $err->isa('Email::Sender::Failure') } and ! $err->recipients) {
-      $err->_recipients([ @{ $envelope->{to} } ]);
+    if (
+      try { $err->isa('Email::Sender::Failure') }
+      and ! (my @tmp = $err->recipients)
+    ) {
+      $err->_set_recipients([ @{ $envelope->{to} } ]);
     }
 
     die $err;

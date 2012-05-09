@@ -21,17 +21,15 @@ If any coderef returns a true value, the value will be used to signal failure.
 =cut
 
 has 'failure_conditions' => (
-  is  => 'ro',
   isa => 'ArrayRef',
-  clearer    => 'clear_failure_conditions',
-  auto_deref => 1,
-  default    => sub { [] },
+  default => sub { [] },
+  traits  => [ 'Array' ],
+  handles => {
+    failure_conditions       => 'elements',
+    clear_failure_conditions => 'clear',
+    fail_if                  => 'push',
+  },
 );
-
-sub fail_if {
-  my ($self, $cond) = @_;
-  push @{ scalar $self->failure_conditions }, $cond;
-}
 
 around send_email => sub {
   my ($orig, $self, $email, $env, @rest) = @_;

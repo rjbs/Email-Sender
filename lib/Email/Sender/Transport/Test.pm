@@ -54,17 +54,17 @@ sub recipient_failure { }
 sub delivery_failure  { }
 
 has deliveries => (
-  is  => 'ro',
   isa => 'ArrayRef',
+  traits     => [ 'Array' ],
   init_arg   => undef,
   default    => sub { [] },
-  auto_deref => 1,
+  handles    => {
+    deliveries       => 'elements',
+    delivery_count   => 'count',
+    clear_deliveries => 'clear',
+    record_delivery  => 'push',
+  },
 );
-
-sub clear_deliveries {
-  @{ $_[0]->deliveries } = ();
-  return;
-}
 
 sub send_email {
   my ($self, $email, $envelope) = @_;
@@ -99,13 +99,12 @@ sub send_email {
     );
   }
 
-  $self->{deliveries} ||= [];
-  push @{ $self->{deliveries} }, {
+  $self->record_delivery({
     email     => $email,
     envelope  => $envelope,
     successes => \@ok_rcpts,
     failures  => \@failures,
-  };
+  });
 
   # XXX: We must report partial success (failures) if applicable.
   return $self->success unless @failures;

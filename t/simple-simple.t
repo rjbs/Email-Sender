@@ -22,12 +22,12 @@ my $result = Email::Sender::Simple->send($email);
 isa_ok($result, 'Email::Sender::Success');
 
 my $env_transport = Email::Sender::Simple->default_transport;
-my $deliveries = $env_transport->deliveries;
+my @deliveries = $env_transport->deliveries;
 
-is(@$deliveries, 1, "we sent one message");
+is(@deliveries, 1, "we sent one message");
 
 is_deeply(
-  $deliveries->[0]->{envelope},
+  $deliveries[0]->{envelope},
   {
     to   => [ 'number.2@green.dome.il' ],
     from => 'number.5@gov.uk',
@@ -46,13 +46,13 @@ is_deeply(
   );
 
   is(
-    @{ $env_transport->deliveries },
+    $env_transport->delivery_count,
     2,
     "we ignore the passed transport when we're using transport-from-env",
   );
 
   is_deeply(
-    $deliveries->[1]->{envelope},
+    ($env_transport->deliveries)[1]->{envelope},
     {
       to   => [ 'devnull@example.com' ],
       from => 'number.5@gov.uk',

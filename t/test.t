@@ -11,7 +11,7 @@ my $sender = Email::Sender::Transport::Test->new;
 ok($sender->does('Email::Sender::Transport'));
 isa_ok($sender, 'Email::Sender::Transport::Test');
 
-is(@{ $sender->deliveries }, 0, "no deliveries so far");
+is($sender->delivery_count, 0, "no deliveries so far");
 
 my $message = <<'END_MESSAGE';
 From: sender@test.example.com
@@ -38,7 +38,7 @@ ok(! $sender->allow_partial_success, "std Test doesn't allow partial succ");
   ok($result, 'success');
 }
 
-is(@{ $sender->deliveries }, 1, "we've done one delivery so far");
+is($sender->delivery_count, 1, "we've done one delivery so far");
 
 {
   my $result = $sender->send(
@@ -49,7 +49,7 @@ is(@{ $sender->deliveries }, 1, "we've done one delivery so far");
   ok($result, 'success');
 }
 
-is(@{ $sender->deliveries }, 2, "we've done two deliveries so far");
+is($sender->delivery_count, 2, "we've done two deliveries so far");
 
 my @deliveries = $sender->deliveries;
 
@@ -252,7 +252,7 @@ $failer->fail_if(sub {
 }
 
 is(
-  @{ $failer->transport->deliveries },
+  $failer->transport->delivery_count,
   1,
   "first post-fail_if delivery is OK"
 );
@@ -263,7 +263,7 @@ is(
 }
 
 is(
-  @{ $failer->transport->deliveries },
+  $failer->transport->delivery_count,
   1,
   "second post-fail_if delivery fails"
 );

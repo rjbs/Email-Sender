@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 42;
+use Test::More tests => 45;
 
 use Email::Sender::Transport::Test;
 use Email::Sender::Transport::Failable;
@@ -64,6 +64,10 @@ is_deeply(
   [ qw(secret-bcc@nowhere.example.net)],
   "second message delivered to 'secret-bcc'",
 );
+
+ok($sender->shift_deliveries, "we have one delivery (shifted)...");
+ok($sender->shift_deliveries, "...then two (shifted)...");
+ok(! $sender->shift_deliveries, "...then no more");
 
 ####
 

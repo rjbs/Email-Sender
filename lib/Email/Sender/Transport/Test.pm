@@ -33,7 +33,6 @@ L<Email::Sender::Transport::Failable>.
 =for Pod::Coverage clear_deliveries
 
 This attribute stores an arrayref of all the deliveries made via the transport.
-It can be emptied by calling C<clear_deliveries>.
 
 Each delivery is a hashref, in the following format:
 
@@ -45,6 +44,13 @@ Each delivery is a hashref, in the following format:
   }
 
 Both successful and failed deliveries are stored.
+
+A number of methods related to this attribute are provided:
+
+=for :list
+* delivery_count
+* clear_deliveries
+* shift_deliveries
 
 =cut
 
@@ -63,6 +69,7 @@ has deliveries => (
     delivery_count   => 'count',
     clear_deliveries => 'clear',
     record_delivery  => 'push',
+    shift_deliveries => 'shift',
   },
 );
 

@@ -1,6 +1,8 @@
 Revision history for Email-Sender
 
 {{$NEXT}}
+          added shift_deliveries to the Test transport, for treating the
+          sent messages like a queue of things to inspect
 
 0.120001  2012-07-19 16:28:01 America/Los_Angeles
           no changes from 0.120000, just marked as stable release

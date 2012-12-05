@@ -2,7 +2,7 @@ package Email::Sender::Role::CommonSending;
 use Moo::Role;
 # ABSTRACT: the common sending tasks most Email::Sender classes will need
 
-use Carp;
+use Carp ();
 use Email::Abstract;
 use Email::Sender::Success;
 use Email::Sender::Failure::Temporary;

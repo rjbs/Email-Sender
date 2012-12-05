@@ -21,7 +21,7 @@ use Sub::Exporter -setup => {
 use Email::Address;
 use Email::Sender::Transport;
 use Try::Tiny;
-use Class::Load ();
+use Module::Runtime qw(require_module);
 
 {
   my $DEFAULT_TRANSPORT;
@@ -44,7 +44,7 @@ use Class::Load ();
         $transport_class = "Email::Sender::Transport::$transport_class";
       }
 
-      Class::Load::load_class($transport_class);
+      require_module($transport_class);
 
       my %arg;
       for my $key (grep { /^EMAIL_SENDER_TRANSPORT_\w+/ } keys %ENV) {

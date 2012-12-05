@@ -1,5 +1,5 @@
 package Email::Sender::Success::Partial;
-use Moose;
+use Moo;
 extends 'Email::Sender::Success';
 # ABSTRACT: a report of partial success when delivering
 
@@ -15,10 +15,9 @@ use Email::Sender::Failure::Multi;
 
 has failure => (
   is  => 'ro',
-  isa => 'Email::Sender::Failure::Multi',
+  isa => sub { 'Email::Sender::Failure::Multi' },
   required => 1,
 );
 
-__PACKAGE__->meta->make_immutable;
-no Moose;
+no Moo;
 1;

@@ -1,5 +1,5 @@
 package Email::Sender::Transport::SMTP::Persistent;
-use Moose;
+use Moo;
 extends 'Email::Sender::Transport::SMTP';
 # ABSTRACT: an SMTP client that stays online
 
@@ -53,6 +53,5 @@ sub disconnect {
   $self->_cached_client(undef);
 }
 
-__PACKAGE__->meta->make_immutable;
-no Moose;
+no Moo;
 1;

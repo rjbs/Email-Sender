@@ -1,5 +1,5 @@
 package Email::Sender::Transport::Print;
-use Moose;
+use Moo;
 with 'Email::Sender::Transport';
 # ABSTRACT: print email to a filehandle (like stdout)
 
@@ -15,7 +15,7 @@ use IO::Handle;
 
 has 'fh' => (
   is       => 'ro',
-  isa      => 'IO::Handle',
+  isa      => sub { ref($_[0]) eq 'IO::Handle' },
   required => 1,
   default  => sub { IO::Handle->new_from_fd(fileno(STDOUT), 'w') },
 );
@@ -36,6 +36,5 @@ sub send_email {
   return $self->success;
 }
 
-__PACKAGE__->meta->make_immutable;
-no Moose;
+no Moo;
 1;

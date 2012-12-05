@@ -1,5 +1,6 @@
 package Email::Sender::Failure;
-use Moose;
+use Moo;
+use MooX::Types::MooseLike::Base qw(ArrayRef);
 extends 'Throwable::Error';
 # ABSTRACT: a report of failure from an email sending transport
 
@@ -26,13 +27,17 @@ This returns a list of addresses to which the email could not be sent.
 =cut
 
 has recipients => (
-  isa     => 'ArrayRef',
-  traits  => [ 'Array' ],
-  handles => { __recipients => 'elements' },
+  isa     => ArrayRef,
   default => sub {  []  },
   writer  => '_set_recipients',
   reader  => '__get_recipients',
+  is      => 'ro',
 );
+
+sub __recipients {
+  my ($self) = @_;
+  return @{$self->{recipients}};
+}
 
 sub recipients {
   my ($self) = @_;
@@ -57,7 +62,7 @@ be used as the C<message> of the new failure.
 
 sub BUILD {
   my ($self) = @_;
-  confess("message must contain non-space characters")
+  Carp::confess("message must contain non-space characters")
     unless $self->message =~ /\S/;
 }
 
@@ -75,6 +80,5 @@ sub BUILD {
 
 =cut
 
-__PACKAGE__->meta->make_immutable(inline_constructor => 0);
-no Moose;
+no Moo;
 1;

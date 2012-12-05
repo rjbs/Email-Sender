@@ -1,7 +1,9 @@
 package Email::Sender::Transport::Test;
-use Moose;
+use Moo;
+use MooX::Types::MooseLike::Base qw(ArrayRef Bool);
 # ABSTRACT: deliver mail in memory for testing
 
+with 'Email::Sender::Transport';
 use Email::Sender::Failure::Multi;
 use Email::Sender::Success::Partial;
 
@@ -54,24 +56,38 @@ A number of methods related to this attribute are provided:
 
 =cut
 
-has allow_partial_success => (is => 'ro', isa => 'Bool', default => 0);
+has allow_partial_success => (is => 'ro', isa => Bool, default => sub { 0 });
 
 sub recipient_failure { }
 sub delivery_failure  { }
 
 has deliveries => (
-  isa => 'ArrayRef',
-  traits     => [ 'Array' ],
+  isa => ArrayRef,
   init_arg   => undef,
   default    => sub { [] },
-  handles    => {
-    deliveries       => 'elements',
-    delivery_count   => 'count',
-    clear_deliveries => 'clear',
-    record_delivery  => 'push',
-    shift_deliveries => 'shift',
-  },
+  is         => 'ro',
+  reader     => '_deliveries',
 );
+
+sub delivery_count {
+  scalar @{$_[0]->_deliveries};
+}
+
+sub record_delivery {
+  push @{shift->_deliveries}, @_;
+}
+
+sub deliveries {
+  @{$_[0]->_deliveries};
+}
+
+sub shift_deliveries {
+  shift @{$_[0]->_deliveries};
+}
+
+sub clear_deliveries {
+  $_[0]->{deliveries} = [];
+}
 
 sub send_email {
   my ($self, $email, $envelope) = @_;
@@ -123,7 +139,5 @@ sub send_email {
   });
 }
 
-with 'Email::Sender::Transport';
-__PACKAGE__->meta->make_immutable;
-no Moose;
+no Moo;
 1;

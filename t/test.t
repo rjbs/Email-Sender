@@ -73,7 +73,7 @@ ok(! $sender->shift_deliveries, "...then no more");
 
 {
   package Email::Sender::Transport::TestFail;
-  use Moose;
+  use Moo;
   extends 'Email::Sender::Transport::Test';
 
   sub delivery_failure {
@@ -110,7 +110,7 @@ ok(! $sender->shift_deliveries, "...then no more");
     return;
   }
 
-  no Moose;
+  no Moo;
 }
 
 my $fail_test = Email::Sender::Transport::TestFail->new;

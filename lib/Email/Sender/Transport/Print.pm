@@ -12,10 +12,11 @@ to as its C<fh> attribute.
 =cut
 
 use IO::Handle;
+use MooX::Types::MooseLike::Base qw(InstanceOf);
 
 has 'fh' => (
   is       => 'ro',
-  isa      => sub { ref($_[0]) eq 'IO::Handle' },
+  isa      => sub { InstanceOf['IO::Handle'] },
   required => 1,
   default  => sub { IO::Handle->new_from_fd(fileno(STDOUT), 'w') },
 );

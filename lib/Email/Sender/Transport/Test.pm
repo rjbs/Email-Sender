@@ -86,7 +86,7 @@ sub shift_deliveries {
 }
 
 sub clear_deliveries {
-  $_[0]->{deliveries} = [];
+  @{ $_[0]->_deliveries } = ();
 }
 
 sub send_email {

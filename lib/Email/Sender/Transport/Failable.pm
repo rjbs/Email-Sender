@@ -37,7 +37,7 @@ sub fail_if {
 }
 
 sub clear_failure_conditions {
-  $_[0]->{failure_conditions} = [];
+  @{$_[0]->{failure_conditions}} = ();
 }
 
 around send_email => sub {

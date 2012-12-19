@@ -16,7 +16,7 @@ use MooX::Types::MooseLike::Base qw(InstanceOf);
 
 has 'fh' => (
   is       => 'ro',
-  isa      => sub { InstanceOf['IO::Handle'] },
+  isa      => InstanceOf['IO::Handle'],
   required => 1,
   default  => sub { IO::Handle->new_from_fd(fileno(STDOUT), 'w') },
 );

@@ -28,17 +28,9 @@ has 'failure_conditions' => (
   reader  => '_failure_conditions',
 );
 
-sub failure_conditions {
-  @{$_[0]->_failure_conditions};
-}
-
-sub fail_if {
-  push @{shift->_failure_conditions}, @_;
-}
-
-sub clear_failure_conditions {
-  @{$_[0]->{failure_conditions}} = ();
-}
+sub failure_conditions { @{$_[0]->_failure_conditions} }
+sub fail_if { push @{shift->_failure_conditions}, @_ }
+sub clear_failure_conditions { @{$_[0]->{failure_conditions}} = () }
 
 around send_email => sub {
   my ($orig, $self, $email, $env, @rest) = @_;

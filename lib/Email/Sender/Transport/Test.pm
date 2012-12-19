@@ -69,25 +69,11 @@ has deliveries => (
   reader     => '_deliveries',
 );
 
-sub delivery_count {
-  scalar @{$_[0]->_deliveries};
-}
-
-sub record_delivery {
-  push @{shift->_deliveries}, @_;
-}
-
-sub deliveries {
-  @{$_[0]->_deliveries};
-}
-
-sub shift_deliveries {
-  shift @{$_[0]->_deliveries};
-}
-
-sub clear_deliveries {
-  @{ $_[0]->_deliveries } = ();
-}
+sub delivery_count { scalar @{ $_[0]->_deliveries } }
+sub record_delivery { push @{ shift->_deliveries }, @_ }
+sub deliveries { @{ $_[0]->_deliveries } }
+sub shift_deliveries { shift @{ $_[0]->_deliveries } }
+sub clear_deliveries { @{ $_[0]->_deliveries } = () }
 
 sub send_email {
   my ($self, $email, $envelope) = @_;

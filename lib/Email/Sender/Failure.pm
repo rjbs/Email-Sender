@@ -36,10 +36,7 @@ has recipients => (
   accessor => undef,
 );
 
-sub __recipients {
-  my ($self) = @_;
-  return @{$self->{recipients}};
-}
+sub __recipients { @{$_[0]->__get_recipients} }
 
 sub recipients {
   my ($self) = @_;

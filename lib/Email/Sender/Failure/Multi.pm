@@ -1,5 +1,6 @@
 package Email::Sender::Failure::Multi;
-use Moose;
+use Moo;
+use MooX::Types::MooseLike::Base qw(ArrayRef);
 extends 'Email::Sender::Failure';
 # ABSTRACT: an aggregate of multiple failures
 
@@ -16,12 +17,13 @@ by this multi.
 =cut
 
 has failures => (
-  isa => 'ArrayRef',
-  traits  => [ 'Array' ],
-  handles  => { __failures => 'elements' },
+  is       => 'ro',
+  isa      => ArrayRef,
   required => 1,
   reader   => '__get_failures',
 );
+
+sub __failures { @{$_[0]->__get_failures} }
 
 sub failures {
   my ($self) = @_;
@@ -65,6 +67,5 @@ sub isa {
   return $self->SUPER::isa($class);
 }
 
-__PACKAGE__->meta->make_immutable(inline_constructor => 0);
-no Moose;
+no Moo;
 1;

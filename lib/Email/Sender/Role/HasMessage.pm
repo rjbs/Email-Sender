@@ -1,5 +1,5 @@
 package Email::Sender::Role::HasMessage;
-use Moose::Role;
+use Moo::Role;
 # ABSTRACT: an object that has a message
 
 =attr message
@@ -13,5 +13,5 @@ has message => (
   required => 1,
 );
 
-no Moose::Role;
+no Moo::Role;
 1;

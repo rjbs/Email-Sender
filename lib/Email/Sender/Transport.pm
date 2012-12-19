@@ -1,10 +1,10 @@
 package Email::Sender::Transport;
-use Moose::Role;
+use Moo::Role;
 # ABSTRACT: a role for email transports
 
 =head1 DESCRIPTION
 
-Email::Sender::Transport is a Moose role to aid in writing classes used to send
+Email::Sender::Transport is a Moo role to aid in writing classes used to send
 mail.  For the most part, its behavior comes entirely from the role
 L<Email::Sender::Role::CommonSending>, which it includes. The important
 difference is that Transports are often intended to be used by
@@ -36,5 +36,5 @@ sub is_simple {
 
 sub allow_partial_success { 0 }
 
-no Moose::Role;
+no Moo::Role;
 1;

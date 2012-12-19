@@ -1,5 +1,5 @@
 package Email::Sender::Transport::Wrapper;
-use Moose;
+use Moo;
 with 'Email::Sender::Transport';
 # ABSTRACT: a mailer to wrap a mailer for mailing mail
 
@@ -23,6 +23,5 @@ sub send_email {
   $self->transport->send_email(@_);
 }
 
-__PACKAGE__->meta->make_immutable;
-no Moose;
+no Moo;
 1;

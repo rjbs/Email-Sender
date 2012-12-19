@@ -1,5 +1,5 @@
 package Email::Sender::Transport::Maildir;
-use Moose;
+use Moo;
 with 'Email::Sender::Transport';
 # ABSTRACT: deliver mail to a maildir on disk
 
@@ -9,6 +9,8 @@ use File::Path;
 use File::Spec;
 
 use Sys::Hostname;
+
+use MooX::Types::MooseLike::Base qw(Bool);
 
 =head1 DESCRIPTION
 
@@ -35,15 +37,15 @@ method that returns the filename to which the message was delivered.
 {
   package
     Email::Sender::Success::MaildirSuccess;
-  use Moose;
+  use Moo;
+  use MooX::Types::MooseLike::Base qw(Str);
   extends 'Email::Sender::Success';
   has filename => (
     is  => 'ro',
-    isa => 'Str',
+    isa => Str,
     required => 1,
   );
-  __PACKAGE__->meta->make_immutable;
-  no Moose;
+  no Moo;
 }
 
 
@@ -56,8 +58,8 @@ my $MAILDIR_COUNTER = 0;
 
 has [ qw(add_lines_header add_envelope_headers) ] => (
   is  => 'ro',
-  isa => 'Bool',
-  default => 1,
+  isa => Bool,
+  default => sub { 1 },
 );
 
 has dir => (
@@ -162,6 +164,5 @@ sub _delivery_fh {
   return ($filename, $fh);
 }
 
-__PACKAGE__->meta->make_immutable;
-no Moose;
+no Moo;
 1;

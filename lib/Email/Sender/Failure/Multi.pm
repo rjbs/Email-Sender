@@ -23,9 +23,7 @@ has failures => (
   reader   => '__get_failures',
 );
 
-sub __failures {
-  @{$_[0]->__get_failures};
-}
+sub __failures { @{$_[0]->__get_failures} }
 
 sub failures {
   my ($self) = @_;

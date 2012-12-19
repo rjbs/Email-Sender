@@ -16,7 +16,7 @@ use Email::Sender::Failure::Multi;
 
 has failure => (
   is  => 'ro',
-  isa => sub { InstanceOf['Email::Sender::Failure::Multi'] },
+  isa => InstanceOf['Email::Sender::Failure::Multi'],
   required => 1,
 );
 

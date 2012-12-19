@@ -32,13 +32,11 @@ has recipients => (
   default => sub {  []  },
   writer  => '_set_recipients',
   reader  => '__get_recipients',
-  is      => 'ro',
+  is      => 'rw',
+  accessor => undef,
 );
 
-sub __recipients {
-  my ($self) = @_;
-  return @{$self->{recipients}};
-}
+sub __recipients { @{$_[0]->__get_recipients} }
 
 sub recipients {
   my ($self) = @_;

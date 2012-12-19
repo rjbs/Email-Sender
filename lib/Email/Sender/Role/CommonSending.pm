@@ -72,7 +72,7 @@ sub prepare_email {
   # perls calling isa on the string would create a package with the string as
   # the name.  If the message was (say) two megs, now you'd have a two meg hash
   # key in the stash.  Oops! -- rjbs, 2008-12-04
-  return $msg if Scalar::Util::blessed $msg and eval { $msg->isa('Email::Abstract') };
+  return $msg if Scalar::Util::blessed($msg) and eval { $msg->isa('Email::Abstract') };
 
   return Email::Abstract->new($msg);
 }

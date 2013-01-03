@@ -1,6 +1,10 @@
 Revision history for Email-Sender
 
 {{$NEXT}}
+          THIS IS A BIG DEAL:
+
+          use Moo instead of Moose (thanks to Justin Hunter and Christian
+          Walde!)
 
 0.120002  2012-09-11 14:43:07 America/New_York
           added shift_deliveries to the Test transport, for treating the

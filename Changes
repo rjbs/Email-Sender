@@ -1,6 +1,8 @@
 Revision history for Email-Sender
 
 {{$NEXT}}
+
+1.300000  2013-01-02 22:42:58 America/New_York
           THIS IS A BIG DEAL:
 
           use Moo instead of Moose (thanks to Justin Hunter and Christian

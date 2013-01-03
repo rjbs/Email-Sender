@@ -1,5 +1,6 @@
 package Email::Sender::Transport::Sendmail;
-use Moose;
+use Moo;
+use MooX::Types::MooseLike::Base qw(Str);
 with 'Email::Sender::Transport';
 # ABSTRACT: send mail via sendmail(1)
 
@@ -20,7 +21,7 @@ use File::Spec ();
 
 has 'sendmail' => (
   is  => 'ro',
-  isa => 'Str',
+  isa => Str,
   required => 1,
   lazy     => 1,
   default  => sub {
@@ -91,6 +92,5 @@ sub send_email {
   return $self->success;
 }
 
-__PACKAGE__->meta->make_immutable;
-no Moose;
+no Moo;
 1;

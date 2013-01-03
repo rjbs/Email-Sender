@@ -73,7 +73,7 @@ ok(! $sender->shift_deliveries, "...then no more");
 
 {
   package Email::Sender::Transport::TestFail;
-  use Moose;
+  use Moo;
   extends 'Email::Sender::Transport::Test';
 
   sub delivery_failure {
@@ -110,7 +110,7 @@ ok(! $sender->shift_deliveries, "...then no more");
     return;
   }
 
-  no Moose;
+  no Moo;
 }
 
 my $fail_test = Email::Sender::Transport::TestFail->new;
@@ -209,7 +209,7 @@ $fail_test = Email::Sender::Transport::TestFail->new({
 });
 
 ok(! $fail_test->is_simple,           "partial success capable Test ! simple");
-ok($fail_test->allow_partial_success, "...becaue it allows partial success");
+ok($fail_test->allow_partial_success, "...because it allows partial success");
 
 test_fail(
   {

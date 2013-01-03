@@ -13,7 +13,7 @@ use Email::Sender::Failure;
 
 {
   eval { my $fail = Email::Sender::Failure->new(undef); };
-  like($@, qr/message.{2,5}is required/, '->new(undef) -> fail');
+  like($@, qr/Missing required arguments: message/, '->new(undef) -> fail');
 }
 
 {

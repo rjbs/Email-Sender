@@ -1,5 +1,5 @@
 package Email::Sender::Transport::DevNull;
-use Moose;
+use Moo;
 with 'Email::Sender::Transport';
 # ABSTRACT: happily throw away your mail
 
@@ -12,6 +12,5 @@ DevNull transport will be silently discarded.
 
 sub send_email { return $_[0]->success }
 
-__PACKAGE__->meta->make_immutable;
-no Moose;
+no Moo;
 1;

@@ -1,5 +1,5 @@
 package Email::Sender::Transport::Mbox;
-use Moose;
+use Moo;
 with 'Email::Sender::Transport';
 # ABSTRACT: deliver mail to an mbox on disk
 
@@ -20,7 +20,7 @@ this may change or be configurable in the future.
 
 =cut
 
-has 'filename' => (is => 'ro', default => 'mbox', required => 1);
+has 'filename' => (is => 'ro', default => sub { 'mbox' }, required => 1);
 
 sub send_email {
   my ($self, $email, $env) = @_;
@@ -110,6 +110,5 @@ sub _unlock {
   flock($fh, LOCK_UN);
 }
 
-__PACKAGE__->meta->make_immutable;
-no Moose;
+no Moo;
 1;

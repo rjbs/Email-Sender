@@ -1,5 +1,6 @@
 package Email::Sender::Transport::Failable;
-use Moose;
+use Moo;
+use MooX::Types::MooseLike::Base qw(ArrayRef);
 extends 'Email::Sender::Transport::Wrapper';
 # ABSTRACT: a wrapper to makes things fail predictably
 
@@ -21,15 +22,15 @@ If any coderef returns a true value, the value will be used to signal failure.
 =cut
 
 has 'failure_conditions' => (
-  isa => 'ArrayRef',
+  isa => ArrayRef,
   default => sub { [] },
-  traits  => [ 'Array' ],
-  handles => {
-    failure_conditions       => 'elements',
-    clear_failure_conditions => 'clear',
-    fail_if                  => 'push',
-  },
+  is      => 'ro',
+  reader  => '_failure_conditions',
 );
+
+sub failure_conditions { @{$_[0]->_failure_conditions} }
+sub fail_if { push @{shift->_failure_conditions}, @_ }
+sub clear_failure_conditions { @{$_[0]->{failure_conditions}} = () }
 
 around send_email => sub {
   my ($orig, $self, $email, $env, @rest) = @_;
@@ -43,6 +44,5 @@ around send_email => sub {
   return $self->$orig($email, $env, @rest);
 };
 
-__PACKAGE__->meta->make_immutable;
-no Moose;
+no Moo;
 1;

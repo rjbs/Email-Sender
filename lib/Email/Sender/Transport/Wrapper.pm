@@ -23,5 +23,13 @@ sub send_email {
   $self->transport->send_email(@_);
 }
 
+sub is_simple {
+  return $_[0]->transport->is_simple;
+}
+
+sub allow_partial_success {
+  return $_[0]->transport->allow_partial_success;
+}
+
 no Moo;
 1;

@@ -8,6 +8,7 @@ use Email::Sender::Failure;
 use Email::Sender::Failure::Permanent;
 use Email::Sender::Failure::Temporary;
 use List::MoreUtils ();
+use Module::Runtime qw(require_module);
 
 # This code will be used by Email::Sender::Simple. -- rjbs, 2008-12-04
 sub _recipients_from_email {
@@ -50,6 +51,17 @@ sub _failure {
     code    => $code,
     @rest,
   });
+}
+
+sub _easy_transport {
+  my ($self, $transport_class, $arg) = @_;
+
+  if ($transport_class !~ tr/://) {
+    $transport_class = "Email::Sender::Transport::$transport_class";
+  }
+
+  require_module($transport_class);
+  return $transport_class->new($arg);
 }
 
 1;

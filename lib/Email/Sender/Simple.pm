@@ -20,8 +20,8 @@ use Sub::Exporter -setup => {
 
 use Email::Address;
 use Email::Sender::Transport;
+use Email::Sender::Util;
 use Try::Tiny;
-use Module::Runtime qw(require_module);
 
 {
   my $DEFAULT_TRANSPORT;
@@ -40,19 +40,13 @@ use Module::Runtime qw(require_module);
     my $transport_class = $ENV{$env_base};
     return unless defined $transport_class and length $transport_class;
 
-    if ($transport_class !~ tr/://) {
-      $transport_class = "Email::Sender::Transport::$transport_class";
-    }
-
-    require_module($transport_class);
-
     my %arg;
     for my $key (grep { /^\Q$env_base\E_[_0-9A-Za-z]+$/ } keys %ENV) {
       (my $new_key = $key) =~ s/^\Q$env_base\E_//;
       $arg{lc $new_key} = $ENV{$key};
     }
 
-    return $transport_class->new(\%arg);
+    return Email::Sender::Util->_easy_transport($transport_class, \%arg);
   }
 
   sub default_transport {

@@ -2,6 +2,13 @@ Revision history for Email-Sender
 
 {{$NEXT}}
 
+1.300003  2013-02-06 15:56:53 America/New_York
+          make Wrapper transports proxy is_simple and allow_partial_success to
+          the wrapped transport
+
+          allow Wrapper transports to construct their own targets; useful for
+          configuring entire wrapper chain from the environment
+
 1.300002  2013-02-06 14:06:24 America/New_York
           THIS IS A BIG DEAL:  see v1.300000
 

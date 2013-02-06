@@ -33,27 +33,35 @@ use Module::Runtime qw(require_module);
     return $DEFAULT_FROM_ENV;
   }
 
+  sub transport_from_env {
+    my ($self) = @_;
+    my $transport_class = $ENV{EMAIL_SENDER_TRANSPORT};
+    return unless defined $transport_class and length $transport_class;
+
+    if ($transport_class !~ tr/://) {
+      $transport_class = "Email::Sender::Transport::$transport_class";
+    }
+
+    require_module($transport_class);
+
+    my %arg;
+    for my $key (grep { /^EMAIL_SENDER_TRANSPORT_\w+/ } keys %ENV) {
+      (my $new_key = $key) =~ s/^EMAIL_SENDER_TRANSPORT_//;
+      $arg{lc $new_key} = $ENV{$key};
+    }
+
+    return $transport_class->new(\%arg);
+  }
+
   sub default_transport {
     return $DEFAULT_TRANSPORT if $DEFAULT_TRANSPORT;
     my ($self) = @_;
-    
-    if ($ENV{EMAIL_SENDER_TRANSPORT}) {
-      my $transport_class = $ENV{EMAIL_SENDER_TRANSPORT};
 
-      if ($transport_class !~ tr/://) {
-        $transport_class = "Email::Sender::Transport::$transport_class";
-      }
+    my $transport = $self->transport_from_env;
 
-      require_module($transport_class);
-
-      my %arg;
-      for my $key (grep { /^EMAIL_SENDER_TRANSPORT_\w+/ } keys %ENV) {
-        (my $new_key = $key) =~ s/^EMAIL_SENDER_TRANSPORT_//;
-        $arg{lc $new_key} = $ENV{$key};
-      }
-
+    if ($transport) {
       $DEFAULT_FROM_ENV  = 1;
-      $DEFAULT_TRANSPORT = $transport_class->new(\%arg);
+      $DEFAULT_TRANSPORT = $transport;
     } else {
       $DEFAULT_FROM_ENV  = 0;
       $DEFAULT_TRANSPORT = $self->build_default_transport;

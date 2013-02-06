@@ -2,6 +2,13 @@ Revision history for Email-Sender
 
 {{$NEXT}}
 
+1.300002  2013-02-06 14:06:24 America/New_York
+          THIS IS A BIG DEAL:  see v1.300000
+
+          this is the first non-trial release using Moo instead of Moose
+
+          increase version of Moo to interoperate with ancient Mouse.pm
+
 1.300001  2013-01-07 21:38:31 America/New_York
           increase required versions of Throwable and Moo
 

@@ -34,8 +34,10 @@ use Module::Runtime qw(require_module);
   }
 
   sub transport_from_env {
-    my ($class) = @_;
-    my $transport_class = $ENV{EMAIL_SENDER_TRANSPORT};
+    my ($class, $env_base) = @_;
+    $env_base ||= 'EMAIL_SENDER_TRANSPORT';
+
+    my $transport_class = $ENV{$env_base};
     return unless defined $transport_class and length $transport_class;
 
     if ($transport_class !~ tr/://) {
@@ -45,8 +47,8 @@ use Module::Runtime qw(require_module);
     require_module($transport_class);
 
     my %arg;
-    for my $key (grep { /^EMAIL_SENDER_TRANSPORT_\w+/ } keys %ENV) {
-      (my $new_key = $key) =~ s/^EMAIL_SENDER_TRANSPORT_//;
+    for my $key (grep { /^\Q$env_base\E_[_0-9A-Za-z]+$/ } keys %ENV) {
+      (my $new_key = $key) =~ s/^\Q$env_base\E_//;
       $arg{lc $new_key} = $ENV{$key};
     }
 

@@ -2,6 +2,9 @@ Revision history for Email-Sender
 
 {{$NEXT}}
 
+1.300004  2013-02-09 10:09:02 America/New_York
+          bump required version of MooX::Types::MooseLike
+
 1.300003  2013-02-06 15:56:53 America/New_York
           make Wrapper transports proxy is_simple and allow_partial_success to
           the wrapped transport

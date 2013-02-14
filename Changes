@@ -2,6 +2,10 @@ Revision history for Email-Sender
 
 {{$NEXT}}
 
+1.300005  2013-02-14 11:37:09 America/New_York
+          add missing prereq, Sub::Exporter; thanks for report, Esteban
+          Manchado Velázquez
+
 1.300004  2013-02-09 10:09:02 America/New_York
           bump required version of MooX::Types::MooseLike
 

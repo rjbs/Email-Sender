@@ -41,7 +41,7 @@ sub __recipients { @{$_[0]->__get_recipients} }
 sub recipients {
   my ($self) = @_;
   return $self->__recipients if wantarray;
-  return $self->__recipients if ! defined wantarray;
+  return if ! defined wantarray;
 
   Carp::carp("recipients in scalar context is deprecated and WILL BE REMOVED");
   return $self->__get_recipients;

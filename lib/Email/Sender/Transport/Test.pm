@@ -3,7 +3,6 @@ use Moo;
 use MooX::Types::MooseLike::Base qw(ArrayRef Bool);
 # ABSTRACT: deliver mail in memory for testing
 
-with 'Email::Sender::Transport';
 use Email::Sender::Failure::Multi;
 use Email::Sender::Success::Partial;
 
@@ -125,5 +124,6 @@ sub send_email {
   });
 }
 
+with 'Email::Sender::Transport';
 no Moo;
 1;

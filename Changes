@@ -2,6 +2,10 @@ Revision history for Email-Sender
 
 {{$NEXT}}
 
+1.300006  2013-03-17 17:23:21 America/New_York
+          re-fix the problem with attribute accessors and role methods
+          clashing, previously fixed in 0.102360
+
 1.300005  2013-02-14 11:37:09 America/New_York
           add missing prereq, Sub::Exporter; thanks for report, Esteban
           Manchado Velázquez

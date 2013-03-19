@@ -64,6 +64,7 @@ sub perform_stock_mockery {
   $mock_smtp->{datafail} = '';
   for my $part (qw(data datasend dataend)) {
     $mock_smtp->mock($part => sub {
+      # main::diag(">> $_[1] <<") if $part eq 'datasend';
       return $_[0]->fail(300 => 'NFI') if $_[0]->{datafail} eq $part;
       return $_[0]->succ;
     });

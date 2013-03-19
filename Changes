@@ -2,6 +2,9 @@ Revision history for Email-Sender
 
 {{$NEXT}}
 
+1.300007  2013-03-19 14:58:27 America/New_York
+          when sending over SMTP, send DATA in hunks of 1 mebibyte or smaller
+
 1.300006  2013-03-17 17:23:21 America/New_York
           re-fix the problem with attribute accessors and role methods
           clashing, previously fixed in 0.102360

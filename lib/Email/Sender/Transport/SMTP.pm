@@ -10,7 +10,7 @@ use Email::Sender::Util;
 =head1 DESCRIPTION
 
 This transport is used to send email over SMTP, either with or without secure
-sockets (SSL).  It is one of the most complex transports available, capable of
+sockets (SSL/TLS).  It is one of the most complex transports available, capable of
 partial success.
 
 For a potentially more efficient version of this transport, see
@@ -24,21 +24,21 @@ The following attributes may be passed to the constructor:
 
 =item C<host>: the name of the host to connect to; defaults to C<localhost>
 
-=item C<ssl>: if true, connect via SSL; defaults to false
+=item C<ssl>: 'ssl' / 'starttls' / undef, if true, passed to L<Net::SMTPS> doSSL.
 
-=item C<port>: port to connect to; defaults to 25 for non-SSL, 465 for SSL
+=item C<port>: port to connect to; defaults to 25 for non-SSL, 465 for 'ssl' and 587 for 'starttls'
 
 =item C<timeout>: maximum time in secs to wait for server; default is 120
 
 =cut
 
 has host => (is => 'ro', isa => Str,  default => sub { 'localhost' });
-has ssl  => (is => 'ro', isa => Bool, default => sub { 0 });
+has ssl  => (is => 'ro', isa => Str);
 has port => (
   is  => 'ro',
   isa => Int,
   lazy    => 1,
-  default => sub { return $_[0]->ssl ? 465 : 25; },
+  default => sub { return $_[0]->ssl and $_[0]->ssl eq 'starttls' ? 587 : $_[0]->ssl ? 465 : 25; },
 );
 
 has timeout => (is => 'ro', isa => Int, default => sub { 120 });
@@ -89,8 +89,8 @@ sub _smtp_client {
 
   my $class = "Net::SMTP";
   if ($self->ssl) {
-    require Net::SMTP::SSL;
-    $class = "Net::SMTP::SSL";
+    require Net::SMTPS;
+    $class = "Net::SMTPS";
   } else {
     require Net::SMTP;
   }
@@ -118,10 +118,14 @@ sub _smtp_client {
 sub _net_smtp_args {
   my ($self) = @_;
 
+  # compatible
+  my $ssl = $self->ssl;
+  $ssl = 'ssl' if $self->ssl and $self->ssl ne 'starttls';
   return (
     $self->host,
     Port    => $self->port,
     Timeout => $self->timeout,
+    defined $ssl             ? (doSSL     => $ssl)             : (),
     defined $self->helo      ? (Hello     => $self->helo)      : (),
     defined $self->localaddr ? (LocalAddr => $self->localaddr) : (),
     defined $self->localport ? (LocalPort => $self->localport) : (),
@@ -233,6 +237,17 @@ sub _message_complete { $_[1]->quit; }
 If C<allow_partial_success> was set when creating the transport, the transport
 may return L<Email::Sender::Success::Partial> objects.  Consult that module's
 documentation.
+
+=head1 EXAMPLES
+
+=head2 send email with Gmail
+
+  my $smtp  = Email::Sender::Transport::SMTP->new({
+    host => 'smtp.gmail.com',
+    ssl  => 'starttls',
+    sasl_username => 'myaccount@gmail.com',
+    sasl_password => 'mypassword',
+  });
 
 =cut
 

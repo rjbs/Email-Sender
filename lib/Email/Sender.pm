@@ -44,7 +44,7 @@ start with L<Email::Sender::Manual::QuickStart>.
 
 =head1 IMPLEMENTING
 
-Email::Sender itelf is a Moo role.  Any class that implements Email::Sender
+Email::Sender itself is a Moo role.  Any class that implements Email::Sender
 is required to provide a method called C<send>.  This method should accept any
 input that can be understood by L<Email::Abstract>, followed by a hashref
 containing C<to> and C<from> arguments to be used as the envelope.  The method

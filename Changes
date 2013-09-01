@@ -1,6 +1,8 @@
 Revision history for Email-Sender
 
 {{$NEXT}}
+          require Email-Abstract 3.006, to get Email-Simple 1.998, to get
+          Email::Simple->new(\$str), resolving [rt.perl.org #85926]
 
 1.300007  2013-03-19 14:58:27 America/New_York
           when sending over SMTP, send DATA in hunks of 1 mebibyte or smaller

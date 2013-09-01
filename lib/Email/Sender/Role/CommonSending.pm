@@ -3,7 +3,7 @@ use Moo::Role;
 # ABSTRACT: the common sending tasks most Email::Sender classes will need
 
 use Carp ();
-use Email::Abstract;
+use Email::Abstract 3.006;
 use Email::Sender::Success;
 use Email::Sender::Failure::Temporary;
 use Email::Sender::Failure::Permanent;

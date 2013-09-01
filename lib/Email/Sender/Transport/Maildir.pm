@@ -127,7 +127,9 @@ sub _deliver_email {
   # if (eval { $email->can('stream_to') }) {
   #  eval { $mail->stream_to($fh); 1 } or return;
   #} else {
-  print $tmp_fh $email->as_string
+  my $string = $email->as_string;
+  $string =~ s/\x0D\x0A/\x0A/g;
+  print $tmp_fh $string
     or Email::Sender::Failure->throw("could not write to $tmp_filename: $!");
 
   close $tmp_fh

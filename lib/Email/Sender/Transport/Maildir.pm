@@ -128,7 +128,7 @@ sub _deliver_email {
   #  eval { $mail->stream_to($fh); 1 } or return;
   #} else {
   my $string = $email->as_string;
-  $string =~ s/\x0D\x0A/\x0A/g;
+  $string =~ s/\x0D\x0A/\x0A/g unless $^O eq 'MSWin32';
   print $tmp_fh $string
     or Email::Sender::Failure->throw("could not write to $tmp_filename: $!");
 

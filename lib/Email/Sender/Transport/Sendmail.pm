@@ -68,7 +68,7 @@ sub _sendmail_pipe {
 
   my ($first, @args) = $^O eq 'MSWin32'
            ? qq(| "$prog" -f $envelope->{from} @{$envelope->{to}})
-           : (q{|-}, $prog, '-f', $envelope->{from}, @{$envelope->{to}});
+           : (q{|-}, $prog, '-f', $envelope->{from}, '--', @{$envelope->{to}});
 
   no warnings 'exec'; ## no critic
   my $pipe;

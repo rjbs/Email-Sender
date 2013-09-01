@@ -1,6 +1,9 @@
 Revision history for Email-Sender
 
 {{$NEXT}}
+          fixes a bug where recipients beginning with a - would not work with
+          the Sendmail transport [rt.perl.org #66246]
+
           require Email-Abstract 3.006, to get Email-Simple 1.998, to get
           Email::Simple->new(\$str), resolving [rt.perl.org #85926]
 

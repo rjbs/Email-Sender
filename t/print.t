@@ -46,7 +46,5 @@ my $result = $xport->send(
   },
 );
 
-use Data::Dumper;
-
 isa_ok($result, 'Email::Sender::Success');
 is($xport->fh->{str}, $want, 'what we expected got printed');

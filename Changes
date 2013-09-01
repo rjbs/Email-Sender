@@ -1,6 +1,8 @@
 Revision history for Email-Sender
 
 {{$NEXT}}
+
+1.300008  2013-09-01 09:39:13 America/New_York
           [THIS MIGHT BREAK YOUR CODE]
           at long last, Sendmail and Maildir transports replaces CRLF with CR
           before piping

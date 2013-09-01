@@ -1,6 +1,10 @@
 Revision history for Email-Sender
 
 {{$NEXT}}
+          [THIS MIGHT BREAK YOUR CODE]
+          at long last, Sendmail transport replaces CRLF with CR before piping
+
+          [BUG FIXES]
           fixes a bug where recipients beginning with a - would not work with
           the Sendmail transport [rt.perl.org #66246]
 

@@ -83,6 +83,9 @@ sub send_email {
 
   my $pipe = $self->_sendmail_pipe($envelope);
 
+  my $string = $email->as_string;
+  $string =~ s/\x0D\x0A/\x0A/g;
+
   print $pipe $email->as_string
     or Email::Sender::Failure->throw("couldn't send message to sendmail: $!");
 

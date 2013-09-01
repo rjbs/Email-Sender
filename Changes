@@ -2,6 +2,11 @@ Revision history for Email-Sender
 
 {{$NEXT}}
 
+1.300009  2013-09-01 12:03:06 America/New_York
+          see also 1.300008!
+
+          switch to automatic determination of prereqs to improve accuracy
+
 1.300008  2013-09-01 09:39:13 America/New_York
           [THIS MIGHT BREAK YOUR CODE]
           at long last, Sendmail and Maildir transports replaces CRLF with CR

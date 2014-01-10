@@ -5,6 +5,7 @@ use MooX::Types::MooseLike::Base qw(Bool Int Str);
 
 use Email::Sender::Failure::Multi;
 use Email::Sender::Success::Partial;
+use Email::Sender::Role::HasMessage ();
 use Email::Sender::Util;
 
 =head1 DESCRIPTION

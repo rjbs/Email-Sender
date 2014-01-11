@@ -63,13 +63,19 @@ has allow_partial_success => (is => 'ro', isa => Bool, default => sub { 0 });
 
 =item C<localport>: local port from which to connect
 
-=back
-
 =cut
 
 has helo      => (is => 'ro', isa => Str);
 has localaddr => (is => 'ro');
 has localport => (is => 'ro', isa => Int);
+
+=item C<debug>: if true, put the L<Net::SMTP> object in debug mode
+
+=back
+
+=cut
+
+has debug => (is => 'ro', isa => Bool, default => sub { 0 });
 
 # I am basically -sure- that this is wrong, but sending hundreds of millions of
 # messages has shown that it is right enough.  I will try to make it textbook
@@ -123,6 +129,7 @@ sub _net_smtp_args {
     $self->host,
     Port    => $self->port,
     Timeout => $self->timeout,
+    Debug   => $self->debug,
     defined $self->helo      ? (Hello     => $self->helo)      : (),
     defined $self->localaddr ? (LocalAddr => $self->localaddr) : (),
     defined $self->localport ? (LocalPort => $self->localport) : (),

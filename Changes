@@ -2,6 +2,9 @@ Revision history for Email-Sender
 
 {{$NEXT}}
 
+1.300010  2014-01-11 14:15:13-05:00 America/New_York
+        - the SMTP transport now has a "debug" option
+
 1.300009  2013-09-01 12:03:06 America/New_York
           see also 1.300008!
 

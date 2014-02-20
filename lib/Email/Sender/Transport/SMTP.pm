@@ -152,7 +152,7 @@ sub send_email {
   my $FAULT = sub { $self->_throw($_[0], $smtp); };
 
   $smtp->mail(_quoteaddr($env->{from}))
-    or $FAULT->("$env->{from} failed after MAIL FROM:");
+    or $FAULT->("$env->{from} failed after MAIL FROM");
 
   my @failures;
   my @ok_rcpts;

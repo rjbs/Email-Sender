@@ -5,7 +5,7 @@ with 'Email::Sender::Transport';
 
 use Errno ();
 use Fcntl;
-use File::Path;
+use File::Path 2.06;
 use File::Spec;
 
 use Sys::Hostname;
@@ -98,7 +98,7 @@ sub _ensure_maildir_exists {
     next if -d $subdir;
 
     Email::Sender::Failure->throw("couldn't create $subdir: $!")
-      unless File::Path::mkpath($subdir);
+      unless File::Path::make_path($subdir) || -d $subdir;
   }
 }
 

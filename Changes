@@ -2,6 +2,8 @@ Revision history for Email-Sender
 
 {{$NEXT}}
         - run the sendmail program with -i by default (thanks, William Blunn)
+        - do not die when a race causes mkpath(Maildir/new) to fail because the
+          directory already exists
 
 1.300010  2014-01-11 14:15:13-05:00 America/New_York
         - the SMTP transport now has a "debug" option

@@ -1,8 +1,10 @@
 package Email::Sender::Transport::Sendmail;
-use Moo;
-use MooX::Types::MooseLike::Base qw(Str);
-with 'Email::Sender::Transport';
 # ABSTRACT: send mail via sendmail(1)
+
+use Moo;
+with 'Email::Sender::Transport';
+
+use MooX::Types::MooseLike::Base qw(Str);
 
 =head2 DESCRIPTION
 

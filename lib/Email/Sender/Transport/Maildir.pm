@@ -1,7 +1,8 @@
 package Email::Sender::Transport::Maildir;
+# ABSTRACT: deliver mail to a maildir on disk
+
 use Moo;
 with 'Email::Sender::Transport';
-# ABSTRACT: deliver mail to a maildir on disk
 
 use Errno ();
 use Fcntl;

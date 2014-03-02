@@ -1,7 +1,8 @@
 package Email::Sender::Transport::DevNull;
+# ABSTRACT: happily throw away your mail
+
 use Moo;
 with 'Email::Sender::Transport';
-# ABSTRACT: happily throw away your mail
 
 =head1 DESCRIPTION
 

@@ -1,10 +1,11 @@
 package Email::Sender::Transport::Test;
-use Moo;
-use MooX::Types::MooseLike::Base qw(ArrayRef Bool);
 # ABSTRACT: deliver mail in memory for testing
+
+use Moo;
 
 use Email::Sender::Failure::Multi;
 use Email::Sender::Success::Partial;
+use MooX::Types::MooseLike::Base qw(ArrayRef Bool);
 
 =head1 DESCRIPTION
 

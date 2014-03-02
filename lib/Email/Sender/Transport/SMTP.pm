@@ -1,12 +1,13 @@
 package Email::Sender::Transport::SMTP;
-use Moo;
-use MooX::Types::MooseLike::Base qw(Bool Int Str);
 # ABSTRACT: send email over SMTP
+
+use Moo;
 
 use Email::Sender::Failure::Multi;
 use Email::Sender::Success::Partial;
 use Email::Sender::Role::HasMessage ();
 use Email::Sender::Util;
+use MooX::Types::MooseLike::Base qw(Bool Int Str);
 
 =head1 DESCRIPTION
 

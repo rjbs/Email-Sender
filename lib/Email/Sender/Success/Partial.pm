@@ -1,8 +1,10 @@
 package Email::Sender::Success::Partial;
+# ABSTRACT: a report of partial success when delivering
+
 use Moo;
 extends 'Email::Sender::Success';
+
 use MooX::Types::MooseLike::Base qw(InstanceOf);
-# ABSTRACT: a report of partial success when delivering
 
 =head1 DESCRIPTION
 

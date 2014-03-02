@@ -1,9 +1,11 @@
 package Email::Sender::Failure;
-use Moo;
-use MooX::Types::MooseLike::Base qw(ArrayRef);
-use Carp ();
-extends 'Throwable::Error';
 # ABSTRACT: a report of failure from an email sending transport
+
+use Moo;
+extends 'Throwable::Error';
+
+use Carp ();
+use MooX::Types::MooseLike::Base qw(ArrayRef);
 
 =attr message
 

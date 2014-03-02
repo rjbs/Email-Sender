@@ -1,7 +1,7 @@
 package Email::Sender;
-use Moo::Role;
 # ABSTRACT: a library for sending email
 
+use Moo::Role;
 requires 'send';
 
 =head1 SYNOPSIS

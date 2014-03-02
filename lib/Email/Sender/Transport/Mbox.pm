@@ -1,7 +1,8 @@
 package Email::Sender::Transport::Mbox;
+# ABSTRACT: deliver mail to an mbox on disk
+
 use Moo;
 with 'Email::Sender::Transport';
-# ABSTRACT: deliver mail to an mbox on disk
 
 use Carp;
 use File::Path;

@@ -1,7 +1,8 @@
 package Email::Sender::Transport::SMTP::Persistent;
+# ABSTRACT: an SMTP client that stays online
+
 use Moo;
 extends 'Email::Sender::Transport::SMTP';
-# ABSTRACT: an SMTP client that stays online
 
 =head1 DESCRIPTION
 

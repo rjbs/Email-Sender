@@ -1,7 +1,8 @@
 package Email::Sender::Simple;
+# ABSTRACT: the simple interface for sending mail with Sender
+
 use Moo;
 with 'Email::Sender::Role::CommonSending';
-# ABSTRACT: the simple interface for sending mail with Sender
 
 =head1 SEE INSTEAD
 

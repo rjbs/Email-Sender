@@ -1,6 +1,7 @@
 package Email::Sender::Role::HasMessage;
-use Moo::Role;
 # ABSTRACT: an object that has a message
+
+use Moo::Role;
 
 =attr message
 

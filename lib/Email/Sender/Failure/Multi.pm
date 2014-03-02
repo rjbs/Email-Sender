@@ -1,8 +1,10 @@
 package Email::Sender::Failure::Multi;
-use Moo;
-use MooX::Types::MooseLike::Base qw(ArrayRef);
-extends 'Email::Sender::Failure';
 # ABSTRACT: an aggregate of multiple failures
+
+use Moo;
+extends 'Email::Sender::Failure';
+
+use MooX::Types::MooseLike::Base qw(ArrayRef);
 
 =head1 DESCRIPTION
 

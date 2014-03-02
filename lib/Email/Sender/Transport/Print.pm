@@ -1,7 +1,8 @@
 package Email::Sender::Transport::Print;
+# ABSTRACT: print email to a filehandle (like stdout)
+
 use Moo;
 with 'Email::Sender::Transport';
-# ABSTRACT: print email to a filehandle (like stdout)
 
 =head1 DESCRIPTION
 

@@ -1,7 +1,8 @@
 package Email::Sender::Failure::Permanent;
+# ABSTRACT: a permanent delivery failure
+
 use Moo;
 extends 'Email::Sender::Failure';
-# ABSTRACT: a permanent delivery failure
 
 no Moo;
 1;

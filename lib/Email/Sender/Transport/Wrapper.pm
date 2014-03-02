@@ -1,7 +1,8 @@
 package Email::Sender::Transport::Wrapper;
+# ABSTRACT: a mailer to wrap a mailer for mailing mail
+
 use Moo;
 with 'Email::Sender::Transport';
-# ABSTRACT: a mailer to wrap a mailer for mailing mail
 
 use Email::Sender::Util;
 

@@ -1,6 +1,7 @@
 package Email::Sender::Success;
-use Moo;
 # ABSTRACT: the result of successfully sending mail
+
+use Moo;
 
 =head1 DESCRIPTION
 

@@ -1,8 +1,10 @@
 package Email::Sender::Transport::Failable;
-use Moo;
-use MooX::Types::MooseLike::Base qw(ArrayRef);
-extends 'Email::Sender::Transport::Wrapper';
 # ABSTRACT: a wrapper to makes things fail predictably
+
+use Moo;
+extends 'Email::Sender::Transport::Wrapper';
+
+use MooX::Types::MooseLike::Base qw(ArrayRef);
 
 =head1 DESCRIPTION
 

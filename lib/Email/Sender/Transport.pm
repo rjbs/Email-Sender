@@ -1,6 +1,7 @@
 package Email::Sender::Transport;
-use Moo::Role;
 # ABSTRACT: a role for email transports
+
+use Moo::Role;
 
 =head1 DESCRIPTION
 

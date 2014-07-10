@@ -224,7 +224,7 @@ and then send it to the To/Cc users implicitly.
 
   my $message = create_email_mime_msg;  # <- whatever you do to get the message
 
-  $message->delete_header('bcc');       # delete the Bcc header before sending
+  $message->header_set('bcc');          # delete the Bcc header before sending
   sendmail($message, { to => $rcpt' }); # send to explicit Bcc address
   sendmail($message);                   # and then send as normal
 

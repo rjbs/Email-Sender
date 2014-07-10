@@ -2,6 +2,10 @@ Revision history for Email-Sender
 
 {{$NEXT}}
 
+1.300012  2014-07-10 09:55:35-04:00 America/New_York
+        - documentation fix: there's no Email::MIME->delete_header
+          (thanks, Kris Matthews)
+
 1.300011  2014-03-02 18:16:12-05:00 America/New_York
         - run the sendmail program with -i by default (thanks, William Blunn)
         - do not die when a race causes mkpath(Maildir/new) to fail because the

@@ -88,7 +88,7 @@ sub send_email {
   my $string = $email->as_string;
   $string =~ s/\x0D\x0A/\x0A/g unless $^O eq 'MSWin32';
 
-  print $pipe $email->as_string
+  print $pipe $string
     or Email::Sender::Failure->throw("couldn't send message to sendmail: $!");
 
   close $pipe

@@ -1,6 +1,9 @@
 Revision history for Email-Sender
 
 {{$NEXT}}
+        - sometimes, if no error is given and $smtp->message returns (),
+          the arguments to the Failure constructor were out of alignment and
+          the failure's error message would be "code"; this has been fixed
 
 1.300012  2014-07-10 09:55:35-04:00 America/New_York
         - documentation fix: there's no Email::MIME->delete_header

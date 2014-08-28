@@ -42,7 +42,9 @@ sub _failure {
   if ($smtp) {
     $code = $smtp->code;
     $message = $smtp->message;
-    $message = "(no SMTP error message)" unless defined $message;
+    $message = ! defined $message ? "(no SMTP error message)"
+             : ! length  $message ? "(empty SMTP error message)"
+             :                       $message;
 
     $message = defined $error && length $error
              ? "$error: $message"

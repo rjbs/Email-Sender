@@ -1,6 +1,8 @@
 Revision history for Email-Sender
 
 {{$NEXT}}
+
+1.300013  2014-08-28 11:00:16-04:00 America/New_York
         - sometimes, if no error is given and $smtp->message returns (),
           the arguments to the Failure constructor were out of alignment and
           the failure's error message would be "code"; this has been fixed

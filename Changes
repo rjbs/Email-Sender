@@ -2,6 +2,11 @@ Revision history for Email-Sender
 
 {{$NEXT}}
 
+1.300015  2014-09-12 22:01:37-04:00 America/New_York (TRIAL RELEASE)
+          [THIS MIGHT BREAK YOUR CODE]
+        - version 1.300008 was meant to rewrite line endings when sending to
+          sendmail, but the change was not effective; it has been fixed
+
 1.300014  2014-08-28 14:21:26-04:00 America/New_York
         - do not try passing an empty string as a Failure message
 

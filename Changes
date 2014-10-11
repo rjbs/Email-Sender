@@ -2,6 +2,9 @@ Revision history for Email-Sender
 
 {{$NEXT}}
 
+1.300016  2014-10-10 22:54:00-04:00 America/New_York
+        - no changes since 1.300015, just made non-trial release
+
 1.300015  2014-09-12 22:01:37-04:00 America/New_York (TRIAL RELEASE)
           [THIS MIGHT BREAK YOUR CODE]
         - version 1.300008 was meant to rewrite line endings when sending to

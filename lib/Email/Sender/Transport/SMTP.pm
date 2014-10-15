@@ -34,6 +34,12 @@ The following attributes may be passed to the constructor:
 
 =cut
 
+sub BUILD {
+  my ($self) = @_;
+  Carp::croak("do not pass port number to SMTP transport in host, use host parameter")
+    if $self->host =~ /:/;
+}
+
 has host => (is => 'ro', isa => Str,  default => sub { 'localhost' });
 has ssl  => (is => 'ro', isa => Bool, default => sub { 0 });
 has port => (

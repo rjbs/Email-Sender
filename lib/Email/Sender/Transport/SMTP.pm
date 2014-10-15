@@ -36,7 +36,7 @@ The following attributes may be passed to the constructor:
 
 sub BUILD {
   my ($self) = @_;
-  Carp::croak("do not pass port number to SMTP transport in host, use host parameter")
+  Carp::croak("do not pass port number to SMTP transport in host, use port parameter")
     if $self->host =~ /:/;
 }
 

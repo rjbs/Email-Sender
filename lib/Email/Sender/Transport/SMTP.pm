@@ -9,6 +9,8 @@ use Email::Sender::Role::HasMessage ();
 use Email::Sender::Util;
 use MooX::Types::MooseLike::Base qw(Bool Int Str);
 
+use utf8 (); # See below. -- rjbs, 2015-05-14
+
 =head1 DESCRIPTION
 
 This transport is used to send email over SMTP, either with or without secure
@@ -209,6 +211,12 @@ sub send_email {
 
   while (length $msg_string) {
     my $next_hunk = substr $msg_string, 0, $hunk_size, '';
+
+    # I would love to remove this when Net::SMTP is unscrewed.
+    # See https://rt.cpan.org/Ticket/Display.html?id=104433
+    # -- rjbs, 2015-05-14
+    utf8::downgrade($next_hunk);
+
     $smtp->datasend($next_hunk) or $FAULT->("error at during DATA");
   }
 

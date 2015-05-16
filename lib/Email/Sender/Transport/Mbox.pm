@@ -7,7 +7,7 @@ with 'Email::Sender::Transport';
 use Carp;
 use File::Path;
 use File::Basename;
-use IO::File;
+use IO::File 1.11; # binmode
 use Email::Simple 1.998;  # needed for ->header_obj
 use Fcntl ':flock';
 

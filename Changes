@@ -2,6 +2,9 @@ Revision history for Email-Sender
 
 {{$NEXT}}
 
+1.300018  2015-05-27 15:28:44-04:00 America/New_York
+        - stable release of changes from 1.300017
+
 1.300017  2015-05-14 13:17:39-04:00 America/New_York (TRIAL RELEASE)
         - cope with a double-encoding but in Net::SMTP
           for details, https://rt.cpan.org/Ticket/Display.html?id=104433

@@ -215,7 +215,7 @@ sub send_email {
     # I would love to remove this when Net::SMTP is unscrewed.
     # See https://rt.cpan.org/Ticket/Display.html?id=104433
     # -- rjbs, 2015-05-14
-    utf8::downgrade($next_hunk);
+    utf8::downgrade($next_hunk) if Net::SMTP->VERSION < 3.07;
 
     $smtp->datasend($next_hunk) or $FAULT->("error at during DATA");
   }

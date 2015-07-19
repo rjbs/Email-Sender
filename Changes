@@ -6,7 +6,7 @@ Revision history for Email-Sender
         - stable release of changes from 1.300017
 
 1.300017  2015-05-14 13:17:39-04:00 America/New_York (TRIAL RELEASE)
-        - cope with a double-encoding but in Net::SMTP
+        - cope with a double-encoding bug in Net::SMTP
           for details, https://rt.cpan.org/Ticket/Display.html?id=104433
 
 1.300016  2014-10-10 22:54:00-04:00 America/New_York

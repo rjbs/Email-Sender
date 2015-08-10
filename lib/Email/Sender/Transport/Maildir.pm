@@ -75,8 +75,12 @@ sub send_email {
   my $dupe = Email::Abstract->new(\do { $email->as_string });
 
   if ($self->add_envelope_headers) {
-    $dupe->set_header('X-Email-Sender-From' => $env->{from});
-    $dupe->set_header('X-Email-Sender-To'   => @{ $env->{to} });
+    $dupe->set_header('X-Email-Sender-From' =>
+      (defined $env->{from} ? $env->{from} : '-'),
+    );
+
+    my @to = grep {; defined } @{ $env->{to} };
+    $dupe->set_header('X-Email-Sender-To'   => (@to ? @to : '-'));
   }
 
   $self->_ensure_maildir_exists;

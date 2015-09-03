@@ -2,6 +2,9 @@ Revision history for Email-Sender
 
 {{$NEXT}}
 
+1.300020  2015-09-03 14:00:04-04:00 America/New_York
+        - no changes since 1.300019
+
 1.300019  2015-08-10 15:48:02-04:00 America/New_York (TRIAL RELEASE)
         - only work around Net::SMTP on broken (pre-3.07) versions
         - avoid uninitialized warning when delivering to Maildir

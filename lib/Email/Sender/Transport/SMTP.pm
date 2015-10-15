@@ -113,7 +113,13 @@ sub _smtp_client {
 
   my $smtp = $class->new( $self->_net_smtp_args );
 
-  $self->_throw("unable to establish SMTP connection") unless $smtp;
+  unless ($smtp) {
+    $self->_throw(
+      sprintf "unable to establish SMTP connection to %s port %s",
+        $self->host,
+        $self->port,
+    );
+  }
 
   if ($self->sasl_username) {
     $self->_throw("sasl_username but no sasl_password")

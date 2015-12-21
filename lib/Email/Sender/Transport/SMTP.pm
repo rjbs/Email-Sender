@@ -7,7 +7,8 @@ use Email::Sender::Failure::Multi;
 use Email::Sender::Success::Partial;
 use Email::Sender::Role::HasMessage ();
 use Email::Sender::Util;
-use MooX::Types::MooseLike::Base qw(Bool Int Str);
+use MooX::Types::MooseLike::Base qw(Bool Int Str HashRef);
+use Net::SMTP;
 
 use utf8 (); # See below. -- rjbs, 2015-05-14
 
@@ -34,6 +35,8 @@ The following attributes may be passed to the constructor:
 
 =item C<timeout>: maximum time in secs to wait for server; default is 120
 
+=item C<ssl_options>: ssl options, for passing extra options to L<IO::Socket::SSL>, when in ssl mode
+
 =cut
 
 sub BUILD {
@@ -52,6 +55,7 @@ has port => (
 );
 
 has timeout => (is => 'ro', isa => Int, default => sub { 120 });
+has ssl_options => (is => 'ro', isa => HashRef);
 
 =item C<sasl_username>: the username to use for auth; optional
 
@@ -103,15 +107,7 @@ sub _quoteaddr {
 sub _smtp_client {
   my ($self) = @_;
 
-  my $class = "Net::SMTP";
-  if ($self->ssl) {
-    require Net::SMTP::SSL;
-    $class = "Net::SMTP::SSL";
-  } else {
-    require Net::SMTP;
-  }
-
-  my $smtp = $class->new( $self->_net_smtp_args );
+  my $smtp = Net::SMTP->new( $self->_net_smtp_args );
 
   unless ($smtp) {
     $self->_throw(
@@ -145,9 +141,11 @@ sub _net_smtp_args {
     Port    => $self->port,
     Timeout => $self->timeout,
     Debug   => $self->debug,
-    defined $self->helo      ? (Hello     => $self->helo)      : (),
-    defined $self->localaddr ? (LocalAddr => $self->localaddr) : (),
-    defined $self->localport ? (LocalPort => $self->localport) : (),
+    defined $self->helo                        ? (Hello     => $self->helo)      : (),
+    defined $self->localaddr                   ? (LocalAddr => $self->localaddr) : (),
+    defined $self->localport                   ? (LocalPort => $self->localport) : (),
+    defined $self->ssl                         ? (SSL       => $self->ssl)       : (),
+    ($self->ssl && defined $self->ssl_options) ? (%{$self->ssl_options})         : (),
   );
 }
 

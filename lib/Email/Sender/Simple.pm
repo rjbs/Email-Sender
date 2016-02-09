@@ -23,6 +23,8 @@ use Email::Address;
 use Email::Sender::Transport;
 use Email::Sender::Util;
 use Try::Tiny;
+use Encode qw/decode/;
+
 
 {
   my $DEFAULT_TRANSPORT;
@@ -146,7 +148,7 @@ sub _get_to_from {
       map  { $_->address               }
       grep { defined                   }
       map  { Email::Address->parse($_) }
-      map  { $email->get_header($_)    }
+      map  { decode('MIME-Header', $email->get_header($_))    }
       qw(to cc);
     $to = \@to_addrs;
   }
@@ -157,7 +159,7 @@ sub _get_to_from {
       map  { $_->address               }
       grep { defined                   }
       map  { Email::Address->parse($_) }
-      map  { $email->get_header($_)    }
+      map  { decode('MIME-Header', $email->get_header($_))    }
       qw(from);
   }
 

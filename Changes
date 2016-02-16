@@ -1,6 +1,7 @@
 Revision history for Email-Sender
 
 {{$NEXT}}
+        - avoid Net::SMTP::SSL if Net::SMTP is capable of handling SSL itself
 
 1.300021  2015-10-15 13:53:52-04:00 America/New_York
         - when SMTP connection fails, include host and port in error

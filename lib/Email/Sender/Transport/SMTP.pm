@@ -104,11 +104,10 @@ sub _smtp_client {
   my ($self) = @_;
 
   my $class = "Net::SMTP";
-  if ($self->ssl) {
+  require Net::SMTP;
+  if ($self->ssl and not eval { Net::SMTP->can_ssl } ) {
     require Net::SMTP::SSL;
     $class = "Net::SMTP::SSL";
-  } else {
-    require Net::SMTP;
   }
 
   my $smtp = $class->new( $self->_net_smtp_args );

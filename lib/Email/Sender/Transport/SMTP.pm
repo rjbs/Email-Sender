@@ -2,6 +2,7 @@ package Email::Sender::Transport::SMTP;
 # ABSTRACT: send email over SMTP
 
 use Moo;
+use Try::Tiny;
 
 use Email::Sender::Failure::Multi;
 use Email::Sender::Success::Partial;
@@ -107,8 +108,19 @@ sub _smtp_client {
 
   my $class = "Net::SMTP";
   if ($self->ssl) {
-    require Net::SMTPS;
-    $class = "Net::SMTPS";
+    for (qw(Net::SMTPS Net::SMTP::SSL)) {
+      no warnings 'exiting';
+      try {
+        eval "require $_";
+        $class = $_;
+        last
+      };
+    }
+    Carp::croak(__PACKAGE__.": $class does not support starttls;".
+      " install Net::SMTPS for that")
+      if $class eq 'Net::SMTP::SSL' && $self->ssl eq 'starttls';
+    Carp::croak(__PACKAGE__.": SSL/TLS requires Net::SMTPS")
+      if $class eq 'Net::SMTP';
   } else {
     require Net::SMTP;
   }

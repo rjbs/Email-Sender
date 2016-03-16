@@ -48,7 +48,9 @@ has port => (
   is  => 'ro',
   isa => Int,
   lazy    => 1,
-  default => sub { return $_[0]->ssl and $_[0]->ssl eq 'starttls' ? 587 : $_[0]->ssl ? 465 : 25; },
+  default => sub {
+    return $_[0]->ssl && $_[0]->ssl eq 'starttls' ?  587 : $_[0]->ssl ? 465 : 25
+  },
 );
 
 has timeout => (is => 'ro', isa => Int, default => sub { 120 });

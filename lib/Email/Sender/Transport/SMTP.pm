@@ -8,14 +8,15 @@ use Email::Sender::Success::Partial;
 use Email::Sender::Role::HasMessage ();
 use Email::Sender::Util;
 use MooX::Types::MooseLike::Base qw(Bool Int Str);
+use Net::SMTP 3.03;
 
 use utf8 (); # See below. -- rjbs, 2015-05-14
 
 =head1 DESCRIPTION
 
 This transport is used to send email over SMTP, either with or without secure
-sockets (SSL).  It is one of the most complex transports available, capable of
-partial success.
+sockets (SSL/TLS).  It is one of the most complex transports available, capable
+of partial success.
 
 For a potentially more efficient version of this transport, see
 L<Email::Sender::Transport::SMTP::Persistent>.
@@ -28,9 +29,11 @@ The following attributes may be passed to the constructor:
 
 =item C<host>: the name of the host to connect to; defaults to C<localhost>
 
-=item C<ssl>: if true, connect via SSL; defaults to false
+=item C<ssl>: if 'starttls', use STARTTLS; if 'ssl' (or other true value),
+connect securely; otherwise, no security
 
-=item C<port>: port to connect to; defaults to 25 for non-SSL, 465 for SSL
+=item C<port>: port to connect to; defaults to 25 for non-SSL, 465 for 'ssl',
+587 for 'starttls'
 
 =item C<timeout>: maximum time in secs to wait for server; default is 120
 
@@ -43,12 +46,28 @@ sub BUILD {
 }
 
 has host => (is => 'ro', isa => Str,  default => sub { 'localhost' });
-has ssl  => (is => 'ro', isa => Bool, default => sub { 0 });
+has ssl  => (is => 'ro', default => sub { 0 });
+
+has _security => (
+  is   => 'ro',
+  lazy => 1,
+  init_arg => undef,
+  default  => sub {
+    return '' unless my $ssl = $_[0]->ssl;
+    return 'starttls' if 'starttls' eq lc $ssl;
+    return 'ssl';
+  },
+);
+
 has port => (
   is  => 'ro',
   isa => Int,
   lazy    => 1,
-  default => sub { return $_[0]->ssl ? 465 : 25; },
+  default => sub {
+    return $_[0]->_security eq 'starttls' ? 587
+         : $_[0]->_security eq 'ssl'      ? 465
+         :                                   25
+  },
 );
 
 has timeout => (is => 'ro', isa => Int, default => sub { 120 });
@@ -104,12 +123,6 @@ sub _smtp_client {
   my ($self) = @_;
 
   my $class = "Net::SMTP";
-  if ($self->ssl) {
-    require Net::SMTP::SSL;
-    $class = "Net::SMTP::SSL";
-  } else {
-    require Net::SMTP;
-  }
 
   my $smtp = $class->new( $self->_net_smtp_args );
 
@@ -119,6 +132,11 @@ sub _smtp_client {
         $self->host,
         $self->port,
     );
+  }
+
+  if ($self->_security eq 'starttls') {
+    $self->_throw("can't STARTTLS: " . $smtp->message)
+      unless $smtp->starttls;
   }
 
   if ($self->sasl_username) {
@@ -145,6 +163,7 @@ sub _net_smtp_args {
     Port    => $self->port,
     Timeout => $self->timeout,
     Debug   => $self->debug,
+    SSL     => ($self->_security eq 'ssl' ? 1 : 0),
     defined $self->helo      ? (Hello     => $self->helo)      : (),
     defined $self->localaddr ? (LocalAddr => $self->localaddr) : (),
     defined $self->localport ? (LocalPort => $self->localport) : (),

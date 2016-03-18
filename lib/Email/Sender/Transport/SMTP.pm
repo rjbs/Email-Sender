@@ -7,7 +7,7 @@ use Email::Sender::Failure::Multi;
 use Email::Sender::Success::Partial;
 use Email::Sender::Role::HasMessage ();
 use Email::Sender::Util;
-use MooX::Types::MooseLike::Base qw(Bool Int Str);
+use MooX::Types::MooseLike::Base qw(Bool Int Str HashRef);
 use Net::SMTP 3.03;
 
 use utf8 (); # See below. -- rjbs, 2015-05-14
@@ -31,6 +31,10 @@ The following attributes may be passed to the constructor:
 
 =item C<ssl>: if 'starttls', use STARTTLS; if 'ssl' (or other true value),
 connect securely; otherwise, no security
+
+=item C<ssl_options>: passed to Net::SMTP constructor for 'ssl' connections or
+to starttls for 'starttls' connections; should contain extra options for
+IO::Socket::SSL
 
 =item C<port>: port to connect to; defaults to 25 for non-SSL, 465 for 'ssl',
 587 for 'starttls'
@@ -58,6 +62,8 @@ has _security => (
     return 'ssl';
   },
 );
+
+has ssl_options => (is => 'ro', isa => HashRef, default => sub {  {}  });
 
 has port => (
   is  => 'ro',
@@ -136,7 +142,7 @@ sub _smtp_client {
 
   if ($self->_security eq 'starttls') {
     $self->_throw("can't STARTTLS: " . $smtp->message)
-      unless $smtp->starttls;
+      unless $smtp->starttls(%{ $self->ssl_options });
   }
 
   if ($self->sasl_username) {
@@ -163,7 +169,11 @@ sub _net_smtp_args {
     Port    => $self->port,
     Timeout => $self->timeout,
     Debug   => $self->debug,
-    SSL     => ($self->_security eq 'ssl' ? 1 : 0),
+
+    (($self->_security eq 'ssl')
+      ? (SSL => 1, %{ $self->ssl_options })
+      : ()),
+
     defined $self->helo      ? (Hello     => $self->helo)      : (),
     defined $self->localaddr ? (LocalAddr => $self->localaddr) : (),
     defined $self->localport ? (LocalPort => $self->localport) : (),

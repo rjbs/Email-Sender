@@ -8,7 +8,7 @@ use Email::Sender::Success::Partial;
 use Email::Sender::Role::HasMessage ();
 use Email::Sender::Util;
 use MooX::Types::MooseLike::Base qw(Bool Int Str HashRef);
-use Net::SMTP 3.03;
+use Net::SMTP 3.07; # SSL support, fixed datasend
 
 use utf8 (); # See below. -- rjbs, 2015-05-14
 

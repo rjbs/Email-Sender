@@ -29,8 +29,8 @@ The following attributes may be passed to the constructor:
 
 =item C<host>: the name of the host to connect to; defaults to C<localhost>
 
-=item C<ssl>: if 'starttls', use STARTTLS; if 'ssl' (or other true value),
-connect securely; otherwise, no security
+=item C<ssl>: if 'starttls', use STARTTLS; if 'ssl' (or 1), connect securely;
+otherwise, no security
 
 =item C<ssl_options>: passed to Net::SMTP constructor for 'ssl' connections or
 to starttls for 'starttls' connections; should contain extra options for
@@ -49,17 +49,23 @@ sub BUILD {
     if $self->host =~ /:/;
 }
 
-has host => (is => 'ro', isa => Str,  default => sub { 'localhost' });
-has ssl  => (is => 'ro', default => sub { 0 });
+has host => (is => 'ro', isa => Str, default => sub { 'localhost' });
+has ssl  => (is => 'ro', isa => Str, default => sub { 0 });
 
 has _security => (
   is   => 'ro',
   lazy => 1,
   init_arg => undef,
   default  => sub {
-    return '' unless my $ssl = $_[0]->ssl;
-    return 'starttls' if 'starttls' eq lc $ssl;
-    return 'ssl';
+    my $ssl = $_[0]->ssl;
+    return '' unless $ssl;
+    $ssl = lc $ssl;
+    return 'starttls' if 'starttls' eq $ssl;
+    return 'ssl' if $ssl eq 1 or $ssl eq 'ssl';
+
+    Carp::cluck(qq{true "ssl" argument to Email::Sender::Transport::SMTP should be 'ssl' or 'startls' or '1' but got '$ssl'});
+
+    return 1;
   },
 );
 

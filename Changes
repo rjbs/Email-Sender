@@ -2,6 +2,10 @@ Revision history for Email-Sender
 
 {{$NEXT}}
 
+1.300025  2016-03-19 17:11:34-04:00 America/New_York (TRIAL RELEASE)
+        - tweak how we load Net::SMTP to avoid problems when testing with a
+          Test::MockObject-mocked SMTP client
+
 1.300024  2016-03-19 14:13:16-04:00 America/New_York (TRIAL RELEASE)
         - Net::SMTP 3.07 is now required, both for SSL support and for a fix
           to datasend implementation referenced in 1.300019 changes

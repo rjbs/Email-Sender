@@ -2,6 +2,12 @@ Revision history for Email-Sender
 
 {{$NEXT}}
 
+1.300023  2016-03-19 14:06:51-04:00 America/New_York (TRIAL RELEASE)
+        - Email::Sender::Transport::SMTP now uses Net::SMTP for SSL
+          connections, and for a STARTTLS implementation
+        - Net::SMTP 3.07 is now required, both for SSL support and for a fix to
+          datasend implementation referenced in 1.300019 changes
+
 1.300021  2015-10-15 13:53:52-04:00 America/New_York
         - when SMTP connection fails, include host and port in error
 

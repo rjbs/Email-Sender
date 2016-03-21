@@ -2,6 +2,10 @@ Revision history for Email-Sender
 
 {{$NEXT}}
 
+1.300026  2016-03-21 13:50:22-04:00 America/New_York (TRIAL RELEASE)
+        - another tweak to Net::SMTP and Test::MockObject, thanks to Matthew
+          Horsfall
+
 1.300025  2016-03-19 17:11:34-04:00 America/New_York (TRIAL RELEASE)
         - tweak how we load Net::SMTP to avoid problems when testing with a
           Test::MockObject-mocked SMTP client

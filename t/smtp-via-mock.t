@@ -21,6 +21,8 @@ BEGIN {
   $mock_smtp->fake_new('Net::SMTP');
   Test::Email::Sender::Util->perform_stock_mockery($mock_smtp);
 
+  eval '$Net::SMTP::VERSION = "3.07"';
+
   $mock_smtp->{pass}{username} = 'password';
 
   $mock_smtp->{failaddr}{'tempfail@example.com'} = [ 401 => 'Temporary FOAD' ];

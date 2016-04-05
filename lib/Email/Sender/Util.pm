@@ -7,14 +7,14 @@ use Email::Address;
 use Email::Sender::Failure;
 use Email::Sender::Failure::Permanent;
 use Email::Sender::Failure::Temporary;
-use List::MoreUtils ();
+use List::Util 1.45 ();
 use Module::Runtime qw(require_module);
 
 # This code will be used by Email::Sender::Simple. -- rjbs, 2008-12-04
 sub _recipients_from_email {
   my ($self, $email) = @_;
 
-  my @to = List::MoreUtils::uniq(
+  my @to = List::Util::uniq(
            map { $_->address }
            map { Email::Address->parse($_) }
            map { $email->get_header($_) }

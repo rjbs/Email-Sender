@@ -47,7 +47,7 @@ use Try::Tiny;
       $arg{lc $new_key} = $ENV{$key};
     }
 
-    return Email::Sender::Util->_easy_transport($transport_class, \%arg);
+    return Email::Sender::Util->easy_transport($transport_class, \%arg);
   }
 
   sub default_transport {

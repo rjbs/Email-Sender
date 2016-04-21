@@ -1,6 +1,7 @@
 Revision history for Email-Sender
 
 {{$NEXT}}
+        - make Email::Sender::Util->easy_transport public
 
 1.300027  2016-04-03 10:02:52-04:00 America/New_York
         - no changes since 1.300026

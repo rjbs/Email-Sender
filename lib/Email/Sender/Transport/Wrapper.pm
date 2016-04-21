@@ -47,7 +47,7 @@ sub BUILDARGS {
       $arg{$key} = delete $href->{"transport_arg_$key"};
     }
 
-    $href->{transport} = Email::Sender::Util->_easy_transport($class, \%arg);
+    $href->{transport} = Email::Sender::Util->easy_transport($class, \%arg);
   }
 
   return $href;

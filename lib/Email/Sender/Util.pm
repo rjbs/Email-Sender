@@ -67,10 +67,23 @@ sub _failure {
   });
 }
 
-sub _easy_transport {
+=method easy_transport
+
+  my $transport = Email::Sender::Util->easy_transport($class => \%arg);
+
+This takes the name of a transport class and a set of args to new.  It returns
+an Email::Sender::Transport object of that class.
+
+C<$class> is rewritten to C<Email::Sender::Transport::$class> unless it starts
+with an equals sign (C<=>) or contains a colon.  The equals sign, if present,
+will be removed.
+
+=cut
+
+sub easy_transport {
   my ($self, $transport_class, $arg) = @_;
 
-  if ($transport_class !~ tr/://) {
+  if ($transport_class =~ s/^=// or $transport_class !~ tr/://) {
     $transport_class = "Email::Sender::Transport::$transport_class";
   }
 

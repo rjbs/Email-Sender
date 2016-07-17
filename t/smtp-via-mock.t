@@ -32,7 +32,7 @@ BEGIN {
   $mock_smtp->{failaddr}{'permfail@example.net'} = [ 519 => 'Permanent STHU' ];
 }
 
-plan tests => 94;
+plan tests => 95;
 
 use Email::Sender::Transport::SMTP;
 use Email::Sender::Transport::SMTP::Persistent;
@@ -349,3 +349,22 @@ for my $class (qw(
     );
   }
 }
+
+subtest "quoteaddr" => sub {
+  my @tests = qw(
+    0 example
+    0 o'neil
+    0 ricardo.signes
+    0 hot_coffee
+    1 everybody;loves;ldap
+    1 .emailrc
+  );
+
+  my $q = Email::Sender::Transport::SMTP->can('_quoteaddr');
+  while (my ($quote, $local) = splice @tests, 0, 2) {
+    my $input = qq{$local\@example.com};
+    my $want  = $quote ? qq{"$local"\@example.com} : $input;
+
+    is($q->(qq{$local\@example.com}), $want, "correct behavior for $local");
+  }
+};

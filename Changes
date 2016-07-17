@@ -1,6 +1,7 @@
 Revision history for Email-Sender
 
 {{$NEXT}}
+        - bring localpart quoting more in line with RFC 821
 
 1.300028  2016-04-21 17:49:14+01:00 Europe/London
         - make Email::Sender::Util->easy_transport public

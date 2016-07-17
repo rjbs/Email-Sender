@@ -126,8 +126,10 @@ sub _quoteaddr {
   my $domain     = pop @localparts;
   my $localpart  = join q{@}, @localparts;
 
-  # this is probably a little too paranoid
-  return $addr unless $localpart =~ /[^\w.+-]/ or $localpart =~ /^\./;
+  return $addr # The first regex here is RFC 821 "specials" excepting dot.
+    unless $localpart =~ /[\x00-\x1F\x7F<>\(\)\[\]\\,;:@"]/
+    or     $localpart =~ /^\./
+    or     $localpart =~ /\.$/;
   return join q{@}, qq("$localpart"), $domain;
 }
 

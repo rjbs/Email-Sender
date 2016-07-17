@@ -1,6 +1,8 @@
 Revision history for Email-Sender
 
 {{$NEXT}}
+
+1.300029  2016-07-17 15:49:18-04:00 America/New_York (TRIAL RELEASE)
         - bring localpart quoting more in line with RFC 821
 
 1.300028  2016-04-21 17:49:14+01:00 Europe/London

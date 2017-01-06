@@ -1,0 +1,24 @@
+language: perl
+sudo: false
+
+perl:
+  - "5.22"
+  - "5.20"
+  - "5.18"
+  - "5.16"
+  - "5.14"
+
+cache:
+  directories:
+    - $HOME/perl5/perlbrew/perls/$TRAVIS_PERL_VERSION/lib/site_perl/
+    - $HOME/perl5/perlbrew/perls/$TRAVIS_PERL_VERSION/bin/
+
+install:
+  - echo $TRAVIS_PERL_VERSION
+  - env | grep PERL
+  - cpanm --notest -v Dist::Zilla
+  - dzil authordeps | cpanm --quiet --notest
+  - dzil listdeps | cpanm
+
+script:
+  - dzil test --extended -j 4

@@ -44,6 +44,12 @@ This is exactly the same as saying:
 
 ...but it's a lot easier to type.  You can use either one.
 
+=head3 Bcc information
+
+Before attempting to send an email with a BCC, please read
+L<https://github.com/rjbs/email-sender/wiki/Bcc>. This will explain how to send
+a Bcc-email correctly using Email::Sender.
+
 =head3 envelope information
 
 We didn't have to tell Email::Sender::Simple where to send the message.  If you

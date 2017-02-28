@@ -27,7 +27,9 @@ The following attributes may be passed to the constructor:
 
 =over 4
 
-=item C<host>: the name of the host to connect to; defaults to C<localhost>
+=item C<host>: the DNS name, IPv4 or IPv6 address of the host to connect to;
+ defaults to C<localhost>. Do not include a port number. Use the C<port>
+ option instead.
 
 =item C<ssl>: if 'starttls', use STARTTLS; if 'ssl' (or 1), connect securely;
 otherwise, no security
@@ -45,8 +47,10 @@ IO::Socket::SSL
 
 sub BUILD {
   my ($self) = @_;
-  Carp::croak("do not pass port number to SMTP transport in host, use port parameter")
-    if $self->host =~ /:/;
+  Carp::croak("Do not pass port number to SMTP transport in host, use port parameter")
+    if $self->host =~ /^\d+\.\d+\.\d+\.\d+:/			# IPv4 address
+    or $self->host =~ /^\[[\w:]{3,}\]:/					# IPv6 address
+    or $self->host =~ /^[\w\.]{3,}:/;					# DNS name
 }
 
 has host => (is => 'ro', isa => Str, default => sub { 'localhost' });

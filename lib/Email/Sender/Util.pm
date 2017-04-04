@@ -80,12 +80,19 @@ will be removed.
 
 =cut
 
+sub _rewrite_class {
+  my $transport_class = $_[1];
+  if ($transport_class !~ s/^=// and $transport_class !~ m{:}) {
+    $transport_class = "Email::Sender::Transport::$transport_class";
+  }
+
+  return $transport_class;
+}
+
 sub easy_transport {
   my ($self, $transport_class, $arg) = @_;
 
-  if ($transport_class =~ s/^=// or $transport_class !~ tr/://) {
-    $transport_class = "Email::Sender::Transport::$transport_class";
-  }
+  $transport_class = $self->_rewrite_class($transport_class);
 
   require_module($transport_class);
   return $transport_class->new($arg);

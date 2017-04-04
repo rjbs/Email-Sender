@@ -1,6 +1,11 @@
 Revision history for Email-Sender
 
 {{$NEXT}}
+        - EMAIL_SENDER_TRANSPORT did not properly handle the =-prefix case
+          Now: =Foo::Bar expands to Foo::Bar, Foo::Bar expands to Foo::Bar,
+          and FooBar expands to Email::Sender::Transport::FooBar, as intended.
+
+          Previously, =Foo::Bar expanded to Email::Sender::Transport::Foo::Bar
 
 1.300030  2016-10-03 18:33:57-04:00 America/New_York
         - no changes since 1.300029

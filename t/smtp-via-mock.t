@@ -2,6 +2,7 @@
 use strict;
 use warnings;
 use Test::More;
+use Test::Exception;
 
 BEGIN {
 plan skip_all => 'Test::MockObject required to test SMTP transport by mocking'
@@ -32,7 +33,7 @@ BEGIN {
   $mock_smtp->{failaddr}{'permfail@example.net'} = [ 519 => 'Permanent STHU' ];
 }
 
-plan tests => 95;
+plan tests => 96;
 
 use Email::Sender::Transport::SMTP;
 use Email::Sender::Transport::SMTP::Persistent;
@@ -366,5 +367,47 @@ subtest "quoteaddr" => sub {
     my $want  = $quote ? qq{"$local"\@example.com} : $input;
 
     is($q->(qq{$local\@example.com}), $want, "correct behavior for $local");
+  }
+};
+
+subtest "portinaddr" => sub {
+  my @lives_tests = (
+    '1.1.1.1', 'IPv4 address',
+    '1::', 'IPv6 address 1 groups',
+    '1::8', 'IPv6 address 2 groups',
+    '1::ae:8', 'IPv6 address 3 groups',
+    '1::f45a:7:8', 'IPv6 address 4 groups',
+    '1::5:bd23:7:8', 'IPv6 address 5 groups',
+    '1::26fa:5:6:7:8', 'IPv6 address 6 groups',
+    '1::3:4:5:66ff:7:8', 'IPv6 address 7 groups',
+    '1:2:3:4:098a:6:7:8', 'IPv6 address 8 groups',
+    'server', 'Unqualified DNS name',
+    'corp.com', 'DNS zone',
+    'server.corp.com', 'Fully-qualified DNS name',
+  );
+  my @dies_tests = (
+    '1.1.1.1:125', 'IPv4 address with port',
+    '[::1]:125', 'IPv6 address shortest form with port',
+    '[1::]:125', 'IPv6 address 1 groups]:125',
+    '[1::8]:125', 'IPv6 address 2 groups]:125',
+    '[1::ae:8]:125', 'IPv6 address 3 groups]:125',
+    '[1::f45a:7:8]:125', 'IPv6 address 4 groups]:125',
+    '[1::5:bd23:7:8]:125', 'IPv6 address 5 groups]:125',
+    '[1::26fa:5:6:7:8]:125', 'IPv6 address 6 groups]:125',
+    '[1::3:4:5:66ff:7:8]:125', 'IPv6 address 7 groups]:125',
+    '[1:2:3:4:098a:6:7:8]:125', 'IPv6 address 8 groups]:125',
+    'server:125', 'Unqualified DNS name with port',
+    'corp.com:125', 'DNS zone with port',
+    'server.corp.com:125', 'Fully-qualified DNS name with port',
+  );
+
+  plan tests => (scalar(@lives_tests) + scalar(@dies_tests))/2;
+
+  while (my ($host, $test_name) = splice @lives_tests, 0, 2) {
+	lives_ok(sub {Email::Sender::Transport::SMTP->new({ host => $host })}, $test_name);
+  }
+
+  while (my ($host, $test_name) = splice @dies_tests, 0, 2) {
+	dies_ok(sub {Email::Sender::Transport::SMTP->new({ host => $host })}, $test_name);
   }
 };

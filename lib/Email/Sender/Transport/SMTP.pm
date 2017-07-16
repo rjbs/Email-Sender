@@ -286,16 +286,6 @@ sub send_email {
   while (length $msg_string) {
     my $next_hunk = substr $msg_string, 0, $hunk_size, '';
 
-    # For the need to downgrade, see
-    #   https://rt.cpan.org/Ticket/Display.html?id=104433
-    #
-    # The ||0 is there because when we've mocked Net::SMTP, there is no
-    # version.  We can't get the ->VERSION call to hit the mock, because we get
-    # the mock from ->new.  We don't want to create a new SMTP just to get the
-    # version, and we can't rely on $smtp being a Net::SMTP object.
-    # -- rjbs, 2015-08-10
-    utf8::downgrade($next_hunk) if (Net::SMTP->VERSION || 0) < 3.07;
-
     $smtp->datasend($next_hunk) or $FAULT->("error at during DATA");
   }
 

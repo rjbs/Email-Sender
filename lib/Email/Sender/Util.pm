@@ -3,7 +3,7 @@ use warnings;
 package Email::Sender::Util;
 # ABSTRACT: random stuff that makes Email::Sender go
 
-use Email::Address;
+use Email::Address::XS;
 use Email::Sender::Failure;
 use Email::Sender::Failure::Permanent;
 use Email::Sender::Failure::Temporary;
@@ -16,7 +16,7 @@ sub _recipients_from_email {
 
   my @to = List::Util::uniq(
            map { $_->address }
-           map { Email::Address->parse($_) }
+           map { Email::Address::XS->parse($_) }
            map { $email->get_header($_) }
            qw(to cc bcc));
 
@@ -27,7 +27,7 @@ sub _sender_from_email {
   my ($self, $email) = @_;
 
   my ($sender) = map { $_->address }
-                 map { Email::Address->parse($_) }
+                 map { Email::Address::XS->parse($_) }
                  scalar $email->get_header('from');
 
   return $sender;

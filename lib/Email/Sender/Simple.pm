@@ -19,7 +19,7 @@ use Sub::Exporter -setup => {
   },
 };
 
-use Email::Address;
+use Email::Address::XS;
 use Email::Sender::Transport;
 use Email::Sender::Util;
 use Try::Tiny;
@@ -145,7 +145,7 @@ sub _get_to_from {
     my @to_addrs =
       map  { $_->address               }
       grep { defined                   }
-      map  { Email::Address->parse($_) }
+      map  { Email::Address::XS->parse($_) }
       map  { $email->get_header($_)    }
       qw(to cc);
     $to = \@to_addrs;
@@ -156,7 +156,7 @@ sub _get_to_from {
     ($from) =
       map  { $_->address               }
       grep { defined                   }
-      map  { Email::Address->parse($_) }
+      map  { Email::Address::XS->parse($_) }
       map  { $email->get_header($_)    }
       qw(from);
   }

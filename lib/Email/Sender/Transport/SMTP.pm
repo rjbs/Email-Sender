@@ -117,7 +117,7 @@ has timeout => (is => 'ro', isa => Int, default => sub { 120 });
 
 =item C<sasl_username>: the username to use for auth; optional
 
-=item C<sasl_password>: the password to use for auth; required if C<username> is provided
+=item C<sasl_password>: the password to use for auth; required if C<sasl_username> is provided
 
 =item C<allow_partial_success>: if true, will send data even if some recipients were rejected; defaults to false
 

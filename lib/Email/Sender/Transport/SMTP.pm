@@ -7,7 +7,7 @@ use Email::Sender::Failure::Multi;
 use Email::Sender::Success::Partial;
 use Email::Sender::Role::HasMessage ();
 use Email::Sender::Util;
-use MooX::Types::MooseLike::Base qw(Bool Int Str HashRef);
+use MooX::Types::MooseLike::Base qw(Bool Int Str HashRef ArrayRef);
 use Net::SMTP 3.07; # SSL support, fixed datasend
 
 use utf8 (); # See below. -- rjbs, 2015-05-14
@@ -29,6 +29,8 @@ The following attributes may be passed to the constructor:
 
 =item C<host>: the name of the host to connect to; defaults to C<localhost>
 
+=item C<hosts>: arrayref of hosts to try; overrides C<host> if present.
+
 =item C<ssl>: if 'starttls', use STARTTLS; if 'ssl' (or 1), connect securely;
 otherwise, no security
 
@@ -49,8 +51,9 @@ sub BUILD {
     if $self->host =~ /:/;
 }
 
-has host => (is => 'ro', isa => Str, default => sub { 'localhost' });
-has ssl  => (is => 'ro', isa => Str, default => sub { 0 });
+has host  => (is => 'ro', isa => Str, default => sub { 'localhost' });
+has hosts => (is => 'ro', isa => ArrayRef );
+has ssl   => (is => 'ro', isa => Str, default => sub { 0 });
 
 has _security => (
   is   => 'ro',
@@ -143,7 +146,7 @@ sub _smtp_client {
   unless ($smtp) {
     $self->_throw(
       sprintf "unable to establish SMTP connection to %s port %s",
-        $self->host,
+        $self->hosts ? join(',',$self->hosts) : $self->host,
         $self->port,
     );
   }
@@ -173,7 +176,7 @@ sub _net_smtp_args {
   my ($self) = @_;
 
   return (
-    $self->host,
+    $self->hosts // $self->host,
     Port    => $self->port,
     Timeout => $self->timeout,
     Debug   => $self->debug,

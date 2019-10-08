@@ -146,7 +146,7 @@ sub _smtp_client {
   unless ($smtp) {
     $self->_throw(
       sprintf "unable to establish SMTP connection to %s port %s",
-        $self->hosts ? join(',',$self->hosts) : $self->host,
+        $self->hosts ? join(',',@{$self->hosts}) : $self->host,
         $self->port,
     );
   }

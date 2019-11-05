@@ -46,11 +46,40 @@ IO::Socket::SSL
 sub BUILD {
   my ($self) = @_;
   Carp::croak("do not pass port number to SMTP transport in host, use port parameter")
-    if $self->host =~ /:/;
+    if grep {; /:/ } $self->hosts;
 }
 
-has host => (is => 'ro', isa => Str, default => sub { 'localhost' });
+sub BUILDARGS {
+  my ($self, @rest) = @_;
+  my $arg = $self->SUPER::BUILDARGS(@rest);
+
+  if (exists $arg->{host}) {
+    Carp::croak("can't pass both host and hosts to constructor")
+      if exists $arg->{hosts};
+
+    $arg->{hosts} = [ delete $arg->{host} ];
+  }
+
+  return $arg;
+}
+
 has ssl  => (is => 'ro', isa => Str, default => sub { 0 });
+
+has _hosts => (
+  is  => 'ro',
+  isa => sub {
+    die "invalid hosts in Email::Sender::Transport::SMTP constructor"
+      unless defined $_[0]
+          && (ref $_[0] eq 'ARRAY')
+          && (grep {; length } @{ $_[0] }) > 0;
+  },
+  default  => sub {  [ 'localhost' ]  },
+  init_arg => 'hosts',
+);
+
+sub hosts { @{ $_[0]->_hosts } }
+
+sub host  { $_[0]->_hosts->[0] }
 
 has _security => (
   is   => 'ro',
@@ -142,8 +171,8 @@ sub _smtp_client {
 
   unless ($smtp) {
     $self->_throw(
-      sprintf "unable to establish SMTP connection to %s port %s",
-        $self->host,
+      sprintf "unable to establish SMTP connection to (%s) port %s",
+        (join q{, }, $self->hosts),
         $self->port,
     );
   }
@@ -173,7 +202,7 @@ sub _net_smtp_args {
   my ($self) = @_;
 
   return (
-    $self->host,
+    [ $self->hosts ],
     Port    => $self->port,
     Timeout => $self->timeout,
     Debug   => $self->debug,

@@ -2,6 +2,11 @@ Revision history for Email-Sender
 
 {{$NEXT}}
 
+1.300032  2019-11-15 00:32:03-05:00 America/New_York (TRIAL RELEASE)
+        - SMTP transport can now accept a "hosts" init arg instead of just
+          "host"; this argument is an arrayref of host names to try in order
+          (thanks, Marc Bradshaw!)
+
 1.300031  2017-04-04 14:35:42-04:00 America/New_York
         - EMAIL_SENDER_TRANSPORT did not properly handle the =-prefix case
           Now: =Foo::Bar expands to Foo::Bar, Foo::Bar expands to Foo::Bar,

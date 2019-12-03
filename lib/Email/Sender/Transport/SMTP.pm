@@ -27,7 +27,9 @@ The following attributes may be passed to the constructor:
 
 =over 4
 
-=item C<host>: the name of the host to connect to; defaults to C<localhost>
+=item C<hosts>: an arrayref of names of the host to try, in order; defaults to a single element array containing C<localhost>
+
+The attribute C<host> may be given, instead, which contains a single hostname.
 
 =item C<ssl>: if 'starttls', use STARTTLS; if 'ssl' (or 1), connect securely;
 otherwise, no security

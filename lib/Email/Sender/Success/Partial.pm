@@ -8,7 +8,7 @@ use MooX::Types::MooseLike::Base qw(InstanceOf);
 
 =head1 DESCRIPTION
 
-These objects indicate that some deliver was accepted for some recipients and
+These objects indicate that some delivery was accepted for some recipients and
 not others.  The success object's C<failure> attribute will return a
 L<Email::Sender::Failure::Multi> describing which parts of the delivery failed.
 

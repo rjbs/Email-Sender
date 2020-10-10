@@ -11,31 +11,24 @@ No messing around, let's just send some mail.
 
   use strict;
   use Email::Sender::Simple qw(sendmail);
-  use Email::Simple;
-  use Email::Simple::Creator;
+  use Email::MIME;
 
-  my $email = Email::Simple->create(
-    header => [
-      To      => '"Xavier Q. Ample" <x.ample@example.com>',
-      From    => '"Bob Fishman" <orz@example.mil>',
-      Subject => "don't forget to *enjoy the sauce*",
-    ],
-    body => "This message is short, but at least it's cheap.\n",
-  );
+  # You can make an email object in lots of ways.  Pick one you like!
+  my $email = Email::MIME->create(...);
 
   sendmail($email);
 
 That's it.  Your message goes out into the internet and tries to get delivered
 to C<x.ample@example.com>.
 
-In the example above, C<$email> could be an Email::Simple object, a
-MIME::Entity, a string containing an email message, or one of several other
-types of input.  If C<Email::Abstract> can understand a value, it can be passed
-to Email::Sender::Simple.  Email::Sender::Simple tries to make a good guess
-about how to send the message.  It will usually try to use the F<sendmail>
-program on unix-like systems and to use SMTP on Windows.  You can specify a
-transport, if you need to, but normally that shouldn't be an issue.  (See
-L</Picking a Transport>, though, for more information.)
+In the example above, C<$email> could be an Email::MIME object, a MIME::Entity,
+a string containing an email message, or one of several other types of input.
+If C<Email::Abstract> can understand a value, it can be passed to
+Email::Sender::Simple.  Email::Sender::Simple tries to make a good guess about
+how to send the message.  It will usually try to use the F<sendmail> program on
+unix-like systems and to use SMTP on Windows.  You can specify a transport, if
+you need to, but normally that shouldn't be an issue.  (See L</Picking a
+Transport>, though, for more information.)
 
 Also note that we imported and used a C<sendmail> routine in the example above.
 This is exactly the same as saying:

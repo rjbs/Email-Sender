@@ -1,6 +1,11 @@
 Revision history for Email-Sender
 
 {{$NEXT}}
+        - drop some needless version checking from the days when we worked with
+          broken Net::SMTPs (thanks, Bernhard Graf and Aristotle Pagaltzis and
+          Pali Rohár)
+        - documentation tweaks and spelling corrections (thanks, James E
+          Keenan, Stefan Hornburg, M Somerville, and jazzkutya)
 
 1.300034  2019-12-02 22:21:58-05:00 America/New_York
         - add documentation for the SMTP "hosts" parameter!

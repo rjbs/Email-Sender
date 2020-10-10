@@ -35,6 +35,7 @@ L<Email::Sender::Transport::Failable>.
 =for Pod::Coverage clear_deliveries
 
 This attribute stores an arrayref of all the deliveries made via the transport.
+The C<clear_deliveries> method returns a list of them.
 
 Each delivery is a hashref, in the following format:
 

@@ -1,6 +1,8 @@
 Revision history for Email-Sender
 
 {{$NEXT}}
+
+1.300035  2020-10-10 12:34:29-04:00 America/New_York
         - drop some needless version checking from the days when we worked with
           broken Net::SMTPs (thanks, Bernhard Graf and Aristotle Pagaltzis and
           Pali Rohár)

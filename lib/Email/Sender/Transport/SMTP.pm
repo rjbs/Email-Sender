@@ -30,11 +30,11 @@ The following attributes may be passed to the constructor:
 =item C<host>: the name of the host to connect to; defaults to C<localhost>
 
 =item C<ssl>: if 'starttls', use STARTTLS; if 'ssl' (or 1), connect securely;
-otherwise, no security
+if 'maybestarttls', use STARTTLS if available; otherwise, no security
 
 =item C<ssl_options>: passed to Net::SMTP constructor for 'ssl' connections or
-to starttls for 'starttls' connections; should contain extra options for
-IO::Socket::SSL
+to starttls for 'starttls' or 'maybestarttls' connections; should contain extra
+options for IO::Socket::SSL
 
 =item C<port>: port to connect to; defaults to 25 for non-SSL, 465 for 'ssl',
 587 for 'starttls'
@@ -61,6 +61,7 @@ has _security => (
     return '' unless $ssl;
     $ssl = lc $ssl;
     return 'starttls' if 'starttls' eq $ssl;
+    return 'maybestarttls' if 'maybestarttls' eq $ssl;
     return 'ssl' if $ssl eq 1 or $ssl eq 'ssl';
 
     Carp::cluck(qq{true "ssl" argument to Email::Sender::Transport::SMTP should be 'ssl' or 'startls' or '1' but got '$ssl'});
@@ -151,6 +152,13 @@ sub _smtp_client {
   if ($self->_security eq 'starttls') {
     $self->_throw("can't STARTTLS: " . $smtp->message)
       unless $smtp->starttls(%{ $self->ssl_options });
+  }
+
+  if ($self->_security eq 'maybestarttls') {
+    if ( $smtp->supports('STARTTLS', 500, ["Command unknown: 'STARTTLS'"]) ) {
+      $self->_throw("can't STARTTLS: " . $smtp->message)
+        unless $smtp->starttls(%{ $self->ssl_options });
+    }
   }
 
   if ($self->sasl_username) {

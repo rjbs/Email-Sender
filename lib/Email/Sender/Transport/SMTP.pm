@@ -95,7 +95,7 @@ has _security => (
     return 'maybestarttls' if 'maybestarttls' eq $ssl;
     return 'ssl' if $ssl eq 1 or $ssl eq 'ssl';
 
-    Carp::cluck(qq{true "ssl" argument to Email::Sender::Transport::SMTP should be 'ssl' or 'startls' or '1' but got '$ssl'});
+    Carp::cluck(qq{"ssl" argument to Email::Sender::Transport::SMTP was "$ssl" rather than one of the permitted values: maybestarttls, starttls, ssl});
 
     return 1;
   },

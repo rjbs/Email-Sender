@@ -1,6 +1,7 @@
 Revision history for Email-Sender
 
 {{$NEXT}}
+        - adjust version number for bookkeeping reasons
 
 1.300036  2021-06-17 09:51:12-04:00 America/New_York
         - add "maybestarttls" option, to allow opportunistic STARTTLS

@@ -1,6 +1,7 @@
 Revision history for Email-Sender
 
 {{$NEXT}}
+        - version bumped to account for change in fractional part precision
 
 1.500     2021-06-20 20:30:24-04:00 America/New_York
         - adjust version number for bookkeeping reasons

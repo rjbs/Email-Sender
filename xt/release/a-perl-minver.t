@@ -13,4 +13,4 @@ eval {
 
 plan skip_all => "this test requires Test::MinimumVersion" if $@;
 
-all_minimum_version_ok(5.008001);
+all_minimum_version_ok(5.012000);

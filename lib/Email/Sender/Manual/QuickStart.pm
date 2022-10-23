@@ -41,9 +41,9 @@ This is exactly the same as saying:
 
 We didn't have to tell Email::Sender::Simple where to send the message.  If you
 don't specify recipients, it will use all the email addresses it can find in
-the F<To> and F<Cc> headers by default.  It will use L<Email::Address> to parse
-those fields.  Similarly, if no sender is specified, it will use the first
-address found in the F<From> header.
+the F<To> and F<Cc> headers by default.  It will use L<Email::Address::XS> to
+parse those fields.  Similarly, if no sender is specified, it will use the
+first address found in the F<From> header.
 
 In most email transmission systems, though, the headers are not by necessity
 tied to the addresses used as the sender and recipients.  For example, your

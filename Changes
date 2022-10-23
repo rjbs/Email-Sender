@@ -1,7 +1,10 @@
 Revision history for Email-Sender
 
 {{$NEXT}}
-        - replace use of Email::Address with Email::Address::XS
+        - This version replaces the use of Email::Address with
+          Email::Address::XS, as the pure perl version has problems with
+          certain kinds of input.
+
 
 2.500     2021-07-04 13:26:47-04:00 America/New_York
         - version bumped to account for change in fractional part precision

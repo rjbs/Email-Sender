@@ -49,6 +49,11 @@ sub BUILD {
   my ($self) = @_;
   Carp::croak("do not pass port number to SMTP transport in host, use port parameter")
     if grep {; /:/ } $self->hosts;
+
+  if ($self->sasl_username) {
+    $self->_throw("sasl_username but no sasl_password")
+      unless defined $self->sasl_password;
+  }
 }
 
 sub BUILDARGS {
@@ -193,9 +198,6 @@ sub _smtp_client {
   }
 
   if ($self->sasl_username) {
-    $self->_throw("sasl_username but no sasl_password")
-      unless defined $self->sasl_password;
-
     unless ($smtp->auth($self->sasl_username, $self->sasl_password)) {
       if ($smtp->message =~ /MIME::Base64|Authen::SASL/) {
         Carp::confess("SMTP auth requires MIME::Base64 and Authen::SASL");

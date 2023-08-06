@@ -50,9 +50,8 @@ sub BUILD {
   Carp::croak("do not pass port number to SMTP transport in host, use port parameter")
     if grep {; /:/ } $self->hosts;
 
-  if ($self->sasl_username) {
-    $self->_throw("sasl_username but no sasl_password")
-      unless defined $self->sasl_password;
+  if ($self->sasl_username and not defined $self->sasl_password) {
+    $self->_throw("sasl_username but no sasl_password");
   }
 }
 

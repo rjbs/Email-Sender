@@ -66,9 +66,9 @@ sub BUILDARGS {
     $arg->{hosts} = [ delete $arg->{host} ];
   }
 
-  if (exists $arg->{sasl_authenticator}) {
-      Carp::croak("can't pass both sasl_authenticator and sasl_username to constructor")
-          if exists $arg->{sasl_username};
+  if (exists $arg->{sasl_authenticator}
+      and exists $arg->{sasl_username}) {
+      Carp::croak("can't pass both sasl_authenticator and sasl_username to constructor");
   }
 
   return $arg;

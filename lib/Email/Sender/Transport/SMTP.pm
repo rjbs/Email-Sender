@@ -8,6 +8,7 @@ use Email::Sender::Success::Partial;
 use Email::Sender::Role::HasMessage ();
 use Email::Sender::Util;
 use MooX::Types::MooseLike::Base qw(Bool Int Str HashRef);
+use Net::IDN::Encode qw(domain_to_ascii);
 use Net::SMTP 3.07; # SSL support, fixed datasend
 
 use utf8 (); # See below. -- rjbs, 2015-05-14
@@ -137,7 +138,12 @@ has allow_partial_success => (is => 'ro', isa => Bool, default => sub { 0 });
 
 =cut
 
-has helo      => (is => 'ro', isa => Str);
+has helo => (
+    is => 'ro',
+    isa => Str,
+    coerce => sub { domain_to_ascii( $_[0] ) }
+);
+
 has localaddr => (is => 'ro');
 has localport => (is => 'ro', isa => Int);
 

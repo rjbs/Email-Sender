@@ -1,6 +1,7 @@
 #!perl
 use strict;
 use warnings;
+use utf8;
 use Test::More;
 
 BEGIN {
@@ -32,7 +33,7 @@ BEGIN {
   $mock_smtp->{failaddr}{'permfail@example.net'} = [ 519 => 'Permanent STHU' ];
 }
 
-plan tests => 95;
+plan tests => 97;
 
 use Email::Sender::Transport::SMTP;
 use Email::Sender::Transport::SMTP::Persistent;
@@ -348,6 +349,16 @@ for my $class (qw(
       },
     );
   }
+
+  {
+    local $test   = 'helo idn conversion';
+    local $sender = $class->new({
+      helo => 'Bücher.ch',
+    });
+
+    is($sender->helo, 'xn--bcher-kva.ch', 'IDN conversion successful');
+  }
+
 }
 
 subtest "quoteaddr" => sub {

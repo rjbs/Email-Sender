@@ -1,12 +1,13 @@
 Revision history for Email-Sender
 
 {{$NEXT}}
+        - allow using an Authen::SASL instance via sasl_authenticator as an
+          alternative to username asd password (thanks, Erik Huelsmann!)
 
 2.600     2022-10-23 16:45:34-04:00 America/New_York
         - This version replaces the use of Email::Address with
           Email::Address::XS, as the pure perl version has problems with
           certain kinds of input.
-
 
 2.500     2021-07-04 13:26:47-04:00 America/New_York
         - version bumped to account for change in fractional part precision

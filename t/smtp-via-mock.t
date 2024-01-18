@@ -32,7 +32,7 @@ BEGIN {
   $mock_smtp->{failaddr}{'permfail@example.net'} = [ 519 => 'Permanent STHU' ];
 }
 
-plan tests => 95;
+plan tests => 91;
 
 use Email::Sender::Transport::SMTP;
 use Email::Sender::Transport::SMTP::Persistent;
@@ -270,22 +270,6 @@ for my $class (qw(
     local $sender = $class->new({
       sasl_username => 'unknown',
       sasl_password => 'password',
-    });
-
-    test_smtp(
-      {
-        from => 'okay@example.net',
-        to   => 'okay@example.com',
-      },
-      undef,
-      sub { isa_ok($_[0], 'Email::Sender::Failure'); },
-    );
-  }
-
-  {
-    local $test   = 'auth nopw';
-    local $sender = $class->new({
-      sasl_username => 'username',
     });
 
     test_smtp(

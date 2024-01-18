@@ -7,7 +7,7 @@ use Email::Sender::Failure::Multi;
 use Email::Sender::Success::Partial;
 use Email::Sender::Role::HasMessage ();
 use Email::Sender::Util;
-use MooX::Types::MooseLike::Base qw(Bool Int Str HashRef);
+use MooX::Types::MooseLike::Base qw(Bool InstanceOf Int Str HashRef);
 use Net::SMTP 3.07; # SSL support, fixed datasend
 
 use utf8 (); # See below. -- rjbs, 2015-05-14
@@ -49,6 +49,10 @@ sub BUILD {
   my ($self) = @_;
   Carp::croak("do not pass port number to SMTP transport in host, use port parameter")
     if grep {; /:/ } $self->hosts;
+
+  if ($self->sasl_username and not defined $self->sasl_password) {
+    $self->_throw("sasl_username but no sasl_password");
+  }
 }
 
 sub BUILDARGS {
@@ -60,6 +64,10 @@ sub BUILDARGS {
       if exists $arg->{hosts};
 
     $arg->{hosts} = [ delete $arg->{host} ];
+  }
+
+  if (exists $arg->{sasl_authenticator} and exists $arg->{sasl_username}) {
+    Carp::croak("can't pass both sasl_authenticator and sasl_username to constructor");
   }
 
   return $arg;
@@ -120,12 +128,22 @@ has timeout => (is => 'ro', isa => Int, default => sub { 120 });
 
 =item C<sasl_password>: the password to use for auth; required if C<sasl_username> is provided
 
-=item C<allow_partial_success>: if true, will send data even if some recipients were rejected; defaults to false
-
 =cut
 
 has sasl_username => (is => 'ro', isa => Str);
 has sasl_password => (is => 'ro', isa => Str);
+
+=item C<sasl_authenticator>: An C<Authen::SASL> instance to use for auth; optional
+
+The C<sasl_authenticator> and C<sasl_username> attributes are mutually exclusive.
+
+=cut
+
+has sasl_authenticator => (is => 'ro', isa => InstanceOf['Authen::SASL']);
+
+=item C<allow_partial_success>: if true, will send data even if some recipients were rejected; defaults to false
+
+=cut
 
 has allow_partial_success => (is => 'ro', isa => Bool, default => sub { 0 });
 
@@ -165,6 +183,20 @@ sub _quoteaddr {
   return join q{@}, qq("$localpart"), $domain;
 }
 
+sub _maybe_auth {
+  my ($self, $smtp) = @_;
+
+  if ($self->sasl_username) {
+    return $smtp->auth($self->sasl_username, $self->sasl_password);
+  }
+
+  if ($self->sasl_authenticator) {
+    return $smtp->auth($self->sasl_authenticator);
+  }
+
+  return 1;
+}
+
 sub _smtp_client {
   my ($self) = @_;
 
@@ -192,17 +224,12 @@ sub _smtp_client {
     }
   }
 
-  if ($self->sasl_username) {
-    $self->_throw("sasl_username but no sasl_password")
-      unless defined $self->sasl_password;
-
-    unless ($smtp->auth($self->sasl_username, $self->sasl_password)) {
-      if ($smtp->message =~ /MIME::Base64|Authen::SASL/) {
-        Carp::confess("SMTP auth requires MIME::Base64 and Authen::SASL");
-      }
-
-      $self->_throw('failed AUTH', $smtp);
+  unless ($self->_maybe_auth($smtp)) {
+    if ($smtp->message =~ /MIME::Base64|Authen::SASL/) {
+      Carp::confess("SMTP auth requires MIME::Base64 and Authen::SASL");
     }
+
+    $self->_throw('failed AUTH', $smtp);
   }
 
   return $smtp;

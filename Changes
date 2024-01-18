@@ -1,6 +1,8 @@
 Revision history for Email-Sender
 
 {{$NEXT}}
+
+2.601     2024-01-17 19:15:25-05:00 America/New_York
         - allow using an Authen::SASL instance via sasl_authenticator as an
           alternative to username asd password (thanks, Erik Huelsmann!)
 

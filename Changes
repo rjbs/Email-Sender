@@ -1,6 +1,13 @@
 Revision history for Email-Sender
 
 {{$NEXT}}
+        - SECURITY: the Sendmail transport built a shell command line on Win32,
+          so an envelope address containing shell metacharacters -- which can
+          come from the To, Cc, or From header of a message sent with
+          Email::Sender::Simple -- could execute arbitrary commands.  On Win32,
+          envelope addresses are now checked against a conservative pattern, and
+          anything else is now rejected with a permanent failure.
+          This is CVE-2026-84344.
 
 2.601     2024-01-17 19:15:25-05:00 America/New_York
         - allow using an Authen::SASL instance via sasl_authenticator as an

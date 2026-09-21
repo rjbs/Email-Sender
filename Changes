@@ -1,6 +1,8 @@
 Revision history for Email-Sender
 
 {{$NEXT}}
+
+2.602     2026-09-21 11:09:22-04:00 America/New_York
         - SECURITY: the Sendmail transport built a shell command line on Win32,
           so an envelope address containing shell metacharacters -- which can
           come from the To, Cc, or From header of a message sent with

@@ -1,6 +1,8 @@
 Revision history for Email-Sender
 
 {{$NEXT}}
+
+2.603     2026-09-21 11:24:06-04:00 America/New_York
         - Just re-issued to correct the CVE identifier for the issue fixed in
           2.602:  it is CVE-2026-93012.
 
